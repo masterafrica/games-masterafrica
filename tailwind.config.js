@@ -1,4 +1,4 @@
-import {heroui} from "@heroui/theme"
+import { heroui } from "@heroui/theme"
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -12,10 +12,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#9747FF"
+        primary: "#9747FF",
+        secondary: "#E59F07",
       }
     },
   },
-  // darkMode: "class",
+  darkMode: "class",
   plugins: [heroui()],
 }
