@@ -7,6 +7,7 @@ import LoginPage from "./pages/auth/login";
 import SignupPage from "./pages/auth/signup";
 import DashboardPage from "./pages/dashboard";
 import ChallengesPage from "./pages/challenges";
+import GamesPage from "./pages/games";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/" element={<MainLayout />}>
         <Route element={<DashboardPage />} index/>
         <Route element={<ChallengesPage />} path="challenges" />
+        <Route element={<GamesPage />} path="games" />
       </Route>
     </Routes>
   );
