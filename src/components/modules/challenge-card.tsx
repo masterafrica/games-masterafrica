@@ -11,6 +11,7 @@ interface ChallengeCardProps {
   currentValue?: string;
   maxValue?: string;
   buttonText?: string;
+  badge?: string; // Added badge property
 }
 
 export const ChallengeCard = ({
@@ -22,12 +23,18 @@ export const ChallengeCard = ({
   currentValue,
   maxValue,
   buttonText,
+  badge,
 }: ChallengeCardProps) => {
   return (
     <Card className="bg-white/80 backdrop-blur-sm dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
       <CardBody className="p-6 md:p-8">
         <div className="flex items-start gap-4 mb-6">
           <div className="flex-1">
+            {badge && (
+              <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 mb-1 block">
+                {badge}
+              </span>
+            )}
             <div className="flex items-center gap-2 mb-2">
               {type === "reward" && <span className="text-xl">🎁</span>}
               <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
