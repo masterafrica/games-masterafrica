@@ -1,6 +1,6 @@
 export const WinLineBanner = () => {
   return (
-    <div className="bg-gradient-to-r relative from-yellow-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 md:p-8 flex items-center gap-6">
+    <div className="bg-gradient-to-r relative from-yellow-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
       <div className="relative flex-shrink-0">
         <img
           src="/images/master-games.png"

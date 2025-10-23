@@ -47,13 +47,13 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6">
               <Link
-                to="/dashboard"
+                to="/"
                 className="text-sm font-medium text-gray-900 dark:text-white hover:text-primary"
               >
                 Home
               </Link>
               <Link
-                to="/challenge"
+                to="/challenges"
                 className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
               >
                 Challenge

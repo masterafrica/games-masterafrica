@@ -5,3 +5,9 @@
 * {
   font-family: "Quicksand", sans-serif !important;
 }
+
+
+img{
+  pointer-events: none !important;
+  user-select: none !important;
+}

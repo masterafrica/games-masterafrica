@@ -8,6 +8,7 @@ import SignupPage from "./pages/auth/signup";
 import DashboardPage from "./pages/dashboard";
 import ChallengesPage from "./pages/challenges";
 import GamesPage from "./pages/games";
+import LeaderboardPage from "./pages/leaderboard";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route element={<DashboardPage />} index/>
         <Route element={<ChallengesPage />} path="challenges" />
         <Route element={<GamesPage />} path="games" />
+        <Route element={<LeaderboardPage />} path="leaderboard" />
       </Route>
     </Routes>
   );
