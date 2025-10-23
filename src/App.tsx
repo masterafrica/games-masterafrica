@@ -9,6 +9,7 @@ import DashboardPage from "./pages/dashboard";
 import ChallengesPage from "./pages/challenges";
 import GamesPage from "./pages/games";
 import LeaderboardPage from "./pages/leaderboard";
+import PlayGame from "./pages/play";
 
 function App() {
   return (
@@ -19,9 +20,10 @@ function App() {
         <Route element={<SignupPage />} path="signup" />
       </Route>
       <Route path="/" element={<MainLayout />}>
-        <Route element={<DashboardPage />} index/>
+        <Route element={<DashboardPage />} index />
         <Route element={<ChallengesPage />} path="challenges" />
         <Route element={<GamesPage />} path="games" />
+        <Route element={<PlayGame />} path="games/:id" />
         <Route element={<LeaderboardPage />} path="leaderboard" />
       </Route>
     </Routes>
