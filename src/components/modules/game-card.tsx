@@ -50,7 +50,7 @@ export function GameCard({ game }: { game: GameCardData }) {
   return (
     <Card
       shadow="sm"
-      className={`relative ${t.card} border rounded-2xl px-5 pb-6 pt-10 transition-shadow hover:shadow-md`}
+      className={`relative ${t.card} w-full flex-1 md:w-auto min-w-[250px] border rounded-2xl px-5 pb-6 pt-10 transition-shadow hover:shadow-md`}
     >
       {/* circular thumbnail overlapping the top-left */}
       <div className="">

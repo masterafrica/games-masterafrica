@@ -1,10 +1,19 @@
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Avatar } from "@heroui/avatar";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
+const NAV_ITEMS = [
+  { label: "Home", to: "/" },
+  { label: "Challenge", to: "/challenges" },
+  { label: "Games", to: "/games" },
+  { label: "Leaderboard", to: "/leaderboard" },
+];
 
 export const Navbar = () => {
+  const [open, setOpen] = useState(false);
   return (
     <nav className="border-b border-gray-200/0 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4 py-4">
@@ -35,7 +44,7 @@ export const Navbar = () => {
               size="sm"
             />
 
-            <div className="">
+            <div className="hidden md:block">
               <img src="/images/reward.png" className="w-20" />
             </div>
           </div>
@@ -45,44 +54,71 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-6">
+            {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-6">
-              <Link
-                to="/"
-                className="text-sm font-medium text-gray-900 dark:text-white hover:text-primary"
-              >
-                Home
-              </Link>
-              <Link
-                to="/challenges"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
-              >
-                Challenge
-              </Link>
-              <Link
-                to="/games"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
-              >
-                Games
-              </Link>
-              <Link
-                to="/leaderboard"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
-              >
-                Leaderboard
-              </Link>
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
 
-            <Button
-              as={Link}
-              to="/auth/signup"
-              size="sm"
-              className="font-semibold rounded-full bg-primary text-white"
-            >
-              Sign Up
-            </Button>
+            <div className="hidden md:block">
+              <Button
+                as={Link}
+                to="/auth/signup"
+                size="sm"
+                className="font-semibold rounded-full bg-primary text-white"
+              >
+                Sign Up
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setOpen((s) => !s)}
+                aria-label="Toggle menu"
+                className="p-2 rounded-md text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800"
+              >
+                {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      {open && (
+        <div className="md:hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col gap-3">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              <Button
+                as={Link}
+                to="/auth/signup"
+                size="sm"
+                className="mt-2 w-full font-semibold rounded-full bg-primary text-white"
+                onClick={() => setOpen(false)}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

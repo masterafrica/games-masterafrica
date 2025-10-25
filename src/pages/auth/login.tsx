@@ -41,7 +41,7 @@ const LoginPage = () => {
       <div className="mt-6 text-center">
         <p className="text-xs text-white/60">
           By registering you with our{" "}
-          <Link href="#" className="text-white/80 hover:text-white underline">
+          <Link href="#" className="text-white/80 text-sm hover:text-white underline">
             Terms and Conditions
           </Link>
         </p>

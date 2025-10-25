@@ -3,7 +3,7 @@ import { Card, CardBody } from "@heroui/card";
 export const WeeklyChallengerBanner = () => {
   return (
     <Card className="bg-primary/50 overflow-hidden text-white p-6 md:p-8 lg:p-10 rounded-lg">
-      <div className="size-[200px] bg-background flex justify-center items-center rounded-full absolute -bottom-20 -left-10">
+      <div className="size-[200px] opacity-50 md:opacity-100 bg-background flex justify-center items-center rounded-full absolute -bottom-20 -left-10">
         <img src="/images/asset-3.png" alt="" />
       </div>
       <CardBody>
@@ -27,7 +27,7 @@ export const WeeklyChallengerBanner = () => {
         </div>
       </CardBody>
 
-       <div className="size-[200px] bg-background flex justify-center items-center rounded-full absolute -top-20 -right-20">
+       <div className="size-[200px] opacity-50 md:opacity-100 bg-background flex justify-center items-center rounded-full absolute -top-20 -right-20">
         <img src="/images/asset-4.png" alt="" />
       </div>
     </Card>

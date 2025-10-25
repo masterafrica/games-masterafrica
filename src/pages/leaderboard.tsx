@@ -30,8 +30,8 @@ const LeaderboardPage = () => {
     },
   ];
   return (
-    <div className="relative mt-[8%]">
-      <div className="size-[200px] bg-background flex justify-center items-center rounded-full absolute -bottom-20 -right-10">
+    <div className="relative md:mt-[1%]">
+      <div className="size-[200px] bg-background flex justify-center items-center rounded-full absolute -bottom-20 -left-10 md:opacity-100 opacity-50">
         <img src="/images/asset-2.png" alt="" />
       </div>
 

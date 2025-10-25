@@ -16,8 +16,8 @@ const Leaderboard = ({ data }: Props) => {
       <div className="">
         <div className="lg:col-span-1">
           <Card className="">
-            <CardBody className="p-6">
-              <div className="bg-white dark:bg-gray-950 rounded-2xl p-4 overflow-x-auto">
+            <CardBody className="p-1">
+              <div className="bg-white dark:bg-gray-950 rounded-2xl p-1 overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-800">
