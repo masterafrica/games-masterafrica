@@ -1,47 +1,89 @@
+import { Tabs, Tab } from "@heroui/tabs";
+
 import { WinLineBanner } from "@/components/modules/win-line-banner";
 import Leaderboard from "@/components/shared/leaderboard";
-import { Tabs, Tab } from "@heroui/tabs";
 
 const LeaderboardPage = () => {
   const leaderboardData = [
     {
       rank: 1,
-      name: "John Doe",
-      points: 100,
-      badge: "🏆",
-      wins: 25,
-      losses: 5,
+      name: "Chike Master",
+      skillInterest: "Researcher",
+      location: "Lagos",
+      xp: 2000,
+      title: "Grand Master",
     },
     {
       rank: 2,
-      name: "Jane Smith",
-      points: 90,
-      badge: "🥈",
-      wins: 20,
-      losses: 10,
+      name: "Emmauel",
+      skillInterest: "Brand Designer",
+      location: "Anambra",
+      xp: 1000,
+      title: "Grand Master",
     },
     {
       rank: 3,
-      name: "Alice Johnson",
-      points: 80,
-      badge: "🥉",
-      wins: 15,
-      losses: 12,
+      name: "Prince",
+      skillInterest: "Fashion Designer",
+      location: "Porthacout",
+      xp: 800,
+      title: "Master",
+    },
+    {
+      rank: 4,
+      name: "Emaka",
+      skillInterest: "Graphic Designer",
+      location: "Ilorin",
+      xp: 500,
+      title: "Champion",
+    },
+    {
+      rank: 5,
+      name: "Bolu",
+      skillInterest: "Data Analyst",
+      location: "Benue",
+      xp: 200,
+      title: "Contender",
+    },
+    {
+      rank: 6,
+      name: "Bisola",
+      skillInterest: "Dancer",
+      location: "Lagos",
+      xp: 100,
+      title: "Contender",
+    },
+    {
+      rank: 7,
+      name: "Fredo",
+      skillInterest: "Footballer",
+      location: "Lagos",
+      xp: 50,
+      title: "Starter",
+    },
+    {
+      rank: 8,
+      name: "Charles",
+      skillInterest: "Chief",
+      location: "Calabar",
+      xp: 20,
+      title: "Starter",
     },
   ];
+
   return (
     <div className="relative md:mt-[1%]">
       <div className="size-[200px] bg-background flex justify-center items-center rounded-full absolute -bottom-20 -left-10 md:opacity-100 opacity-50">
-        <img src="/images/asset-2.png" alt="" />
+        <img alt="" src="/images/asset-2.png" />
       </div>
 
       <div className="flex w-full py-12 flex-col">
         <Tabs
           aria-label="Options"
-          size="lg"
           className="mx-auto"
           color="primary"
           radius="full"
+          size="lg"
         >
           <Tab key="xp" title="Xp Point">
             <div className="bg-[#F1F1F1] mt-6 p-4 md:p-12 rounded-xl">
@@ -81,9 +123,9 @@ const LeaderboardPage = () => {
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                       <div className="flex items-center gap-4">
                         <img
-                          src="/images/bronze.svg"
                           alt="bronze badge"
                           className="w-16 h-16"
+                          src="/images/bronze.svg"
                         />
                         <div>
                           <div className="text-primary font-semibold">
@@ -97,9 +139,9 @@ const LeaderboardPage = () => {
 
                       <div className="flex items-center gap-4">
                         <img
-                          src="/images/silver.svg"
                           alt="silver badge"
                           className="w-16 h-16"
+                          src="/images/silver.svg"
                         />
                         <div>
                           <div className="text-primary font-semibold">
@@ -113,9 +155,9 @@ const LeaderboardPage = () => {
 
                       <div className="flex items-center gap-4">
                         <img
-                          src="/images/gold.svg"
                           alt="gold badge"
                           className="w-16 h-16"
+                          src="/images/gold.svg"
                         />
                         <div>
                           <div className="text-primary font-semibold">
@@ -137,7 +179,7 @@ const LeaderboardPage = () => {
       </div>
 
       <div className="size-[200px] bg-background  -z-10 justify-center items-center rounded-full absolute -top-20 -left-20 md:flex hidden">
-        <img src="/images/asset-1.png" alt="" />
+        <img alt="" src="/images/asset-1.png" />
       </div>
     </div>
   );

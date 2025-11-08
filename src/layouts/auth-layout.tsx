@@ -1,5 +1,6 @@
-import { subtitle, title } from "@/components/shared/primitives";
 import { Outlet } from "react-router-dom";
+
+import { subtitle, title } from "@/components/shared/primitives";
 
 const AuthLayout = () => {
   return (
@@ -7,9 +8,9 @@ const AuthLayout = () => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="/images/background.png"
           alt="Background"
           className="w-full h-full object-cover"
+          src="/images/background.png"
         />
       </div>
 
@@ -19,9 +20,9 @@ const AuthLayout = () => {
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 relative">
                 <img
-                  src="/images/logo.svg"
                   alt="Game Character"
                   className="w-full h-full object-contain"
+                  src="/images/logo.svg"
                 />
               </div>
             </div>
@@ -54,7 +55,7 @@ const AuthLayout = () => {
               </p>
             </div>
 
-            <div className="mt-8"></div>
+            <div className="mt-8" />
           </div>
 
           <div className="flex-1 flex items-center justify-center p-8">

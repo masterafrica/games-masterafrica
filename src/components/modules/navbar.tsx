@@ -2,7 +2,7 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Avatar } from "@heroui/avatar";
 import { Search, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 const NAV_ITEMS = [
@@ -14,6 +14,16 @@ const NAV_ITEMS = [
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <nav className="border-b border-gray-200/0 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4 py-4">
@@ -21,9 +31,9 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <Avatar
-                src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-                size="sm"
                 className="w-10 h-10"
+                size="sm"
+                src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
               />
               <div className="hidden sm:block">
                 <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -36,21 +46,21 @@ export const Navbar = () => {
             </div>
 
             <Input
-              placeholder="Search"
-              startContent={<Search className="w-4 h-4 text-gray-400" />}
               classNames={{
                 mainWrapper: "rounded-full!",
               }}
+              placeholder="Search"
               size="sm"
+              startContent={<Search className="w-4 h-4 text-gray-400" />}
             />
 
             <div className="hidden md:block">
-              <img src="/images/reward.png" className="w-20" />
+              <img alt="Reward" className="w-20" src="/images/reward.png" />
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <img src="/images/logo.svg" alt="Logo" className="w-16" />
+            <img alt="Logo" className="w-16" src="/images/logo.svg" />
           </div>
 
           <div className="flex items-center gap-6">
@@ -59,8 +69,12 @@ export const Navbar = () => {
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.to}
+                  className={`text-sm font-medium hover:text-primary transition-colors ${
+                    isActive(item.to)
+                      ? "text-primary font-semibold"
+                      : "text-gray-600 dark:text-gray-400"
+                  }`}
                   to={item.to}
-                  className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary"
                 >
                   {item.label}
                 </Link>
@@ -70,9 +84,9 @@ export const Navbar = () => {
             <div className="hidden md:block">
               <Button
                 as={Link}
-                to="/auth/signup"
-                size="sm"
                 className="font-semibold rounded-full bg-primary text-white"
+                size="sm"
+                to="/auth/signup"
               >
                 Sign Up
               </Button>
@@ -81,11 +95,15 @@ export const Navbar = () => {
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
-                onClick={() => setOpen((s) => !s)}
                 aria-label="Toggle menu"
                 className="p-2 rounded-md text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800"
+                onClick={() => setOpen((s) => !s)}
               >
-                {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {open ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -98,9 +116,13 @@ export const Navbar = () => {
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.to}
+                  className={`text-sm font-medium hover:text-primary transition-colors ${
+                    isActive(item.to)
+                      ? "text-primary font-semibold"
+                      : "text-gray-700 dark:text-gray-200"
+                  }`}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary"
                 >
                   {item.label}
                 </Link>
@@ -108,9 +130,9 @@ export const Navbar = () => {
 
               <Button
                 as={Link}
-                to="/auth/signup"
-                size="sm"
                 className="mt-2 w-full font-semibold rounded-full bg-primary text-white"
+                size="sm"
+                to="/auth/signup"
                 onClick={() => setOpen(false)}
               >
                 Sign Up

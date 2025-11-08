@@ -1,5 +1,6 @@
-import { GameCard, GameTheme } from "@/components/modules/game-card";
 import { Button } from "@heroui/button";
+
+import { GameCard, GameTheme } from "@/components/modules/game-card";
 
 const games = [
   {
@@ -43,7 +44,7 @@ const PlayGame = () => {
         <Button color="primary">Referral Link</Button>
       </div>
 
-      <div id="screen" className="p-2 rounded-lg h-[55vh] bg-amber-200"></div>
+      <div className="p-2 rounded-lg h-[55vh] bg-amber-200" id="screen" />
 
       <div className="my-5">
         <div className="flex justify-evenly flex-wrap gap-5">

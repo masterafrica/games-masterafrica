@@ -47,17 +47,18 @@ function themeClasses(theme: GameTheme) {
 
 export function GameCard({ game }: { game: GameCardData }) {
   const t = themeClasses(game.theme);
+
   return (
     <Card
-      shadow="sm"
       className={`relative ${t.card} w-full flex-1 md:w-auto min-w-[250px] border rounded-2xl px-5 pb-6 pt-10 transition-shadow hover:shadow-md`}
+      shadow="sm"
     >
       {/* circular thumbnail overlapping the top-left */}
       <div className="">
         <img
-          src={game.image}
           alt={game.title}
           className={`h-20 w-20 mx-auto rounded-full object-cover border-4 border-white shadow-sm ring-2 ${t.ring}`}
+          src={game.image}
         />
       </div>
 
@@ -79,11 +80,11 @@ export function GameCard({ game }: { game: GameCardData }) {
         <div className="mt-5 flex justify-center">
           <Button
             as={Link}
-            to={`/games/${game.id}`}
-            radius="full"
             className={`${t.button} font-semibold px-10`}
-            variant="solid"
+            radius="full"
             size="sm"
+            to={`/games/${game.id}`}
+            variant="solid"
           >
             Play
           </Button>

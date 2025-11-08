@@ -44,7 +44,7 @@ function offsetClass(offset: NonNullable<GameWithOffset["offset"]>) {
     case "sm":
       return "mt-6";
     case "md":
-      return "mt-12";
+      return "mt-1";
     default:
       return "mt-0";
   }
@@ -68,9 +68,9 @@ export default function GamesPage() {
 
           <div className="mt-10">
             <img
-              src="/images/master-games.png"
               alt="Master Africa Games mascot"
               className="max-h-[420px] w-auto select-none"
+              src="/images/master-games-2.png"
             />
           </div>
         </section>
@@ -79,11 +79,13 @@ export default function GamesPage() {
         <section className="lg:col-span-5">
           <div className="mb-4">
             <div className="text-xs text-gray-400">Master Africa Games</div>
-            <div className="text-sm font-semibold text-gray-700">Select Games:</div>
+            <div className="text-sm font-semibold text-gray-700">
+              Select Games:
+            </div>
           </div>
 
           {/* two vertical lanes with staggered spacing to match the mock */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
             {/* Column 1 cards */}
             <div className="flex flex-col gap-6">
               <div className={offsetClass("none")}>

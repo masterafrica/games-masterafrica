@@ -4,11 +4,47 @@ interface Props {
   data: {
     rank: number;
     name: string;
-    points: number;
-    wins: number;
-    losses: number;
+    skillInterest: string;
+    location: string;
+    xp: number;
+    title: string;
   }[];
 }
+
+const getRankBadgeColor = (rank: number) => {
+  if (rank === 1) return "bg-yellow-500";
+  if (rank === 2) return "bg-blue-500";
+  if (rank === 3) return "bg-amber-800";
+  return "bg-gray-300";
+};
+
+const getTitleIcon = (title: string) => {
+  if (title === "Grand Master") {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <span className="text-yellow-500">🏆</span>
+        <span>{title}</span>
+      </span>
+    );
+  }
+  if (title === "Master") {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <span className="text-yellow-500">⭐</span>
+        <span>{title}</span>
+      </span>
+    );
+  }
+  if (title === "Champion") {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <span className="text-yellow-500">⭐</span>
+        <span>{title}</span>
+      </span>
+    );
+  }
+  return <span>{title}</span>;
+};
 
 const Leaderboard = ({ data }: Props) => {
   return (
@@ -25,74 +61,62 @@ const Leaderboard = ({ data }: Props) => {
                         Rank
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
-                        Names
+                        Player
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
-                        Points
+                        Skill Interest
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
-                        Wins
+                        Location
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
-                        Loses
+                        XP
+                      </th>
+                      <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
+                        Titles
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data.map((player, index) => (
+                    {data.map((player) => (
                       <tr
                         key={player.rank}
                         className="border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
                       >
                         <td className="py-3 px-2">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold text-gray-900 dark:text-white w-6 text-center">
-                              {index > 3 ? (
-                                index + 1
-                              ) : (
-                                <>
-                                  {index == 0 && "🏆"}
-                                  {index == 1 && "🥈"}
-                                  {index == 2 && "🥉"}
-                                </>
-                              )}
+                            <span
+                              className={`text-sm font-semibold text-white w-8 h-8 rounded-full flex items-center justify-center ${getRankBadgeColor(
+                                player.rank
+                              )}`}
+                            >
+                              {player.rank}
                             </span>
                           </div>
                         </td>
                         <td className="py-3 px-2">
-                          <span
-                            className={`text-sm font-medium ${
-                              index < 3
-                                ? index === 0
-                                  ? "text-yellow-600 dark:text-yellow-400"
-                                  : index === 1
-                                    ? "text-blue-600 dark:text-blue-400"
-                                    : "text-orange-600 dark:text-orange-400"
-                                : "text-gray-900 dark:text-white"
-                            }`}
-                          >
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
                             {player.name}
                           </span>
                         </td>
                         <td className="py-3 px-2">
-                          <span
-                            className={`text-sm font-semibold ${
-                              index < 3
-                                ? "text-yellow-600 dark:text-yellow-400"
-                                : "text-gray-900 dark:text-white"
-                            }`}
-                          >
-                            {player.points}
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {player.skillInterest}
                           </span>
                         </td>
                         <td className="py-3 px-2">
                           <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {player.wins}
+                            {player.location}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {player.xp}XP
                           </span>
                         </td>
                         <td className="py-3 px-2">
                           <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {player.losses}
+                            {getTitleIcon(player.title)}
                           </span>
                         </td>
                       </tr>

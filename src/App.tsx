@@ -15,12 +15,12 @@ function App() {
   return (
     <Routes>
       {/* <Route element={<IndexPage />} path="/" /> */}
-      <Route path="/auth" element={<AuthLayout />}>
+      <Route element={<AuthLayout />} path="/auth">
         <Route element={<LoginPage />} path="login" />
         <Route element={<SignupPage />} path="signup" />
       </Route>
-      <Route path="/" element={<MainLayout />}>
-        <Route element={<DashboardPage />} index />
+      <Route element={<MainLayout />} path="/">
+        <Route index element={<DashboardPage />} />
         <Route element={<ChallengesPage />} path="challenges" />
         <Route element={<GamesPage />} path="games" />
         <Route element={<PlayGame />} path="games/:id" />

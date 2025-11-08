@@ -12,6 +12,7 @@ interface ChallengeCardProps {
   maxValue?: string;
   buttonText?: string;
   badge?: string; // Added badge property
+  theme?: string;
 }
 
 export const ChallengeCard = ({
@@ -24,17 +25,23 @@ export const ChallengeCard = ({
   maxValue,
   buttonText,
   badge,
+  theme,
 }: ChallengeCardProps) => {
+  const baseColor = theme || "#9747FF";
+  const bg = baseColor + "15";
+  const border = baseColor + "30";
+
   return (
-    <Card className="bg-white/80 backdrop-blur-sm dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
+    <Card
+      className={`backdrop-blur-sm dark:bg-gray-900 border dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow`}
+      style={{
+        backgroundColor: bg,
+        border: `1px solid ${border}`,
+      }}
+    >
       <CardBody className="p-6 md:p-8">
         <div className="flex items-start gap-4 mb-6">
           <div className="flex-1">
-            {badge && (
-              <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 mb-1 block">
-                {badge}
-              </span>
-            )}
             <div className="flex items-center gap-2 mb-2">
               {type === "reward" && <span className="text-xl">🎁</span>}
               <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
@@ -44,13 +51,27 @@ export const ChallengeCard = ({
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {description}
             </p>
+            {badge && (
+              <span
+                className="text-xs text-white py-1 px-4 rounded-full font-semibold mt-3 block"
+                style={{
+                  backgroundColor: baseColor,
+                  width: "min-content",
+                }}
+              >
+                {badge}
+              </span>
+            )}
           </div>
+
           {buttonText && (
-            <Button 
-              size="sm" 
-              color="warning"
-              variant="faded"
-              className="font-semibold text-xs md:text-sm px-4 md:px-6"
+            <Button
+              className="font-semibold border-none underline text-xs md:text-sm px-4 md:px-6"
+              size="sm"
+              style={{
+                color: baseColor,
+              }}
+              variant="ghost"
             >
               {buttonText}
             </Button>
@@ -66,15 +87,15 @@ export const ChallengeCard = ({
               </span>
             )}
           </div>
-          <Progress 
-            value={progress} 
-            color="warning"
-            size="md"
+          <Progress
             classNames={{
               base: "max-w-full",
-              track: "bg-gray-200 dark:bg-gray-800 h-2",
+              track: "bg-gray-200 dark:bg-gray-800 h-3",
               indicator: "bg-gradient-to-r from-yellow-400 to-orange-400",
             }}
+            color="warning"
+            size="md"
+            value={progress}
           />
         </div>
       </CardBody>
