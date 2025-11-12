@@ -1,9 +1,11 @@
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Avatar } from "@heroui/avatar";
-import { Search, Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Search, Menu, X, LogOut } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+import { useAuth } from "@/lib/auth-context";
 
 const NAV_ITEMS = [
   { label: "Home", to: "/" },
@@ -15,6 +17,13 @@ const NAV_ITEMS = [
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth/login");
+  };
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -40,7 +49,7 @@ export const Navbar = () => {
                   Welcome,
                 </p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  Lopez
+                  {user?.username || "Guest"}
                 </p>
               </div>
             </div>
@@ -83,12 +92,12 @@ export const Navbar = () => {
 
             <div className="hidden md:block">
               <Button
-                as={Link}
                 className="font-semibold rounded-full bg-primary text-white"
                 size="sm"
-                to="/auth/signup"
+                startContent={<LogOut className="w-4 h-4" />}
+                onClick={handleLogout}
               >
-                Sign Up
+                Logout
               </Button>
             </div>
 
@@ -129,13 +138,15 @@ export const Navbar = () => {
               ))}
 
               <Button
-                as={Link}
                 className="mt-2 w-full font-semibold rounded-full bg-primary text-white"
                 size="sm"
-                to="/auth/signup"
-                onClick={() => setOpen(false)}
+                startContent={<LogOut className="w-4 h-4" />}
+                onClick={() => {
+                  handleLogout();
+                  setOpen(false);
+                }}
               >
-                Sign Up
+                Logout
               </Button>
             </div>
           </div>

@@ -5,6 +5,7 @@ import { useHref, useNavigate } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client/react";
 
 import { client } from "@/lib/apollo-client";
+import { AuthProvider } from "@/lib/auth-context";
 
 declare module "@react-types/shared" {
   interface RouterConfig {
@@ -17,9 +18,11 @@ export function Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <ApolloProvider client={client}>
-      <HeroUIProvider navigate={navigate} useHref={useHref}>
-        {children}
-      </HeroUIProvider>
+      <AuthProvider>
+        <HeroUIProvider navigate={navigate} useHref={useHref}>
+          {children}
+        </HeroUIProvider>
+      </AuthProvider>
     </ApolloProvider>
   );
 }

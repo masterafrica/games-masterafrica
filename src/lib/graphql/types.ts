@@ -13,7 +13,7 @@ export interface User {
 }
 
 export interface LoginUserInput {
-  email: string;
+  identifier: string;
   password: string;
 }
 

@@ -33,6 +33,7 @@
     "@tailwindcss/postcss": "4.1.11",
     "@tailwindcss/vite": "4.1.11",
     "clsx": "2.1.1",
+    "formik": "^2.4.9",
     "framer-motion": "11.18.2",
     "graphql": "^16.12.0",
     "iconsax-react": "^0.0.8",
@@ -42,7 +43,8 @@
     "react-dom": "18.3.1",
     "react-router-dom": "6.23.0",
     "tailwind-variants": "3.1.1",
-    "tailwindcss": "4.1.11"
+    "tailwindcss": "4.1.11",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.8",
