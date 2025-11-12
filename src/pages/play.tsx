@@ -1,6 +1,8 @@
 import { Button } from "@heroui/button";
 
 import { GameCard, GameTheme } from "@/components/modules/game-card";
+import { GameCanvas } from "@/lib/games/canvas";
+import { useParams } from "react-router-dom";
 
 const games = [
   {
@@ -38,13 +40,17 @@ const games = [
 ];
 
 const PlayGame = () => {
+  const { id } = useParams();
+
+  if (!id) return <div>Game not found</div>;
+
   return (
     <div className="container grid px-4 gap-8 mx-auto m-2">
       <div className="">
         <Button color="primary">Referral Link</Button>
       </div>
 
-      <div className="p-2 rounded-lg h-[55vh] bg-amber-200" id="screen" />
+      <GameCanvas gameId={id} />
 
       <div className="my-5">
         <div className="flex justify-evenly flex-wrap gap-5">

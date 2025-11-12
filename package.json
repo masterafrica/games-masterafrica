@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.9",
+    "@gsap/react": "^2.1.2",
     "@heroui/avatar": "^2.2.22",
     "@heroui/badge": "^2.2.17",
     "@heroui/button": "2.2.27",
@@ -36,14 +37,19 @@
     "formik": "^2.4.9",
     "framer-motion": "11.18.2",
     "graphql": "^16.12.0",
+    "gsap": "^3.13.0",
     "iconsax-react": "^0.0.8",
     "js-cookie": "^3.0.5",
+    "konva": "^10.0.8",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.546.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-konva": "^18.2.14",
     "react-router-dom": "6.23.0",
     "tailwind-variants": "3.1.1",
     "tailwindcss": "4.1.11",
+    "use-image": "^1.1.4",
     "yup": "^1.7.1"
   },
   "devDependencies": {

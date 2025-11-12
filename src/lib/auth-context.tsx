@@ -1,12 +1,19 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import Cookies from "js-cookie";
-
 import type { User } from "./graphql/types";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import Cookies from "js-cookie";
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
   logout: () => void;
 }
 
@@ -14,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
@@ -22,10 +30,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (accessToken && savedUser) {
       try {
         setUser(JSON.parse(savedUser));
-      } catch (err) {
-        console.error("Failed to parse user data:", err);
+      } catch {
+        localStorage.removeItem("user");
       }
     }
+
+    setIsLoading(false);
   }, []);
 
   const logout = () => {
@@ -38,7 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user && !!Cookies.get("accessToken");
 
   return (
-    <AuthContext.Provider value={{ user, setUser, isAuthenticated, logout }}>
+    <AuthContext.Provider
+      value={{ user, setUser, isAuthenticated, isLoading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -46,9 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };
-

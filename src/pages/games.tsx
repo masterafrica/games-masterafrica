@@ -1,7 +1,7 @@
 import { GameCard, type GameCardData } from "@/components/modules/game-card";
 
 type GameWithOffset = GameCardData & {
-  offset?: "none" | "sm" | "md"; // to mimic the staggered layout
+  offset?: "none" | "sm" | "md";
 };
 
 const games: GameWithOffset[] = [
