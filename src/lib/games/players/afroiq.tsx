@@ -101,7 +101,10 @@ const Afroiq = () => {
         </Group>
       </Section>
 
-      <Section
+      
+
+      {/* initial */}
+      {/* <Section
         alignItems="center"
         flexDirection="column"
         gap={queryMedia({ base: 20, md: 30, lg: 40 })}
@@ -134,7 +137,7 @@ const Afroiq = () => {
           width={queryMedia({ base: 180, md: 220, lg: 250 })}
           onClick={() => alert("Start clicked")}
         />
-      </Section>
+      </Section> */}
     </Group>
   );
 };

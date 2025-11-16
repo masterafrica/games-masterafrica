@@ -26,9 +26,9 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <LoadingScreen />;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate replace to="/auth/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate replace to="/auth/login" />;
+  // }
 
   return <>{children}</>;
 };
