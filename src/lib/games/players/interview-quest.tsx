@@ -145,7 +145,6 @@ const InterviewQuest = () => {
             </div>
           </div>
 
-          {/* Right Panel - Answers */}
           <div className="flex-1 flex flex-col gap-4 md:gap-6 min-h-[300px]">
             <h3 className="text-white text-xl md:text-2xl font-semibold">
               Answer
@@ -154,10 +153,10 @@ const InterviewQuest = () => {
             <div className="flex flex-col gap-3 md:gap-4 flex-1">
               {currentQuestion.answers.map((answer, index) => {
                 const answerColors = [
-                  "#8B5CF6", // Purple
-                  "#60A5FA", // Light blue
-                  "#E69A17", // Orange/gold
-                  "#8B5CF6", // Purple
+                  "#8B5CF6",
+                  "#60A5FA",
+                  "#E69A17",
+                  "#8B5CF6",
                 ];
 
                 return (
@@ -205,27 +204,28 @@ const InterviewQuest = () => {
       )}
 
       {started && isCorrect && (
-        <div className="relative w-full min-h-full flex flex-col items-center justify-center p-4 md:p-8 py-8">
-          <div className="w-full max-w-xl bg-[#F9B20E] border-4 border-white rounded-3xl md:rounded-[40px] p-6 md:p-10 mb-6 md:mb-8">
-            <h2 className="text-3xl md:text-2xl lg:text-4xl font-bold text-white text-center mb-4 md:mb-6 uppercase tracking-wide">
-              CORRECT
-            </h2>
-
-            <div className="">
+        <div className="min-h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+          <div className="flex-1 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 flex flex-col min-h-[300px]">
+            <div className="flex flex-col items-center mb-6">
               <img
                 alt="Correct"
-                className="w-full md:w-1/2 mx-auto my-3 h-full object-contain"
-                src="/images/games/correct.png"
+                className="w-28 h-28 mb-4 object-contain"
+                src="/images/games/check.png"
               />
-              <p className="text-white text-center text-md md:text-xl font-extralight">
-                Nice one - you earned +50 coin
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                Correct
+              </h2>
+              <h3 className="text-[#E69A17] text-xl md:text-2xl font-bold uppercase">
+                INTERVIEW QUEST
+              </h3>
+            </div>
+            <div className="flex-1 flex items-center justify-center min-h-[200px]">
+              <p className="text-white text-lg md:text-xl lg:text-2xl text-center">
+                {currentQuestion.question}
               </p>
             </div>
-          </div>
-
-          <div className="w-full max-w-md flex flex-col gap-2">
             <button
-              className="w-full bg-[#27C840] rounded-2xl md:rounded-3xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"
+              className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
               onClick={() => {
                 if (currentQuestionIndex < questions.length - 1) {
                   setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -242,55 +242,140 @@ const InterviewQuest = () => {
             >
               {currentQuestionIndex < questions.length - 1 ? "Next" : "Finish"}
             </button>
+          </div>
+
+          <div className="flex-1 flex flex-col gap-4 md:gap-6 min-h-[300px]">
+            <h3 className="text-white text-xl md:text-2xl font-semibold">
+              Answer
+            </h3>
+            <div className="flex flex-col gap-3 md:gap-4 flex-1">
+              {currentQuestion.answers.map((answer, index) => {
+                const answerColors = [
+                  "#8B5CF6",
+                  "#60A5FA",
+                  "#E69A17",
+                  "#8B5CF6",
+                ];
+
+                return (
+                  <button
+                    key={index}
+                    className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all"
+                    style={{
+                      backgroundColor: answerColors[index],
+                    }}
+                  >
+                    <span className="font-bold mr-2">
+                      {String(index + 1).padStart(2, "0")}:
+                    </span>
+                    {answer}
+                  </button>
+                );
+              })}
+            </div>
             <button
-              className="w-full bg-black rounded-2xl md:rounded-3xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"
-              onClick={() => {
-                setIsCorrect(false);
-              }}
+              disabled
+              className="w-full bg-gray-900 border-2 border-white rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Review
+              Confirm
             </button>
           </div>
         </div>
       )}
 
       {started && isWrong && (
-        <div className="relative w-full min-h-full flex flex-col items-center justify-center p-4 md:p-8 py-8">
-          <div className="w-full max-w-xl bg-[#F9B20E] border-4 border-white rounded-3xl md:rounded-[40px] p-6 md:p-10 mb-6 md:mb-8">
-            <h2 className="text-3xl md:text-2xl lg:text-4xl font-bold text-white text-center mb-4 md:mb-6 uppercase tracking-wide">
-              Almost
-            </h2>
-
-            <div className="">
-              <p className="text-white text-center text-md md:text-xl font-extralight">
-                The correct answer is hidden try again or use hint
-              </p>
+        <div className="min-h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+          <div className="flex-1 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 flex flex-col min-h-[300px]">
+            <div className="flex flex-col items-center mb-6">
               <img
-                alt="Wrong"
-                className="w-[100px] mx-auto my-3 h-full object-contain"
-                src="/images/games/wrong.png"
+                alt="Wrong Answer"
+                className="w-28 h-28 mb-4 object-contain"
+                src="/images/games/cancel.png"
               />
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                Wrong Answer
+              </h2>
+              <h3 className="text-[#E69A17] text-xl md:text-2xl font-bold uppercase">
+                INTERVIEW QUEST
+              </h3>
+            </div>
+            <div className="flex-1 flex items-center justify-center min-h-[200px]">
+              <p className="text-white text-lg md:text-xl lg:text-2xl text-center">
+                {currentQuestion.question}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 mt-auto">
+              <button
+                className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                onClick={() => {
+                  setSelectedAnswer(null);
+                  setIsWrong(false);
+                }}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Try again
+              </button>
+              <button
+                className="w-full text-white font-medium text-base md:text-lg hover:opacity-90 transition-opacity py-2"
+                onClick={() => {
+                  setStarted(false);
+                  setCurrentQuestionIndex(0);
+                  setSelectedAnswer(null);
+                  setIsWrong(false);
+                  setScore(0);
+                }}
+              >
+                Home
+              </button>
             </div>
           </div>
 
-          <div className="w-full max-w-md flex flex-col gap-2">
+          <div className="flex-1 flex flex-col gap-4 md:gap-6 min-h-[300px]">
+            <h3 className="text-white text-xl md:text-2xl font-semibold">
+              Answer
+            </h3>
+            <div className="flex flex-col gap-3 md:gap-4 flex-1">
+              {currentQuestion.answers.map((answer, index) => {
+                const answerColors = [
+                  "#8B5CF6",
+                  "#60A5FA",
+                  "#E69A17",
+                  "#8B5CF6",
+                ];
+
+                return (
+                  <button
+                    key={index}
+                    className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all"
+                    style={{
+                      backgroundColor: answerColors[index],
+                    }}
+                  >
+                    <span className="font-bold mr-2">
+                      {String(index + 1).padStart(2, "0")}:
+                    </span>
+                    {answer}
+                  </button>
+                );
+              })}
+            </div>
             <button
-              className="w-full bg-[#27C840] rounded-2xl md:rounded-3xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"
-              onClick={() => {
-                setSelectedAnswer(null);
-                setIsWrong(false);
-              }}
+              disabled
+              className="w-full bg-gray-900 border-2 border-white rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Try Again
-            </button>
-            <button
-              className="w-full bg-black rounded-2xl md:rounded-3xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"
-              onClick={() => {
-                setSelectedAnswer(null);
-                setIsWrong(false);
-              }}
-            >
-              Use Hint
+              Confirm
             </button>
           </div>
         </div>
