@@ -3,10 +3,11 @@
 @config "../../tailwind.config.js";
 
 * {
-  font-family: "Quicksand", sans-serif !important;
+  font-family: "Stack Sans Text", sans-serif !important;
+  /* font-family: "Quicksand", sans-serif !important; */
 }
 
-img{
+img {
   pointer-events: none !important;
   user-select: none !important;
 }

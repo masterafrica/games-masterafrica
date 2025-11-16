@@ -1,7 +1,7 @@
 import { Button } from "@heroui/button";
 
 import { GameCard, GameTheme } from "@/components/modules/game-card";
-import { GameCanvas } from "@/lib/games/canvas";
+import { GameCanvas } from "@/lib/games";
 import { useParams } from "react-router-dom";
 
 const games = [

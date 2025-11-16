@@ -1,98 +1,87 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { Group, Rect, Text } from "react-konva";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-import Img from "./img";
 
 interface Props {
-  width: number;
-  height: number;
   imageUrl: string;
 }
 
-gsap.registerPlugin(useGSAP);
 export interface LoaderRef {
   start: (cb?: () => void) => void;
 }
 
 const Loader = forwardRef<LoaderRef, Props>((props: Props, ref) => {
-  const { width, height, imageUrl } = props;
+  const { imageUrl } = props;
   const [progress, setProgress] = useState(0);
   const progressRef = useRef({ value: 0 });
-  const tl = gsap.timeline();
-
-  //   useGSAP(
-  //     () => {
-  // tl.to(progressRef.current, {
-  //     duration: 3,
-  //     ease: "power2.inOut",
-  //     value: 100,
-  //     onUpdate: () => {
-  //       setProgress(progressRef.current.value);
-  //     },
-  //   });
-  //     },
-  //     {
-  //       scope: progressRef,
-  //     }
-  //   );
+  const animationRef = useRef<gsap.core.Tween | null>(null);
 
   useImperativeHandle(ref, () => ({
     start: (cb) => {
-      tl.to(progressRef.current, {
+      // Reset progress
+      setProgress(0);
+      progressRef.current.value = 0;
+
+      // Kill any existing animation
+      if (animationRef.current) {
+        animationRef.current.kill();
+      }
+
+      // Create new animation
+      animationRef.current = gsap.to(progressRef.current, {
         duration: 3,
         ease: "power2.inOut",
         value: 100,
         onUpdate: () => {
-          setProgress(progressRef.current.value);
+          setProgress(Math.round(progressRef.current.value));
         },
-        onComplete: cb,
+        onComplete: () => {
+          setProgress(100);
+          cb?.();
+        },
       });
     },
   }));
 
   return (
-    <Group>
-      <Group>
-        <Img src={imageUrl} resizeMode="cover" />
-        <Rect
-          fill="black"
-          height={height}
-          opacity={0.5}
-          width={width}
-          x={0}
-          y={0}
-        />
-      </Group>
+    <div className="relative w-full h-full">
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
 
-      <Group x={width / 3} y={height - 100}>
-        <Rect
-          cornerRadius={30}
-          fill="white"
-          height={25}
-          width={width / 3}
-          x={0}
-          y={0}
-        />
-        <Rect
-          cornerRadius={30}
-          fill="orange"
-          height={25}
-          width={(width / 3) * (progress / 100)}
-          x={0}
-          y={0}
-        />
+      <div className="absolute inset-0 bg-black opacity-50" />
 
-        <Text
-          align="center"
-          fill="white"
-          text="Loading"
-          x={width / 3 / 2 - 25}
-          y={40}
-        />
-      </Group>
-    </Group>
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2"
+        style={{
+          bottom: 100,
+          width: "33.333%",
+        }}
+      >
+        <div
+          className="relative bg-white"
+          style={{
+            height: 25,
+            borderRadius: 30,
+          }}
+        >
+          <div
+            className="absolute top-0 left-0 bg-orange-500"
+            style={{
+              height: "25px",
+              borderRadius: 30,
+              width: `${progress}%`,
+            }}
+          />
+        </div>
+
+        <div className="text-white text-center mt-4">Loading</div>
+      </div>
+    </div>
   );
 });
 
