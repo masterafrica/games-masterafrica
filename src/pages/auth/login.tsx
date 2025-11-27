@@ -75,6 +75,15 @@ const LoginPage = () => {
         </div>
 
         <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-white/70 text-sm">Password</label>
+            <Link
+              className="text-purple-300 hover:text-purple-200 text-xs font-semibold"
+              href="/auth/forgot-password"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <Input
             classNames={{
               input: "!text-white placeholder:text-white/80",
@@ -85,7 +94,6 @@ const LoginPage = () => {
             isInvalid={
               formik.touched.password && Boolean(formik.errors.password)
             }
-            label="Password"
             name="password"
             placeholder="Password"
             startContent={<Key className="text-white" size={16} />}

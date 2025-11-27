@@ -4,6 +4,8 @@ import AuthLayout from "./layouts/auth-layout";
 import MainLayout from "./layouts/main-layout";
 import LoginPage from "./pages/auth/login";
 import SignupPage from "./pages/auth/signup";
+import ForgotPasswordPage from "./pages/auth/forgot-password";
+import ResetPasswordPage from "./pages/auth/reset-password";
 import DashboardPage from "./pages/dashboard";
 import ChallengesPage from "./pages/challenges";
 import GamesPage from "./pages/games";
@@ -24,6 +26,8 @@ function App() {
       >
         <Route element={<LoginPage />} path="login" />
         <Route element={<SignupPage />} path="signup" />
+        <Route element={<ForgotPasswordPage />} path="forgot-password" />
+        <Route element={<ResetPasswordPage />} path="reset-password" />
       </Route>
       <Route
         element={

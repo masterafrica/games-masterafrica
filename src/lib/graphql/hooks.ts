@@ -4,13 +4,43 @@ import type {
   SignupResponse,
   LoginUserInput,
   CreateNewUserInput,
+  SetupProfileInput,
+  SetupProfileResponse,
+  GetGameResultsInput,
+  GetGameResultsResponse,
+  GetGameSettingResponse,
+  GetGameSoundsResponse,
+  GetGameLevelInfoResponse,
+  GameResultUpdate,
+  UpdateGameResultResponse,
+  GetGamersCurrentResultResponse,
+  GetGamersCurrentPassedResultResponse,
+  ForgotPasswordInput,
+  ResetPasswordInput,
+  ForgotPasswordResponse,
+  ResetPasswordResponse,
 } from "./types";
 
 import { useMutation, useQuery } from "@apollo/client/react";
 import Cookies from "js-cookie";
 
-import { GET_USER } from "./queries";
-import { LOGIN_USER, CREATE_USER } from "./mutations";
+import {
+  GET_USER,
+  GET_GAME_RESULTS,
+  GET_GAME_SETTING,
+  GET_GAME_SOUNDS,
+  GET_GAME_LEVEL_INFORMATION,
+  GET_GAMERS_CURRENT_RESULT,
+  GET_GAMERS_CURRENT_PASSED_RESULT,
+} from "./queries";
+import {
+  LOGIN_USER,
+  CREATE_USER,
+  SETUP_PROFILE,
+  UPDATE_GAMERS_RESULT,
+  FORGOT_PASSWORD,
+  RESET_PASSWORD,
+} from "./mutations";
 
 export const useGetUser = (id: string) => {
   return useQuery<GetUserResponse>(GET_USER, {
@@ -57,4 +87,108 @@ export const useSignup = () => {
   };
 
   return { signup, data, loading, error };
+};
+
+export const useSetupProfile = () => {
+  const [setupProfileMutation, { data, loading, error }] =
+    useMutation<SetupProfileResponse>(SETUP_PROFILE);
+
+  const setupProfile = async (setUpProfileInput: SetupProfileInput) => {
+    const result = await setupProfileMutation({
+      variables: { setUpProfileInput },
+    });
+
+    return result;
+  };
+
+  return { setupProfile, data, loading, error };
+};
+
+export const useGetGameResults = (input: GetGameResultsInput = {}) => {
+  return useQuery<GetGameResultsResponse>(GET_GAME_RESULTS, {
+    variables: { input },
+  });
+};
+
+export const useGetGameSetting = (type: string) => {
+  return useQuery<GetGameSettingResponse>(GET_GAME_SETTING, {
+    variables: { type },
+    skip: !type,
+  });
+};
+
+export const useGetGameSounds = (type: string) => {
+  return useQuery<GetGameSoundsResponse>(GET_GAME_SOUNDS, {
+    variables: { type },
+    skip: !type,
+  });
+};
+
+export const useGetGameLevelInformation = (level: number, type: string) => {
+  return useQuery<GetGameLevelInfoResponse>(GET_GAME_LEVEL_INFORMATION, {
+    variables: { input: { level, type } },
+    skip: !type || !level,
+  });
+};
+
+export const useUpdateGamersResult = () => {
+  const [updateResultMutation, { data, loading, error }] =
+    useMutation<UpdateGameResultResponse>(UPDATE_GAMERS_RESULT);
+
+  const updateGamersResult = async (input: GameResultUpdate) => {
+    const result = await updateResultMutation({
+      variables: { input },
+    });
+
+    return result;
+  };
+
+  return { updateGamersResult, data, loading, error };
+};
+
+export const useGetGamersCurrentResult = (type: string) => {
+  return useQuery<GetGamersCurrentResultResponse>(GET_GAMERS_CURRENT_RESULT, {
+    variables: { type },
+    skip: !type,
+  });
+};
+
+export const useGetGamersCurrentPassedResult = (type: string) => {
+  return useQuery<GetGamersCurrentPassedResultResponse>(
+    GET_GAMERS_CURRENT_PASSED_RESULT,
+    {
+      variables: { type },
+      skip: !type,
+    }
+  );
+};
+
+export const useForgotPassword = () => {
+  const [forgotPasswordMutation, { data, loading, error }] =
+    useMutation<ForgotPasswordResponse>(FORGOT_PASSWORD);
+
+  const forgotPassword = async (identifier: string) => {
+    const result = await forgotPasswordMutation({
+      variables: { forgotPasswordInput: { identifier } },
+    });
+
+    return result;
+  };
+
+  return { forgotPassword, data, loading, error };
+};
+
+export const useResetPassword = () => {
+  const [resetPasswordMutation, { data, loading, error }] =
+    useMutation<ResetPasswordResponse>(RESET_PASSWORD);
+
+  const resetPassword = async (resetPasswordInput: ResetPasswordInput) => {
+    const result = await resetPasswordMutation({
+      variables: { resetPasswordInput },
+    });
+
+    return result;
+  };
+
+  return { resetPassword, data, loading, error };
 };

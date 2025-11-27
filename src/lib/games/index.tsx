@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import Afroiq from "./players/afroiq";
 import InterviewQuest from "./players/interview-quest";
+import MatchPictures from "./players/match-pictures";
 
 export const GameCanvas = ({ gameId: _gameId }: { gameId: string }) => {
   const [dimensions, setDimensions] = useState({
@@ -29,6 +30,7 @@ export const GameCanvas = ({ gameId: _gameId }: { gameId: string }) => {
     >
       {_gameId === "1" && <Afroiq />}
       {_gameId === "2" && <InterviewQuest />}
+      {_gameId === "3" && <MatchPictures />}
     </div>
   );
 };

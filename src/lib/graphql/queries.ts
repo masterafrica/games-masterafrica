@@ -14,6 +14,103 @@ export const GET_USER = gql`
       phoneNumber
       createdAt
       updatedAt
+      avatar
+      type
+      setup
+      EmailisVerified
+    }
+  }
+`;
+
+export const GET_GAME_RESULTS = gql`
+  query GetGameResults($input: GetGameResultsInput!) {
+    getGameResults(input: $input) {
+      id
+      point
+      user {
+        id
+        firstName
+        lastName
+        username
+        avatar
+        email
+      }
+    }
+  }
+`;
+
+export const GET_GAME_SETTING = gql`
+  query GetGameSetting($type: String!) {
+    getGameSetting(type: $type) {
+      type
+      music
+      perclick
+      pass
+    }
+  }
+`;
+
+export const GET_GAME_SOUNDS = gql`
+  query GetGameSounds($type: String!) {
+    getGameSounds(type: $type) {
+      type
+      incorrect
+      correct
+      music
+      failure
+      complete
+      button_click
+      select
+      nav
+    }
+  }
+`;
+
+export const GET_GAME_LEVEL_INFORMATION = gql`
+  query GetGameLevelInformation($input: GetGameLevelInformationInput!) {
+    getGameLevelInformation(input: $input) {
+      level
+      type
+      time
+      music
+      perclick
+      pass
+    }
+  }
+`;
+
+export const GET_GAMERS_CURRENT_RESULT = gql`
+  query GetGamersCurrentResult($type: String!) {
+    getGamersCurrentResult(type: $type) {
+      id
+      user {
+        id
+        username
+      }
+      result
+      agg
+      pass
+      level
+      type
+      time
+    }
+  }
+`;
+
+export const GET_GAMERS_CURRENT_PASSED_RESULT = gql`
+  query GetGamersCurrentPassedResult($type: String!) {
+    getGamersCurrentPassedResult(type: $type) {
+      id
+      user {
+        id
+        username
+      }
+      result
+      agg
+      pass
+      level
+      type
+      time
     }
   }
 `;

@@ -1,46 +1,43 @@
+import React from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import { AtSign, Key, BarChart3, Phone } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Key, ArrowLeft, CheckCircle2, AtSign, Shield } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 
-import { useSignup } from "@/lib/graphql";
-import { useAuth } from "@/lib/auth-context";
-import { signupSchema } from "@/lib/schemas";
+import { useResetPassword } from "@/lib/graphql";
+import { resetPasswordSchema } from "@/lib/schemas";
 
-const SignupPage = () => {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
-  const { signup, loading, error } = useSignup();
-  const { setUser } = useAuth();
+  const [searchParams] = useSearchParams();
+  const identifierFromUrl = searchParams.get("identifier");
+  const { resetPassword, loading, error } = useResetPassword();
+  const [success, setSuccess] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      phoneNumber: "",
-      skill: "",
+      code: "",
+      identifier: identifierFromUrl || "",
       password: "",
       confirmPassword: "",
     },
-    validationSchema: signupSchema,
+    validationSchema: resetPasswordSchema,
+    enableReinitialize: true,
     onSubmit: async (values) => {
-      const normalizedPhone = normalizePhoneNumber(values.phoneNumber);
-
       try {
-        const result = await signup({
-          email: values.email,
-          phoneNumber: normalizedPhone,
-          skill: values.skill,
+        const result = await resetPassword({
+          code: values.code,
+          identifier: values.identifier,
           password: values.password,
         });
 
-        if (result.data?.createUser?.user) {
-          setUser(result.data.createUser.user);
-          localStorage.setItem(
-            "user",
-            JSON.stringify(result.data.createUser.user),
-          );
-          navigate("/");
+        if (result.data?.resetPassword?.success) {
+          setSuccess(true);
+          setTimeout(() => {
+            navigate("/auth/login");
+          }, 2000);
         }
       } catch {
         return;
@@ -48,23 +45,31 @@ const SignupPage = () => {
     },
   });
 
-  const normalizePhoneNumber = (phone: string) => {
-    let normalized = phone.replace(/\D/g, "");
-
-    if (normalized.startsWith("234")) {
-      normalized = normalized.substring(3);
-    } else if (normalized.startsWith("0")) {
-      normalized = normalized.substring(1);
-    }
-
-    return `+234${normalized}`;
-  };
+  if (success) {
+    return (
+      <section>
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <CheckCircle2 className="text-green-400" size={64} />
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-2">
+            Password Reset Successful
+          </h2>
+          <p className="text-white/70 text-sm">
+            Your password has been reset successfully. Redirecting to login...
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">SIGN UP</h2>
-        <p className="text-white/70 text-sm">Sign up with email address</p>
+        <h2 className="text-3xl font-bold text-white mb-2">Reset Password</h2>
+        <p className="text-white/70 text-sm">
+          Enter the OTP code you received and your new password
+        </p>
       </div>
 
       <form className="space-y-6" onSubmit={formik.handleSubmit}>
@@ -76,18 +81,23 @@ const SignupPage = () => {
                 "bg-purple-900 border-none focus-within:bg-purple-900 focus-within:border-none focus-within:ring-0 focus-within:ring-offset-0 data-[hover=true]:bg-purple-900",
               label: "text-white/70",
             }}
-            isInvalid={formik.touched.email && Boolean(formik.errors.email)}
-            label="Email"
-            name="email"
-            placeholder="your@email.com"
-            startContent={<AtSign className="text-white" size={16} />}
-            type="email"
-            value={formik.values.email}
+            isInvalid={formik.touched.code && Boolean(formik.errors.code)}
+            label="OTP Code"
+            name="code"
+            placeholder="Enter 4-digit code"
+            startContent={<Shield className="text-white" size={16} />}
+            type="text"
+            maxLength={4}
+            value={formik.values.code}
             onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              // Only allow digits
+              const value = e.target.value.replace(/\D/g, "");
+              formik.setFieldValue("code", value);
+            }}
           />
-          {formik.touched.email && formik.errors.email && (
-            <p className="text-red-400 text-xs mt-1">{formik.errors.email}</p>
+          {formik.touched.code && formik.errors.code && (
+            <p className="text-red-400 text-xs mt-1">{formik.errors.code}</p>
           )}
         </div>
 
@@ -100,44 +110,22 @@ const SignupPage = () => {
               label: "text-white/70",
             }}
             isInvalid={
-              formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)
+              formik.touched.identifier && Boolean(formik.errors.identifier)
             }
-            label="Phone Number"
-            name="phoneNumber"
-            placeholder="08012345678"
-            startContent={<Phone className="text-white" size={16} />}
-            type="tel"
-            value={formik.values.phoneNumber}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-            <p className="text-red-400 text-xs mt-1">
-              {formik.errors.phoneNumber}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <Input
-            classNames={{
-              input: "!text-white placeholder:text-white/80",
-              inputWrapper:
-                "bg-purple-900 border-none focus-within:bg-purple-900 focus-within:border-none focus-within:ring-0 focus-within:ring-offset-0 data-[hover=true]:bg-purple-900",
-              label: "text-white/70",
-            }}
-            isInvalid={formik.touched.skill && Boolean(formik.errors.skill)}
-            label="Skill"
-            name="skill"
-            placeholder="Skill"
-            startContent={<BarChart3 className="text-white" size={16} />}
+            label="Email, Username, or Phone"
+            name="identifier"
+            placeholder="Enter your identifier"
+            startContent={<AtSign className="text-white" size={16} />}
             type="text"
-            value={formik.values.skill}
+            value={formik.values.identifier}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
+            isDisabled={!!identifierFromUrl}
           />
-          {formik.touched.skill && formik.errors.skill && (
-            <p className="text-red-400 text-xs mt-1">{formik.errors.skill}</p>
+          {formik.touched.identifier && formik.errors.identifier && (
+            <p className="text-red-400 text-xs mt-1">
+              {formik.errors.identifier}
+            </p>
           )}
         </div>
 
@@ -152,9 +140,9 @@ const SignupPage = () => {
             isInvalid={
               formik.touched.password && Boolean(formik.errors.password)
             }
-            label="Password"
+            label="New Password"
             name="password"
-            placeholder="Password"
+            placeholder="Enter new password"
             startContent={<Key className="text-white" size={16} />}
             type="password"
             value={formik.values.password}
@@ -180,9 +168,9 @@ const SignupPage = () => {
               formik.touched.confirmPassword &&
               Boolean(formik.errors.confirmPassword)
             }
-            label="Confirm Password"
+            label="Confirm New Password"
             name="confirmPassword"
-            placeholder="Confirm Password"
+            placeholder="Confirm new password"
             startContent={<Key className="text-white" size={16} />}
             type="password"
             value={formik.values.confirmPassword}
@@ -205,35 +193,21 @@ const SignupPage = () => {
           size="lg"
           type="submit"
         >
-          Sign Up
+          Reset Password
         </Button>
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-xs text-white/60">
-          By registering you with our{" "}
-          <Link
-            className="text-white/80 text-sm hover:text-white underline"
-            href="#"
-          >
-            Terms and Conditions
-          </Link>
-        </p>
-      </div>
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-white/70">
-          Already have an account?{" "}
-          <Link
-            className="text-purple-300 hover:text-purple-200 font-semibold"
-            href="/auth/login"
-          >
-            Sign in
-          </Link>
-        </p>
+        <Link
+          className="text-purple-300 hover:text-purple-200 font-semibold flex items-center justify-center gap-2"
+          href="/auth/login"
+        >
+          <ArrowLeft size={16} />
+          Back to Sign In
+        </Link>
       </div>
     </section>
   );
 };
 
-export default SignupPage;
+export default ResetPasswordPage;

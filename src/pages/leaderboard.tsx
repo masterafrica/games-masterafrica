@@ -2,74 +2,30 @@ import { Tabs, Tab } from "@heroui/tabs";
 
 import { WinLineBanner } from "@/components/modules/win-line-banner";
 import Leaderboard from "@/components/shared/leaderboard";
+import { useGetGameResults } from "@/lib/graphql";
 
 const LeaderboardPage = () => {
-  const leaderboardData = [
-    {
-      rank: 1,
-      name: "Chike Master",
-      skillInterest: "Researcher",
-      location: "Lagos",
-      xp: 2000,
-      title: "Grand Master",
-    },
-    {
-      rank: 2,
-      name: "Emmauel",
-      skillInterest: "Brand Designer",
-      location: "Anambra",
-      xp: 1000,
-      title: "Grand Master",
-    },
-    {
-      rank: 3,
-      name: "Prince",
-      skillInterest: "Fashion Designer",
-      location: "Porthacout",
-      xp: 800,
-      title: "Master",
-    },
-    {
-      rank: 4,
-      name: "Emaka",
-      skillInterest: "Graphic Designer",
-      location: "Ilorin",
-      xp: 500,
-      title: "Champion",
-    },
-    {
-      rank: 5,
-      name: "Bolu",
-      skillInterest: "Data Analyst",
-      location: "Benue",
-      xp: 200,
-      title: "Contender",
-    },
-    {
-      rank: 6,
-      name: "Bisola",
-      skillInterest: "Dancer",
-      location: "Lagos",
-      xp: 100,
-      title: "Contender",
-    },
-    {
-      rank: 7,
-      name: "Fredo",
-      skillInterest: "Footballer",
-      location: "Lagos",
-      xp: 50,
-      title: "Starter",
-    },
-    {
-      rank: 8,
-      name: "Charles",
-      skillInterest: "Chief",
-      location: "Calabar",
-      xp: 20,
-      title: "Starter",
-    },
-  ];
+  const { data, loading } = useGetGameResults();
+
+  const getTitleFromPoints = (points: number) => {
+    if (points >= 1500) return "Grand Master";
+    if (points >= 1000) return "Master";
+    if (points >= 500) return "Champion";
+    if (points >= 100) return "Contender";
+    return "Starter";
+  };
+
+  const leaderboardData =
+    data?.getGameResults.map((result, index) => ({
+      rank: index + 1,
+      name: result.user.firstName && result.user.lastName
+        ? `${result.user.firstName} ${result.user.lastName}`
+        : result.user.username,
+      skillInterest: result.user.username || "Player",
+      location: "Nigeria",
+      xp: result.point,
+      title: getTitleFromPoints(result.point),
+    })) || [];
 
   return (
     <div className="relative md:mt-[1%]">
@@ -90,7 +46,17 @@ const LeaderboardPage = () => {
               <div className="my-10">
                 <WinLineBanner />
               </div>
-              <Leaderboard data={leaderboardData} />
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">Loading leaderboard...</p>
+                </div>
+              ) : leaderboardData.length > 0 ? (
+                <Leaderboard data={leaderboardData} />
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No leaderboard data available</p>
+                </div>
+              )}
             </div>
           </Tab>
           <Tab key="invites" title="Invites">
