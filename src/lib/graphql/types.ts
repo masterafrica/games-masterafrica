@@ -25,8 +25,8 @@ export interface CreateNewUserInput {
   email: string;
   password: string;
   username?: string;
-  phoneNumber?: string;
-  skill?: string;
+  // phoneNumber?: string;
+  // skill?: string;
 }
 
 export interface SetupProfileInput {

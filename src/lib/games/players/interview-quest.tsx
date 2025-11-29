@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import Loader, { LoaderRef } from "../components/loader";
-import Header from "../components/header";
-import {
-  useGetInterviewQuests,
-  useVerifyAnswer,
-} from "@/lib/graphql";
 import type { InterviewQuest } from "@/lib/graphql/types";
+import { useGetInterviewQuests, useVerifyAnswer } from "@/lib/graphql";
+
+import Header from "../components/header";
+import Loader, { LoaderRef } from "../components/loader";
 
 const InterviewQuest = () => {
   const [loading, setLoading] = useState(true);
@@ -20,11 +18,14 @@ const InterviewQuest = () => {
   const [questions, setQuestions] = useState<InterviewQuest[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  const { data: questionsData, loading: questionsLoading } =
-    useGetInterviewQuests({
-      page: 1,
-      limit: 10,
-    });
+  const {
+    data: questionsData,
+    loading: questionsLoading,
+    error: questionsError,
+  } = useGetInterviewQuests({
+    page: 1,
+    limit: 10,
+  });
 
   const { verifyAnswer, loading: verifying } = useVerifyAnswer();
 
@@ -33,6 +34,17 @@ const InterviewQuest = () => {
       setQuestions(questionsData.GetInterviewQuests.questions);
     }
   }, [questionsData]);
+
+  useEffect(() => {
+    if (questionsError) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching interview questions:", questionsError);
+    }
+    if (questionsData) {
+      // eslint-disable-next-line no-console
+      console.log("Interview questions data:", questionsData);
+    }
+  }, [questionsError, questionsData]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -103,10 +115,45 @@ const InterviewQuest = () => {
     );
   }
 
-  if (questions.length === 0) {
+  if (questionsError) {
+    const apolloError = questionsError as any;
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-950">
-        <p className="text-white">No questions available</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-950 p-4">
+        <p className="text-red-400 text-lg mb-2">Error loading questions</p>
+        <p className="text-white/70 text-sm text-center mb-2">
+          {questionsError.message || "Failed to fetch interview questions"}
+        </p>
+        {apolloError.networkError && (
+          <p className="text-red-300 text-xs text-center mb-2">
+            Network Error: {apolloError.networkError.message}
+          </p>
+        )}
+        {apolloError.graphQLErrors && apolloError.graphQLErrors.length > 0 && (
+          <div className="text-red-300 text-xs text-center mb-2">
+            {apolloError.graphQLErrors.map((err: any, idx: number) => (
+              <p key={idx}>{err.message}</p>
+            ))}
+          </div>
+        )}
+        <button
+          className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90"
+          onClick={() => window.location.reload()}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!questionsLoading && questions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-950 p-4">
+        <p className="text-white text-lg mb-2">No questions available</p>
+        <p className="text-white/70 text-sm text-center">
+          {questionsData?.GetInterviewQuests
+            ? "No questions found in the database"
+            : "Failed to load questions"}
+        </p>
       </div>
     );
   }

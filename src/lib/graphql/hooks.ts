@@ -223,6 +223,8 @@ export const useAddInterviewQuest = () => {
 export const useGetInterviewQuests = (input: GetInterviewQuestsInput = {}) => {
   return useQuery<GetInterviewQuestsResponse>(GET_INTERVIEW_QUESTS, {
     variables: { input },
+    errorPolicy: "all",
+    fetchPolicy: "network-only",
   });
 };
 

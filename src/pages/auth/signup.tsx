@@ -29,8 +29,8 @@ const SignupPage = () => {
       try {
         const result = await signup({
           email: values.email,
-          phoneNumber: normalizedPhone,
-          skill: values.skill,
+          // phoneNumber: normalizedPhone,
+          // skill: values.skill,
           password: values.password,
         });
 
@@ -38,7 +38,7 @@ const SignupPage = () => {
           setUser(result.data.createUser.user);
           localStorage.setItem(
             "user",
-            JSON.stringify(result.data.createUser.user),
+            JSON.stringify(result.data.createUser.user)
           );
           navigate("/");
         }
