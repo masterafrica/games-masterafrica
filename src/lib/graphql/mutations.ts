@@ -99,3 +99,19 @@ export const RESET_PASSWORD = gql`
     }
   }
 `;
+
+export const ADD_INTERVIEW_QUEST = gql`
+  mutation AddInterviewQuest($input: AddInterviewQuestInput!) {
+    AddInterviewQuest(input: $input) {
+      id
+      question
+      category
+      difficulty
+      options
+      correctAnswer
+      explanation
+      createdAt
+      updatedAt
+    }
+  }
+`;

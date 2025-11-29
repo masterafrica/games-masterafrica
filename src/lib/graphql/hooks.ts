@@ -19,9 +19,17 @@ import type {
   ResetPasswordInput,
   ForgotPasswordResponse,
   ResetPasswordResponse,
+  AddInterviewQuestInput,
+  AddInterviewQuestResponse,
+  GetInterviewQuestsInput,
+  GetInterviewQuestsResponse,
+  GetInterviewQuestInput,
+  GetInterviewQuestResponse,
+  VerifyAnswerInput,
+  VerifyAnswerResponse,
 } from "./types";
 
-import { useMutation, useQuery } from "@apollo/client/react";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
 import Cookies from "js-cookie";
 
 import {
@@ -32,6 +40,9 @@ import {
   GET_GAME_LEVEL_INFORMATION,
   GET_GAMERS_CURRENT_RESULT,
   GET_GAMERS_CURRENT_PASSED_RESULT,
+  GET_INTERVIEW_QUESTS,
+  GET_INTERVIEW_QUEST,
+  VERIFY_ANSWER,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -40,6 +51,7 @@ import {
   UPDATE_GAMERS_RESULT,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
+  ADD_INTERVIEW_QUEST,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -191,4 +203,50 @@ export const useResetPassword = () => {
   };
 
   return { resetPassword, data, loading, error };
+};
+
+export const useAddInterviewQuest = () => {
+  const [addInterviewQuestMutation, { data, loading, error }] =
+    useMutation<AddInterviewQuestResponse>(ADD_INTERVIEW_QUEST);
+
+  const addInterviewQuest = async (input: AddInterviewQuestInput) => {
+    const result = await addInterviewQuestMutation({
+      variables: { input },
+    });
+
+    return result;
+  };
+
+  return { addInterviewQuest, data, loading, error };
+};
+
+export const useGetInterviewQuests = (input: GetInterviewQuestsInput = {}) => {
+  return useQuery<GetInterviewQuestsResponse>(GET_INTERVIEW_QUESTS, {
+    variables: { input },
+  });
+};
+
+export const useGetInterviewQuest = (id: string) => {
+  return useQuery<GetInterviewQuestResponse>(GET_INTERVIEW_QUEST, {
+    variables: { input: { id } },
+    skip: !id,
+  });
+};
+
+export const useVerifyAnswer = () => {
+  const [verifyAnswerQuery, { data, loading, error }] =
+    useLazyQuery<VerifyAnswerResponse>(VERIFY_ANSWER);
+
+  const verifyAnswer = async (input: VerifyAnswerInput) => {
+    try {
+      const result = await verifyAnswerQuery({
+        variables: { input },
+      });
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return { verifyAnswer, data, loading, error };
 };

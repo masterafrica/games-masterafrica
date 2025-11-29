@@ -114,3 +114,49 @@ export const GET_GAMERS_CURRENT_PASSED_RESULT = gql`
     }
   }
 `;
+
+export const GET_INTERVIEW_QUESTS = gql`
+  query GetInterviewQuests($input: GetInterviewQuestsInput!) {
+    GetInterviewQuests(input: $input) {
+      questions {
+        id
+        question
+        category
+        difficulty
+        options
+        correctAnswer
+        explanation
+        createdAt
+        updatedAt
+      }
+      total
+      page
+      limit
+    }
+  }
+`;
+
+export const GET_INTERVIEW_QUEST = gql`
+  query GetInterviewQuest($input: GetInterviewQuestInput!) {
+    GetInterviewQuest(input: $input) {
+      id
+      question
+      category
+      difficulty
+      options
+      correctAnswer
+      explanation
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const VERIFY_ANSWER = gql`
+  query VerifyAnswer($input: VerifyAnswerInput!) {
+    VerifyAnswer(input: $input) {
+      correct
+      feedback
+    }
+  }
+`;

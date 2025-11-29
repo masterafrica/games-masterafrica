@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 import Loader, { LoaderRef } from "../components/loader";
 import Header from "../components/header";
-
-interface Question {
-  question: string;
-  answers: string[];
-  correctAnswer: number;
-}
+import {
+  useGetInterviewQuests,
+  useVerifyAnswer,
+} from "@/lib/graphql";
+import type { InterviewQuest } from "@/lib/graphql/types";
 
 const InterviewQuest = () => {
   const [loading, setLoading] = useState(true);
@@ -18,43 +17,22 @@ const InterviewQuest = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
   const [score, setScore] = useState(0);
+  const [questions, setQuestions] = useState<InterviewQuest[]>([]);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
-  const questions: Question[] = [
-    {
-      question:
-        "A customer says the shirt you sewed is too tight. What do you do?",
-      answers: [
-        "Politely apologize and offer to adjust it quickly",
-        "Tell the customer it's their fault for not providing correct measurements",
-        "Ignore the complaint and move on",
-        "Offer a refund without asking questions",
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question: "How do you handle a difficult client during a consultation?",
-      answers: [
-        "Listen actively and show empathy to understand their concerns",
-        "Interrupt them to show you know better",
-        "Ignore their concerns and proceed with your plan",
-        "Tell them they're being unreasonable",
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question:
-        "What's the best way to manage your time when working on multiple orders?",
-      answers: [
-        "Prioritize tasks and create a schedule",
-        "Work on everything at once",
-        "Ignore deadlines and work at your own pace",
-        "Only accept one order at a time",
-      ],
-      correctAnswer: 0,
-    },
-  ];
+  const { data: questionsData, loading: questionsLoading } =
+    useGetInterviewQuests({
+      page: 1,
+      limit: 10,
+    });
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const { verifyAnswer, loading: verifying } = useVerifyAnswer();
+
+  useEffect(() => {
+    if (questionsData?.GetInterviewQuests?.questions) {
+      setQuestions(questionsData.GetInterviewQuests.questions);
+    }
+  }, [questionsData]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -66,9 +44,74 @@ const InterviewQuest = () => {
     return () => clearTimeout(timeout);
   }, []);
 
+  const handleAnswer = async () => {
+    if (selectedAnswer === null || !questions[currentQuestionIndex]) return;
+
+    const currentQuestion = questions[currentQuestionIndex];
+    const answerText = currentQuestion.options[selectedAnswer];
+
+    try {
+      const result = await verifyAnswer({
+        questionId: currentQuestion.id,
+        answer: answerText,
+      });
+
+      if (result.data?.VerifyAnswer) {
+        const { correct, feedback: answerFeedback } = result.data.VerifyAnswer;
+        setFeedback(answerFeedback || null);
+
+        if (correct) {
+          setScore(score + 1);
+          setIsCorrect(true);
+        } else {
+          setIsWrong(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error verifying answer:", error);
+      setIsWrong(true);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(false);
+      setIsWrong(false);
+      setFeedback(null);
+    } else {
+      setStarted(false);
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer(null);
+      setIsCorrect(false);
+      setIsWrong(false);
+      setScore(0);
+      setFeedback(null);
+    }
+  };
+
   if (loading && !started) {
     return <Loader ref={ref} imageUrl="/images/games/interview-quest.jpg" />;
   }
+
+  if (questionsLoading && questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-950">
+        <p className="text-white">Loading questions...</p>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-950">
+        <p className="text-white">No questions available</p>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
 
   return (
     <div
@@ -151,7 +194,7 @@ const InterviewQuest = () => {
             </h3>
 
             <div className="flex flex-col gap-3 md:gap-4 flex-1">
-              {currentQuestion.answers.map((answer, index) => {
+              {currentQuestion.options.map((answer, index) => {
                 const answerColors = [
                   "#8B5CF6",
                   "#60A5FA",
@@ -168,7 +211,7 @@ const InterviewQuest = () => {
                         : "hover:opacity-90"
                     }`}
                     style={{
-                      backgroundColor: answerColors[index],
+                      backgroundColor: answerColors[index % answerColors.length],
                     }}
                     onClick={() => {
                       setSelectedAnswer(index);
@@ -185,19 +228,10 @@ const InterviewQuest = () => {
 
             <button
               className="w-full bg-gray-900 border-2 border-white rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={selectedAnswer === null}
-              onClick={() => {
-                if (selectedAnswer !== null) {
-                  if (selectedAnswer === currentQuestion.correctAnswer) {
-                    setScore(score + 1);
-                    setIsCorrect(true);
-                  } else {
-                    setIsWrong(true);
-                  }
-                }
-              }}
+              disabled={selectedAnswer === null || verifying}
+              onClick={handleAnswer}
             >
-              Confirm
+              {verifying ? "Verifying..." : "Confirm"}
             </button>
           </div>
         </div>
@@ -224,21 +258,14 @@ const InterviewQuest = () => {
                 {currentQuestion.question}
               </p>
             </div>
+            {feedback && (
+              <div className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
+                <p className="text-green-300 text-sm text-center">{feedback}</p>
+              </div>
+            )}
             <button
               className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
-              onClick={() => {
-                if (currentQuestionIndex < questions.length - 1) {
-                  setCurrentQuestionIndex(currentQuestionIndex + 1);
-                  setSelectedAnswer(null);
-                  setIsCorrect(false);
-                } else {
-                  setStarted(false);
-                  setCurrentQuestionIndex(0);
-                  setSelectedAnswer(null);
-                  setIsCorrect(false);
-                  setScore(0);
-                }
-              }}
+              onClick={handleNext}
             >
               {currentQuestionIndex < questions.length - 1 ? "Next" : "Finish"}
             </button>
@@ -249,26 +276,34 @@ const InterviewQuest = () => {
               Answer
             </h3>
             <div className="flex flex-col gap-3 md:gap-4 flex-1">
-              {currentQuestion.answers.map((answer, index) => {
+              {currentQuestion.options.map((answer, index) => {
                 const answerColors = [
                   "#8B5CF6",
                   "#60A5FA",
                   "#E69A17",
                   "#8B5CF6",
                 ];
+                const isCorrectAnswer = index === currentQuestion.correctAnswer;
+                const isSelected = selectedAnswer === index;
 
                 return (
                   <button
                     key={index}
-                    className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all"
+                    className={`w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all ${
+                      isCorrectAnswer ? "ring-4 ring-green-500" : ""
+                    }`}
                     style={{
-                      backgroundColor: answerColors[index],
+                      backgroundColor: answerColors[index % answerColors.length],
+                      opacity: isCorrectAnswer ? 1 : isSelected ? 0.7 : 0.5,
                     }}
                   >
                     <span className="font-bold mr-2">
                       {String(index + 1).padStart(2, "0")}:
                     </span>
                     {answer}
+                    {isCorrectAnswer && (
+                      <span className="ml-2 text-green-300">✓</span>
+                    )}
                   </button>
                 );
               })}
@@ -304,12 +339,18 @@ const InterviewQuest = () => {
                 {currentQuestion.question}
               </p>
             </div>
+            {feedback && (
+              <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+                <p className="text-red-300 text-sm text-center">{feedback}</p>
+              </div>
+            )}
             <div className="flex flex-col gap-2 mt-auto">
               <button
                 className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 onClick={() => {
                   setSelectedAnswer(null);
                   setIsWrong(false);
+                  setFeedback(null);
                 }}
               >
                 <svg
@@ -335,6 +376,7 @@ const InterviewQuest = () => {
                   setSelectedAnswer(null);
                   setIsWrong(false);
                   setScore(0);
+                  setFeedback(null);
                 }}
               >
                 Home
@@ -347,26 +389,34 @@ const InterviewQuest = () => {
               Answer
             </h3>
             <div className="flex flex-col gap-3 md:gap-4 flex-1">
-              {currentQuestion.answers.map((answer, index) => {
+              {currentQuestion.options.map((answer, index) => {
                 const answerColors = [
                   "#8B5CF6",
                   "#60A5FA",
                   "#E69A17",
                   "#8B5CF6",
                 ];
+                const isCorrectAnswer = index === currentQuestion.correctAnswer;
+                const isSelected = selectedAnswer === index;
 
                 return (
                   <button
                     key={index}
-                    className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all"
+                    className={`w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all ${
+                      isCorrectAnswer ? "ring-4 ring-green-500" : ""
+                    }`}
                     style={{
-                      backgroundColor: answerColors[index],
+                      backgroundColor: answerColors[index % answerColors.length],
+                      opacity: isCorrectAnswer ? 1 : isSelected ? 0.7 : 0.5,
                     }}
                   >
                     <span className="font-bold mr-2">
                       {String(index + 1).padStart(2, "0")}:
                     </span>
                     {answer}
+                    {isCorrectAnswer && (
+                      <span className="ml-2 text-green-300">✓</span>
+                    )}
                   </button>
                 );
               })}

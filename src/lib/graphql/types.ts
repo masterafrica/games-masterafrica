@@ -155,6 +155,67 @@ export interface GetGamersCurrentPassedResultResponse {
   getGamersCurrentPassedResult: GameResultData;
 }
 
+export interface InterviewQuest {
+  id: string;
+  question: string;
+  category: string;
+  difficulty?: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AddInterviewQuestInput {
+  question: string;
+  category: string;
+  difficulty?: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
+}
+
+export interface AddInterviewQuestResponse {
+  AddInterviewQuest: InterviewQuest;
+}
+
+export interface GetInterviewQuestsInput {
+  page?: number;
+  limit?: number;
+  category?: string;
+  difficulty?: string;
+}
+
+export interface GetInterviewQuestsResponse {
+  GetInterviewQuests: {
+    questions: InterviewQuest[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+export interface GetInterviewQuestInput {
+  id: string;
+}
+
+export interface GetInterviewQuestResponse {
+  GetInterviewQuest: InterviewQuest;
+}
+
+export interface VerifyAnswerInput {
+  questionId: string;
+  answer: string;
+}
+
+export interface VerifyAnswerResponse {
+  VerifyAnswer: {
+    correct: boolean;
+    feedback?: string;
+  };
+}
+
 export interface ForgotPasswordInput {
   identifier: string; // Can be email, username, or phone number
 }
