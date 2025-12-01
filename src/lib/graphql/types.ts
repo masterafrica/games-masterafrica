@@ -1,3 +1,10 @@
+export enum ENUMSKILLGROUP {
+  TECHNICAL = "technical",
+  SOFT = "soft",
+  MANUAL = "manual",
+  CREATIVE = "creative",
+}
+
 export interface User {
   id: string;
   email: string;
@@ -26,7 +33,8 @@ export interface CreateNewUserInput {
   password: string;
   username?: string;
   // phoneNumber?: string;
-  // skill?: string;
+  skillGroup?: ENUMSKILLGROUP;
+  skill?: string;
 }
 
 export interface SetupProfileInput {
@@ -237,4 +245,3 @@ export interface ResetPasswordResponse {
     success: boolean;
   };
 }
-

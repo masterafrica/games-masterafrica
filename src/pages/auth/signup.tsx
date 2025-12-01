@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { useSignup } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 import { signupSchema } from "@/lib/schemas";
+import { ENUMSKILLGROUP } from "@/lib/graphql/types";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const SignupPage = () => {
     initialValues: {
       email: "",
       phoneNumber: "",
+      skillGroup: "" as ENUMSKILLGROUP | "",
       skill: "",
       password: "",
       confirmPassword: "",
@@ -30,7 +32,8 @@ const SignupPage = () => {
         const result = await signup({
           email: values.email,
           // phoneNumber: normalizedPhone,
-          // skill: values.skill,
+          skillGroup: values.skillGroup as ENUMSKILLGROUP,
+          skill: values.skill,
           password: values.password,
         });
 
@@ -114,6 +117,52 @@ const SignupPage = () => {
           {formik.touched.phoneNumber && formik.errors.phoneNumber && (
             <p className="text-red-400 text-xs mt-1">
               {formik.errors.phoneNumber}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-white/70 text-sm mb-2 block">
+            Skill Group
+          </label>
+          <select
+            className="w-full bg-purple-900 text-white rounded-lg px-4 py-3 border-none focus:outline-none focus:ring-0 focus:ring-offset-0 placeholder:text-white/80"
+            name="skillGroup"
+            value={formik.values.skillGroup}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          >
+            <option value="" className="bg-purple-900 text-white">
+              Select skill group
+            </option>
+            <option
+              value={ENUMSKILLGROUP.TECHNICAL}
+              className="bg-purple-900 text-white"
+            >
+              Technical
+            </option>
+            <option
+              value={ENUMSKILLGROUP.SOFT}
+              className="bg-purple-900 text-white"
+            >
+              Soft
+            </option>
+            <option
+              value={ENUMSKILLGROUP.MANUAL}
+              className="bg-purple-900 text-white"
+            >
+              Manual
+            </option>
+            <option
+              value={ENUMSKILLGROUP.CREATIVE}
+              className="bg-purple-900 text-white"
+            >
+              Creative
+            </option>
+          </select>
+          {formik.touched.skillGroup && formik.errors.skillGroup && (
+            <p className="text-red-400 text-xs mt-1">
+              {formik.errors.skillGroup}
             </p>
           )}
         </div>
