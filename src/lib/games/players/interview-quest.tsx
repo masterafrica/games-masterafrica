@@ -110,13 +110,6 @@ const InterviewQuest = () => {
         level: currentLevel.toString(),
       };
 
-      // Add skill and skillGroup from user if available
-      // Note: These might need to be stored in user profile or passed differently
-      if (user) {
-        // You may need to adjust this based on how skill/skillGroup are stored
-        // For now, we'll fetch without filters if not available
-      }
-
       const result = await getQuestion({
         variables: { input },
       });

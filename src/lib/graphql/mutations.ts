@@ -108,9 +108,7 @@ export const ADD_INTERVIEW_QUEST = gql`
       answer
       options
       hint
-      skill
       level
-      skillGroup
     }
   }
 `;

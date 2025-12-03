@@ -1,14 +1,13 @@
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import { AtSign, Key, BarChart3, Phone } from "lucide-react";
+import { AtSign, Key, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
 import { useSignup } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 import { signupSchema } from "@/lib/schemas";
-import { ENUMSKILLGROUP } from "@/lib/graphql/types";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -19,8 +18,6 @@ const SignupPage = () => {
     initialValues: {
       email: "",
       phoneNumber: "",
-      skillGroup: "" as ENUMSKILLGROUP | "",
-      skill: "",
       password: "",
       confirmPassword: "",
     },
@@ -32,8 +29,6 @@ const SignupPage = () => {
         const result = await signup({
           email: values.email,
           // phoneNumber: normalizedPhone,
-          skillGroup: values.skillGroup as ENUMSKILLGROUP,
-          skill: values.skill,
           password: values.password,
         });
 
@@ -118,75 +113,6 @@ const SignupPage = () => {
             <p className="text-red-400 text-xs mt-1">
               {formik.errors.phoneNumber}
             </p>
-          )}
-        </div>
-
-        <div>
-          <label className="text-white/70 text-sm mb-2 block">
-            Skill Group
-          </label>
-          <select
-            className="w-full bg-purple-900 text-white rounded-lg px-4 py-3 border-none focus:outline-none focus:ring-0 focus:ring-offset-0 placeholder:text-white/80"
-            name="skillGroup"
-            value={formik.values.skillGroup}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          >
-            <option value="" className="bg-purple-900 text-white">
-              Select skill group
-            </option>
-            <option
-              value={ENUMSKILLGROUP.TECHNICAL}
-              className="bg-purple-900 text-white"
-            >
-              Technical
-            </option>
-            <option
-              value={ENUMSKILLGROUP.SOFT}
-              className="bg-purple-900 text-white"
-            >
-              Soft
-            </option>
-            <option
-              value={ENUMSKILLGROUP.MANUAL}
-              className="bg-purple-900 text-white"
-            >
-              Manual
-            </option>
-            <option
-              value={ENUMSKILLGROUP.CREATIVE}
-              className="bg-purple-900 text-white"
-            >
-              Creative
-            </option>
-          </select>
-          {formik.touched.skillGroup && formik.errors.skillGroup && (
-            <p className="text-red-400 text-xs mt-1">
-              {formik.errors.skillGroup}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <Input
-            classNames={{
-              input: "!text-white placeholder:text-white/80",
-              inputWrapper:
-                "bg-purple-900 border-none focus-within:bg-purple-900 focus-within:border-none focus-within:ring-0 focus-within:ring-offset-0 data-[hover=true]:bg-purple-900",
-              label: "text-white/70",
-            }}
-            isInvalid={formik.touched.skill && Boolean(formik.errors.skill)}
-            label="Skill"
-            name="skill"
-            placeholder="Skill"
-            startContent={<BarChart3 className="text-white" size={16} />}
-            type="text"
-            value={formik.values.skill}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          {formik.touched.skill && formik.errors.skill && (
-            <p className="text-red-400 text-xs mt-1">{formik.errors.skill}</p>
           )}
         </div>
 

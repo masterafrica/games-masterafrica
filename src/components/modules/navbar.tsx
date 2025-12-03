@@ -49,7 +49,8 @@ export const Navbar = () => {
                   Welcome,
                 </p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {user?.username || "Guest"}
+                  {String(user?.username || user?.email).split("@")[0] ||
+                    "Guest"}
                 </p>
               </div>
             </div>

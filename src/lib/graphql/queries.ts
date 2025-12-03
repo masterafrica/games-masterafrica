@@ -67,7 +67,7 @@ export const GET_GAME_SOUNDS = gql`
 `;
 
 export const GET_GAME_LEVEL_INFORMATION = gql`
-  query GetGameLevelInformation($input: GetGameLevelInformationInput!) {
+  query GetGameLevelInformation($input: getGameLevelInformationInput!) {
     getGameLevelInformation(input: $input) {
       level
       type
@@ -144,8 +144,6 @@ export const GET_INTERVIEW_QUEST = gql`
       options
       hint
       images
-      skill
-      skillGroup
       level
     }
   }

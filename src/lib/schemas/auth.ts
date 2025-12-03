@@ -16,10 +16,6 @@ export const signupSchema = Yup.object({
   phoneNumber: Yup.string()
     .required("Phone number is required")
     .matches(/^(\+234|234|0)?[7-9][0-1]\d{8}$/, "Invalid phone number format"),
-  skillGroup: Yup.string()
-    .oneOf(["technical", "soft", "manual", "creative"], "Invalid skill group")
-    .required("Skill group is required"),
-  skill: Yup.string().required("Skill is required"),
   password: Yup.string()
     .required("Password is required")
     .min(6, "Password must be at least 6 characters"),

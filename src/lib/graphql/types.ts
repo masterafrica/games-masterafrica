@@ -33,8 +33,6 @@ export interface CreateNewUserInput {
   password: string;
   username?: string;
   // phoneNumber?: string;
-  skillGroup?: ENUMSKILLGROUP;
-  skill?: string;
 }
 
 export interface SetupProfileInput {
@@ -175,8 +173,6 @@ export interface InterviewQuest {
   options?: string[];
   hint?: string;
   images?: string[];
-  skill?: string;
-  skillGroup?: string;
   level?: string;
   category?: string; // Legacy field
   difficulty?: string; // Legacy field
@@ -191,9 +187,7 @@ export interface AddInterviewQuestInput {
   answer: string;
   options?: string[];
   hint?: string;
-  skill?: string;
   level?: string;
-  skillGroup?: string;
   category?: string; // Legacy field
   difficulty?: string; // Legacy field
   correctAnswer?: number; // Legacy field
@@ -222,9 +216,7 @@ export interface GetInterviewQuestsResponse {
 
 export interface GetInterviewQuestInput {
   page?: number;
-  skill?: string;
   level?: string;
-  skillGroup?: string;
   id?: string; // Legacy field
 }
 
