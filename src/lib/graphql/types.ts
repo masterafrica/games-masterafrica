@@ -117,6 +117,11 @@ export interface GameLevelInfo {
   pass?: number;
 }
 
+export interface GetGameLevelInformationInput {
+  level: number;
+  type: string;
+}
+
 export interface GameResultUpdate {
   level: number;
   score: number;
@@ -166,22 +171,33 @@ export interface GetGamersCurrentPassedResultResponse {
 export interface InterviewQuest {
   id: string;
   question: string;
-  category: string;
-  difficulty?: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
+  answer?: string; // Hidden from user, shown only after verification
+  options?: string[];
+  hint?: string;
+  images?: string[];
+  skill?: string;
+  skillGroup?: string;
+  level?: string;
+  category?: string; // Legacy field
+  difficulty?: string; // Legacy field
+  correctAnswer?: number; // Legacy field for multiple choice
+  explanation?: string; // Legacy field
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface AddInterviewQuestInput {
   question: string;
-  category: string;
-  difficulty?: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
+  answer: string;
+  options?: string[];
+  hint?: string;
+  skill?: string;
+  level?: string;
+  skillGroup?: string;
+  category?: string; // Legacy field
+  difficulty?: string; // Legacy field
+  correctAnswer?: number; // Legacy field
+  explanation?: string; // Legacy field
 }
 
 export interface AddInterviewQuestResponse {
@@ -205,7 +221,11 @@ export interface GetInterviewQuestsResponse {
 }
 
 export interface GetInterviewQuestInput {
-  id: string;
+  page?: number;
+  skill?: string;
+  level?: string;
+  skillGroup?: string;
+  id?: string; // Legacy field
 }
 
 export interface GetInterviewQuestResponse {
@@ -213,14 +233,14 @@ export interface GetInterviewQuestResponse {
 }
 
 export interface VerifyAnswerInput {
-  questionId: string;
-  answer: string;
+  id: string; // Question ID
+  answer: string; // User's answer
 }
 
 export interface VerifyAnswerResponse {
-  VerifyAnswer: {
+  VerifyInterviewquestAnswer: {
     correct: boolean;
-    feedback?: string;
+    expected?: string; // Correct answer (shown if wrong)
   };
 }
 

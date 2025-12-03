@@ -141,22 +141,21 @@ export const GET_INTERVIEW_QUEST = gql`
     GetInterviewQuest(input: $input) {
       id
       question
-      category
-      difficulty
       options
-      correctAnswer
-      explanation
-      createdAt
-      updatedAt
+      hint
+      images
+      skill
+      skillGroup
+      level
     }
   }
 `;
 
-export const VERIFY_ANSWER = gql`
-  query VerifyAnswer($input: VerifyAnswerInput!) {
-    VerifyAnswer(input: $input) {
+export const VERIFY_INTERVIEW_QUEST_ANSWER = gql`
+  query VerifyInterviewquestAnswer($input: VerifyAnswerInput!) {
+    VerifyInterviewquestAnswer(input: $input) {
       correct
-      feedback
+      expected
     }
   }
 `;

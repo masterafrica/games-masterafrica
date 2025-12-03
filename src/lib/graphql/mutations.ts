@@ -105,13 +105,12 @@ export const ADD_INTERVIEW_QUEST = gql`
     AddInterviewQuest(input: $input) {
       id
       question
-      category
-      difficulty
+      answer
       options
-      correctAnswer
-      explanation
-      createdAt
-      updatedAt
+      hint
+      skill
+      level
+      skillGroup
     }
   }
 `;

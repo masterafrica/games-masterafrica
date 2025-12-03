@@ -27,6 +27,7 @@ import type {
   GetInterviewQuestResponse,
   VerifyAnswerInput,
   VerifyAnswerResponse,
+  GetGameLevelInformationInput,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -42,7 +43,7 @@ import {
   GET_GAMERS_CURRENT_PASSED_RESULT,
   GET_INTERVIEW_QUESTS,
   GET_INTERVIEW_QUEST,
-  VERIFY_ANSWER,
+  VERIFY_INTERVIEW_QUEST_ANSWER,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -228,16 +229,15 @@ export const useGetInterviewQuests = (input: GetInterviewQuestsInput = {}) => {
   });
 };
 
-export const useGetInterviewQuest = (id: string) => {
-  return useQuery<GetInterviewQuestResponse>(GET_INTERVIEW_QUEST, {
-    variables: { input: { id } },
-    skip: !id,
+export const useGetInterviewQuest = () => {
+  return useLazyQuery<GetInterviewQuestResponse>(GET_INTERVIEW_QUEST, {
+    fetchPolicy: "network-only",
   });
 };
 
 export const useVerifyAnswer = () => {
   const [verifyAnswerQuery, { data, loading, error }] =
-    useLazyQuery<VerifyAnswerResponse>(VERIFY_ANSWER);
+    useLazyQuery<VerifyAnswerResponse>(VERIFY_INTERVIEW_QUEST_ANSWER);
 
   const verifyAnswer = async (input: VerifyAnswerInput) => {
     try {
