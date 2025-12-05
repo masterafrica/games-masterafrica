@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { useSignup } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 import { signupSchema } from "@/lib/schemas";
+import { ENUMSKILLGROUP } from "@/lib/graphql/types";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const SignupPage = () => {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+      skill: "",
+      skillGroup: "",
     },
     validationSchema: signupSchema,
     onSubmit: async (values) => {
@@ -30,6 +33,8 @@ const SignupPage = () => {
           email: values.email,
           // phoneNumber: normalizedPhone,
           password: values.password,
+          skill: values.skill || undefined,
+          skillGroup: values.skillGroup ? (values.skillGroup as ENUMSKILLGROUP) : undefined,
         });
 
         if (result.data?.createUser?.user) {
@@ -167,6 +172,59 @@ const SignupPage = () => {
           {formik.touched.confirmPassword && formik.errors.confirmPassword && (
             <p className="text-red-400 text-xs mt-1">
               {formik.errors.confirmPassword}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-white/70 text-sm mb-2 block">Skill</label>
+          <Input
+            classNames={{
+              input: "!text-white placeholder:text-white/80",
+              inputWrapper:
+                "bg-purple-900 border-none focus-within:bg-purple-900 focus-within:border-none focus-within:ring-0 focus-within:ring-offset-0 data-[hover=true]:bg-purple-900",
+            }}
+            isInvalid={formik.touched.skill && Boolean(formik.errors.skill)}
+            name="skill"
+            placeholder="Enter your skill"
+            type="text"
+            value={formik.values.skill}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          />
+          {formik.touched.skill && formik.errors.skill && (
+            <p className="text-red-400 text-xs mt-1">{formik.errors.skill}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-white/70 text-sm mb-2 block">Skill Group</label>
+          <select
+            className="w-full bg-purple-900 text-white rounded-lg px-4 py-2 border-none focus:outline-none focus:ring-0"
+            name="skillGroup"
+            value={formik.values.skillGroup}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          >
+            <option value="" className="bg-purple-900 text-white">
+              Select skill group
+            </option>
+            <option value={ENUMSKILLGROUP.TECHNICAL} className="bg-purple-900 text-white">
+              Technical
+            </option>
+            <option value={ENUMSKILLGROUP.SOFT} className="bg-purple-900 text-white">
+              Soft
+            </option>
+            <option value={ENUMSKILLGROUP.MANUAL} className="bg-purple-900 text-white">
+              Manual
+            </option>
+            <option value={ENUMSKILLGROUP.CREATIVE} className="bg-purple-900 text-white">
+              Creative
+            </option>
+          </select>
+          {formik.touched.skillGroup && formik.errors.skillGroup && (
+            <p className="text-red-400 text-xs mt-1">
+              {formik.errors.skillGroup}
             </p>
           )}
         </div>

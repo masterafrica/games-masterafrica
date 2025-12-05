@@ -32,6 +32,8 @@ export interface CreateNewUserInput {
   email: string;
   password: string;
   username?: string;
+  skill?: string;
+  skillGroup?: ENUMSKILLGROUP;
   // phoneNumber?: string;
 }
 

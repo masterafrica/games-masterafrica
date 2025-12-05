@@ -22,6 +22,8 @@ export const signupSchema = Yup.object({
   confirmPassword: Yup.string()
     .required("Please confirm your password")
     .oneOf([Yup.ref("password")], "Passwords must match"),
+  skill: Yup.string().optional(),
+  skillGroup: Yup.string().optional(),
 });
 
 export const forgotPasswordSchema = Yup.object({
