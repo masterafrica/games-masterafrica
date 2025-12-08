@@ -259,3 +259,26 @@ export interface ResetPasswordResponse {
     success: boolean;
   };
 }
+
+export interface Wallet {
+  id: string;
+  bankName?: string;
+  bankCode?: string;
+  accountName?: string;
+  accountNumber?: string;
+  received: number;
+  spent: number;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
+
+export interface GetWalletResponse {
+  getWallet: Wallet;
+}
+
+export interface GetWalletInput {
+  walletId?: string | null;
+}

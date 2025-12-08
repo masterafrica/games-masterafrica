@@ -1,53 +1,43 @@
 import { GiftIcon } from "lucide-react";
+import Lottie from "lottie-react";
 
 import { ChallengeCard } from "@/components/modules/challenge-card";
 import { WeeklyChallengerBanner } from "@/components/modules/weekly-challenge-banner";
+import { useChallenges } from "@/lib/graphql/hooks/use-challenges";
+import loadingAnimation from "@/assets/lotties/loading.json";
 
 const ChallengesPage = () => {
-  const challenges = [
-    {
-      type: "challenge" as "challenge", // Explicitly cast type
-      title: "Interview Quest",
-      description: "Complete a mock interview challenge",
-      points: "50 points",
-      progress: 60,
-      currentValue: "3",
-      maxValue: "5",
-      badge: "Sponsored",
-      theme: "#9747FF", // purple
-      actionText: "Play Now",
-    },
-    {
-      type: "reward" as "reward", // Explicitly cast type
-      title: "MTN data dash",
-      description: "Earn points with free airtime/data",
-      points: "50 games Played",
-      progress: 80,
-      badge: "Core",
-      theme: "#F8C75E", // purple
-      actionText: "Play Now",
-    },
-    {
-      type: "challenge" as "challenge", // Explicitly cast type
-      title: "Skill Quest",
-      description: "Learn to trade digital skill",
-      points: "50 games Played",
-      progress: 70,
-      badge: "Core",
-      theme: "#18F172", // purple
-      actionText: "Play Now",
-    },
-    {
-      type: "reward" as "reward", // Explicitly cast type
-      title: "Savings Quest",
-      description: "Basic financial literacy",
-      points: "50 games Played",
-      theme: "#203ED8", // purple
-      progress: 90,
-      badge: "Core",
-      actionText: "Play Now",
-    },
-  ];
+  const { challenges, isLoading, hasError } = useChallenges();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <Lottie
+            loop
+            animationData={loadingAnimation}
+            style={{ width: 200, height: 200 }}
+          />
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Loading challenges...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Error loading challenges</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please try refreshing the page
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -73,24 +63,31 @@ const ChallengesPage = () => {
         </div>
 
         <div className="max-w-6xl px-4 mx-auto space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            {challenges.map((challenge, index) => (
-              <ChallengeCard
-                key={index}
-                badge={challenge.badge}
-                buttonText="Play Now"
-                currentValue={challenge.currentValue}
-                description={challenge.description}
-                maxValue={challenge.maxValue}
-                points={challenge.points}
-                progress={challenge.progress}
-                theme={challenge.theme}
-                title={challenge.title}
-                type={challenge.type}
-                // actionText={challenge.actionText}
-              />
-            ))}
-          </div>
+          {challenges.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+              {challenges.map((challenge) => (
+                <ChallengeCard
+                  key={challenge.gameType}
+                  badge={challenge.badge}
+                  buttonText="Play Now"
+                  currentValue={challenge.currentValue}
+                  description={challenge.description}
+                  maxValue={challenge.maxValue}
+                  points={challenge.points}
+                  progress={challenge.progress}
+                  theme={challenge.theme}
+                  title={challenge.title}
+                  type={challenge.type}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 dark:text-gray-400">
+                No challenges available at the moment
+              </p>
+            </div>
+          )}
 
           <WeeklyChallengerBanner />
         </div>

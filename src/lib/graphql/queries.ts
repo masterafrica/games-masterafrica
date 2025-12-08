@@ -115,6 +115,25 @@ export const GET_GAMERS_CURRENT_PASSED_RESULT = gql`
   }
 `;
 
+export const GET_WALLET = gql`
+  query GetWallet($walletId: ObjectId) {
+    getWallet(WalletId: $walletId) {
+      id
+      bankName
+      bankCode
+      accountName
+      accountNumber
+      received
+      spent
+      user {
+        id
+        username
+        email
+      }
+    }
+  }
+`;
+
 export const GET_INTERVIEW_QUESTS = gql`
   query GetInterviewQuests($input: GetInterviewQuestsInput!) {
     GetInterviewQuests(input: $input) {

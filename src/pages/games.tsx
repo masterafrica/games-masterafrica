@@ -1,43 +1,7 @@
-import { GameCard, type GameCardData } from "@/components/modules/game-card";
+import { GameCard } from "@/components/modules/game-card";
+import { GAMES, type GameWithOffset } from "@/config/games";
 
-type GameWithOffset = GameCardData & {
-  offset?: "none" | "sm" | "md";
-};
-
-const games: GameWithOffset[] = [
-  {
-    id: 1,
-    title: "Interview Quest",
-    description: "Sharpening the mind",
-    image: "/images/games/interview-quest.jpg",
-    theme: "yellow",
-    offset: "none",
-  },
-  {
-    id: 2,
-    title: "Afro IQ",
-    description: "Sharpening the mind",
-    image: "/images/games/afro-iq.jpg",
-    theme: "purple",
-    offset: "sm",
-  },
-  {
-    id: 3,
-    title: "Match the picture",
-    description: "Sharpening the mind",
-    image: "/images/games/match-picture.jpg",
-    theme: "blue",
-    offset: "md",
-  },
-  {
-    id: 4,
-    title: "Afro IQ",
-    description: "Sharpening the mind",
-    image: "/images/games/unscramble-word.jpg",
-    theme: "green",
-    offset: "md",
-  },
-];
+const games = GAMES.filter((game) => game.id === 1);
 
 function offsetClass(offset: NonNullable<GameWithOffset["offset"]>) {
   switch (offset) {
@@ -84,27 +48,12 @@ export default function GamesPage() {
             </div>
           </div>
 
-          {/* two vertical lanes with staggered spacing to match the mock */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
-            {/* Column 1 cards */}
-            <div className="flex flex-col gap-6">
-              <div className={offsetClass("none")}>
-                <GameCard game={games[1]} />
+            {games.map((game) => (
+              <div key={game.id} className={offsetClass(game.offset || "none")}>
+                <GameCard game={game} />
               </div>
-              <div className={offsetClass("md")}>
-                <GameCard game={games[3]} />
-              </div>
-            </div>
-
-            {/* Column 2 cards */}
-            <div className="flex flex-col gap-6">
-              <div className={offsetClass("none")}>
-                <GameCard game={games[0]} />
-              </div>
-              <div className={offsetClass("sm")}>
-                <GameCard game={games[2]} />
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </div>

@@ -28,6 +28,8 @@ import type {
   VerifyAnswerInput,
   VerifyAnswerResponse,
   GetGameLevelInformationInput,
+  GetWalletResponse,
+  GetWalletInput,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -44,6 +46,7 @@ import {
   GET_INTERVIEW_QUESTS,
   GET_INTERVIEW_QUEST,
   VERIFY_INTERVIEW_QUEST_ANSWER,
+  GET_WALLET,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -252,3 +255,13 @@ export const useVerifyAnswer = () => {
 
   return { verifyAnswer, data, loading, error };
 };
+
+export const useGetWallet = (walletId?: string | null) => {
+  return useQuery<GetWalletResponse>(GET_WALLET, {
+    variables: { walletId: walletId || null },
+  });
+};
+
+// Re-export useChallenges hook
+export { useChallenges } from "./hooks/use-challenges";
+export type { ChallengeData, GameType } from "./hooks/use-challenges";

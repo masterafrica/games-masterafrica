@@ -1,43 +1,9 @@
 import { Button } from "@heroui/button";
 
 import { GameCard, GameTheme } from "@/components/modules/game-card";
+import { GAMES } from "@/config/games";
 import { GameCanvas } from "@/lib/games";
 import { useParams } from "react-router-dom";
-
-const games = [
-  {
-    id: 1,
-    title: "Interview Quest",
-    description: "Sharpening the mind",
-    image: "/images/games/interview-quest.jpg",
-    theme: "yellow",
-    offset: "none",
-  },
-  {
-    id: 2,
-    title: "Afro IQ",
-    description: "Sharpening the mind",
-    image: "/images/games/afro-iq.jpg",
-    theme: "purple",
-    offset: "sm",
-  },
-  {
-    id: 3,
-    title: "Match the picture",
-    description: "Sharpening the mind",
-    image: "/images/games/match-picture.jpg",
-    theme: "blue",
-    offset: "md",
-  },
-  {
-    id: 4,
-    title: "Afro IQ",
-    description: "Sharpening the mind",
-    image: "/images/games/unscramble-word.jpg",
-    theme: "green",
-    offset: "md",
-  },
-];
 
 const PlayGame = () => {
   const { id } = useParams();
@@ -54,7 +20,7 @@ const PlayGame = () => {
 
       <div className="my-5">
         <div className="flex justify-evenly flex-wrap gap-5">
-          {games.map((game) => (
+          {GAMES.map((game) => (
             <GameCard
               key={game.id}
               game={{
