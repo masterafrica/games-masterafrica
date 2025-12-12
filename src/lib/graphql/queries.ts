@@ -23,7 +23,7 @@ export const GET_USER = gql`
 `;
 
 export const GET_GAME_RESULTS = gql`
-  query GetGameResults($input: GetGameResultsInput!) {
+  query GetGameResults($input: getgamersresult!) {
     getGameResults(input: $input) {
       id
       point

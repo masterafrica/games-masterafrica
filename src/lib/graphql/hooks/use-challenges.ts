@@ -179,14 +179,37 @@ export const useChallenges = () => {
   const challenges = useMemo<ChallengeData[]>(() => {
     return queries
       .map(({ gameType, gameSetting, userProgress }) => {
-        if (!gameSetting.data?.getGameSetting && !gameSetting.loading) {
+        if (gameSetting.error) {
+          return null;
+        }
+
+        if (!gameSetting.data?.getGameSetting) {
+          if (!gameSetting.loading) {
+            return null;
+          }
+          return {
+            gameType,
+            title: GAME_TYPE_INFO[gameType].title,
+            description: GAME_TYPE_INFO[gameType].description,
+            theme: GAME_TYPE_INFO[gameType].theme,
+            badge: GAME_TYPE_INFO[gameType].badge,
+            type: GAME_TYPE_INFO[gameType].type,
+            points: "Loading...",
+            progress: 0,
+            level: 0,
+            loading: true,
+          } as ChallengeData;
+        }
+
+        const gameSettingData = gameSetting.data.getGameSetting;
+        if (!gameSettingData || !gameSettingData.type) {
           return null;
         }
 
         const info = GAME_TYPE_INFO[gameType];
         const currentLevel = userProgress.data?.getGamersCurrentPassedResult?.level || 0;
-        const perclick = gameSetting.data?.getGameSetting?.perclick || 0;
-        const pass = gameSetting.data?.getGameSetting?.pass || 0;
+        const perclick = gameSettingData.perclick || 0;
+        const pass = gameSettingData.pass || 0;
 
         const maxLevels = 10;
         const progress = maxLevels > 0 ? Math.round((currentLevel / maxLevels) * 100) : 0;
@@ -208,7 +231,7 @@ export const useChallenges = () => {
           perclick,
           pass,
           loading: gameSetting.loading || userProgress.loading,
-          error: gameSetting.error || userProgress.error,
+          error: userProgress.error,
         };
       })
       .filter((challenge): challenge is ChallengeData => challenge !== null);

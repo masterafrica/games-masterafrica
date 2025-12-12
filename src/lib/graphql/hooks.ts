@@ -122,7 +122,8 @@ export const useSetupProfile = () => {
 
 export const useGetGameResults = (input: GetGameResultsInput = {}) => {
   return useQuery<GetGameResultsResponse>(GET_GAME_RESULTS, {
-    variables: { input },
+    variables: { input: input || {} },
+    errorPolicy: "all",
   });
 };
 
@@ -130,6 +131,8 @@ export const useGetGameSetting = (type: string) => {
   return useQuery<GetGameSettingResponse>(GET_GAME_SETTING, {
     variables: { type },
     skip: !type,
+    errorPolicy: "all",
+    fetchPolicy: "cache-and-network",
   });
 };
 
@@ -175,6 +178,8 @@ export const useGetGamersCurrentPassedResult = (type: string) => {
     {
       variables: { type },
       skip: !type,
+      errorPolicy: "all",
+      fetchPolicy: "cache-and-network",
     }
   );
 };
