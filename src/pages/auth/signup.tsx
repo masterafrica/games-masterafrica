@@ -33,8 +33,7 @@ const SignupPage = () => {
           email: values.email,
           // phoneNumber: normalizedPhone,
           password: values.password,
-          skill: values.skill || undefined,
-          skillGroup: values.skillGroup ? (values.skillGroup as ENUMSKILLGROUP) : undefined,
+          // skill and skillGroup should be set during profile setup, not during signup
         });
 
         if (result.data?.createUser?.user) {

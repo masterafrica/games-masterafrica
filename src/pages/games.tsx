@@ -1,8 +1,6 @@
 import { GameCard } from "@/components/modules/game-card";
 import { GAMES, type GameWithOffset } from "@/config/games";
 
-const games = GAMES.filter((game) => game.id === 1);
-
 function offsetClass(offset: NonNullable<GameWithOffset["offset"]>) {
   switch (offset) {
     case "sm":
@@ -49,7 +47,7 @@ export default function GamesPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
-            {games.map((game) => (
+            {GAMES.map((game) => (
               <div key={game.id} className={offsetClass(game.offset || "none")}>
                 <GameCard game={game} />
               </div>

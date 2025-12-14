@@ -9,14 +9,12 @@ import {
   useGetGamersCurrentPassedResult,
   useUpdateGamersResult,
 } from "@/lib/graphql";
-import { useAuth } from "@/lib/auth-context";
 
 import Header from "../components/header";
 import Loader, { LoaderRef } from "../components/loader";
 
 const InterviewQuest = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const ref = useRef<LoaderRef>(null);
   const [started, setStarted] = useState(false);
@@ -36,6 +34,8 @@ const InterviewQuest = () => {
   const [timeLimit, setTimeLimit] = useState<number | null>(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [timeUp, setTimeUp] = useState(false);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get current passed level to determine starting level
   const { data: passedResultData } = useGetGamersCurrentPassedResult(
@@ -53,8 +53,7 @@ const InterviewQuest = () => {
   const { verifyAnswer, loading: verifying } = useVerifyAnswer();
 
   // Update game result hook
-  const { updateGamersResult, loading: submittingResult } =
-    useUpdateGamersResult();
+  const { updateGamersResult } = useUpdateGamersResult();
 
   // Initialize level from passed result
   useEffect(() => {
@@ -70,27 +69,36 @@ const InterviewQuest = () => {
       const info = levelInfoData.getGameLevelInformation;
       setLevelInfo(info);
       setTimeLimit(info.time || null);
-      setTotalScore((info.perclick || 10) * 10); // Assume 10 questions per level
+      setTotalScore(info.perclick || 10); // Single question per game
     }
   }, [levelInfoData]);
 
   // Timer effect
   useEffect(() => {
-    if (started && startTime && timeLimit) {
-      const interval = setInterval(() => {
+    if (started && startTime && timeLimit && !timeUp) {
+      timerIntervalRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         setElapsedTime(elapsed);
 
         if (elapsed >= timeLimit) {
           // Time's up
+          setTimeUp(true);
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
           handleTimeUp();
-          clearInterval(interval);
         }
       }, 1000);
 
-      return () => clearInterval(interval);
+      return () => {
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
+      };
     }
-  }, [started, startTime, timeLimit]);
+  }, [started, startTime, timeLimit, timeUp]);
 
   // Initial loader
   useEffect(() => {
@@ -129,12 +137,18 @@ const InterviewQuest = () => {
   };
 
   const handleTimeUp = async () => {
+    // Stop timer and prevent further interactions
+    setTimeUp(true);
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
     // Submit results when time is up
     await submitResults();
   };
 
   const handleAnswer = async () => {
-    if (selectedAnswer === null || !currentQuestion) return;
+    if (selectedAnswer === null || !currentQuestion || timeUp) return;
 
     let answerText: string;
 
@@ -165,17 +179,9 @@ const InterviewQuest = () => {
           setExpectedAnswer(expected || null);
         }
 
-        // After answering, fetch next question or complete level
+        // After answering one question, submit results
         setTimeout(() => {
-          if (correct) {
-            // Check if we've answered enough questions for this level
-            const questionsPerLevel = 10; // Adjust based on your game design
-            if (questionsAnswered + 1 >= questionsPerLevel) {
-              submitResults();
-            } else {
-              fetchQuestion();
-            }
-          }
+          submitResults();
         }, 2000);
       }
     } catch (error) {
@@ -222,14 +228,9 @@ const InterviewQuest = () => {
     setScore(0);
     setQuestionsAnswered(0);
     setGameCompleted(false);
+    setTimeUp(false);
+    setElapsedTime(0);
     await fetchQuestion();
-  };
-
-  const handleNextQuestion = () => {
-    setIsCorrect(false);
-    setIsWrong(false);
-    setExpectedAnswer(null);
-    fetchQuestion();
   };
 
   const handleRetry = () => {
@@ -325,7 +326,7 @@ const InterviewQuest = () => {
         </div>
       )}
 
-      {started && !isCorrect && !isWrong && currentQuestion && (
+      {started && !isCorrect && !isWrong && !timeUp && currentQuestion && (
         <div className="min-h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
           <div className="flex-1 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 flex flex-col min-h-[300px]">
             <div className="flex justify-between items-center mb-4">
@@ -336,7 +337,7 @@ const InterviewQuest = () => {
                 <p>Level {currentLevel}</p>
                 {timeLimit && (
                   <p>
-                    Time: {Math.max(0, (timeLimit || 0) - elapsedTime)}s
+                    Time: {timeUp ? 0 : Math.max(0, (timeLimit || 0) - elapsedTime)}s
                   </p>
                 )}
                 <p>Score: {score}</p>
@@ -383,8 +384,11 @@ const InterviewQuest = () => {
                         backgroundColor: answerColors[index % answerColors.length],
                       }}
                       onClick={() => {
-                        setSelectedAnswer(index);
+                        if (!timeUp) {
+                          setSelectedAnswer(index);
+                        }
                       }}
+                      disabled={timeUp}
                     >
                       <span className="font-bold mr-2">
                         {String(index + 1).padStart(2, "0")}:
@@ -400,7 +404,7 @@ const InterviewQuest = () => {
                   type="text"
                   className="w-full bg-gray-800 text-white p-4 rounded-lg"
                   placeholder="Type your answer..."
-                  onChange={(e) => {
+                  onChange={() => {
                     // Handle text input answer
                     // You might want to store this differently
                   }}
@@ -410,7 +414,7 @@ const InterviewQuest = () => {
 
             <button
               className="w-full bg-gray-900 border-2 border-white rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={selectedAnswer === null || verifying}
+              disabled={selectedAnswer === null || verifying || timeUp}
               onClick={handleAnswer}
             >
               {verifying ? "Verifying..." : "Confirm"}
@@ -442,9 +446,9 @@ const InterviewQuest = () => {
             </div>
             <button
               className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
-              onClick={handleNextQuestion}
+              onClick={handleFinish}
             >
-              Next Question
+              Finish
             </button>
           </div>
 
@@ -494,7 +498,78 @@ const InterviewQuest = () => {
         </div>
       )}
 
-      {started && isWrong && currentQuestion && (
+      {started && timeUp && currentQuestion && (
+        <div className="min-h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+          <div className="flex-1 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 flex flex-col min-h-[300px]">
+            <div className="flex flex-col items-center mb-6">
+              <img
+                alt="Time Up"
+                className="w-28 h-28 mb-4 object-contain"
+                src="/images/games/time.png"
+              />
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                Time's Up!
+              </h2>
+              <h3 className="text-[#E69A17] text-xl md:text-2xl font-bold uppercase">
+                INTERVIEW QUEST
+              </h3>
+            </div>
+            <div className="flex-1 flex items-center justify-center min-h-[200px]">
+              <p className="text-white text-lg md:text-xl lg:text-2xl text-center">
+                {currentQuestion.question}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 mt-auto">
+              <button
+                className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                onClick={handleFinish}
+              >
+                Return to Games
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col gap-4 md:gap-6 min-h-[300px]">
+            <h3 className="text-white text-xl md:text-2xl font-semibold">
+              Answer
+            </h3>
+            <div className="flex flex-col gap-3 md:gap-4 flex-1">
+              {currentQuestion.options?.map((answer, index) => {
+                const answerColors = [
+                  "#8B5CF6",
+                  "#60A5FA",
+                  "#E69A17",
+                  "#8B5CF6",
+                ];
+
+                return (
+                  <button
+                    key={index}
+                    className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all opacity-50"
+                    style={{
+                      backgroundColor: answerColors[index % answerColors.length],
+                    }}
+                    disabled
+                  >
+                    <span className="font-bold mr-2">
+                      {String(index + 1).padStart(2, "0")}:
+                    </span>
+                    {answer}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              disabled
+              className="w-full bg-gray-900 border-2 border-white rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Time's Up
+            </button>
+          </div>
+        </div>
+      )}
+
+      {started && isWrong && !timeUp && currentQuestion && (
         <div className="min-h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
           <div className="flex-1 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 flex flex-col min-h-[300px]">
             <div className="flex flex-col items-center mb-6">

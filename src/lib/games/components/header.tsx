@@ -21,7 +21,7 @@ const Header = () => {
           </div>
 
           <span className="relative font-bold text-white text-center text-[20px] ml-12 w-[55px]">
-            350
+            0
           </span>
         </div>
       </div>

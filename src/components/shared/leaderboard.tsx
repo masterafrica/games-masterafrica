@@ -111,7 +111,7 @@ const Leaderboard = ({ data }: Props) => {
                         </td>
                         <td className="py-3 px-2">
                           <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            {player.xp}XP
+                            {Number(player.xp).toFixed(2)}XP
                           </span>
                         </td>
                         <td className="py-3 px-2">

@@ -32,8 +32,7 @@ export interface CreateNewUserInput {
   email: string;
   password: string;
   username?: string;
-  skill?: string;
-  skillGroup?: ENUMSKILLGROUP;
+  // skill and skillGroup are not part of CreateNewUserInput - use SetupProfile instead
   // phoneNumber?: string;
 }
 
