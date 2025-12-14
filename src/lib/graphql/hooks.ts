@@ -15,7 +15,6 @@ import type {
   UpdateGameResultResponse,
   GetGamersCurrentResultResponse,
   GetGamersCurrentPassedResultResponse,
-  ForgotPasswordInput,
   ResetPasswordInput,
   ForgotPasswordResponse,
   ResetPasswordResponse,
@@ -23,13 +22,10 @@ import type {
   AddInterviewQuestResponse,
   GetInterviewQuestsInput,
   GetInterviewQuestsResponse,
-  GetInterviewQuestInput,
   GetInterviewQuestResponse,
   VerifyAnswerInput,
   VerifyAnswerResponse,
-  GetGameLevelInformationInput,
   GetWalletResponse,
-  GetWalletInput,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";

@@ -26,8 +26,6 @@ const SignupPage = () => {
     },
     validationSchema: signupSchema,
     onSubmit: async (values) => {
-      const normalizedPhone = normalizePhoneNumber(values.phoneNumber);
-
       try {
         const result = await signup({
           email: values.email,
@@ -49,18 +47,6 @@ const SignupPage = () => {
       }
     },
   });
-
-  const normalizePhoneNumber = (phone: string) => {
-    let normalized = phone.replace(/\D/g, "");
-
-    if (normalized.startsWith("234")) {
-      normalized = normalized.substring(3);
-    } else if (normalized.startsWith("0")) {
-      normalized = normalized.substring(1);
-    }
-
-    return `+234${normalized}`;
-  };
 
   return (
     <section>
