@@ -39,6 +39,18 @@ export const GET_GAME_RESULTS = gql`
   }
 `;
 
+export const GET_GAMER_RESULT = gql`
+  query GetGamerResult($input: getgamersresult!) {
+    getGamerResult(input: $input) {
+      id
+      point
+      user {
+        username
+      }
+    }
+  }
+`;
+
 export const GET_GAME_SETTING = gql`
   query GetGameSetting($type: String!) {
     getGameSetting(type: $type) {

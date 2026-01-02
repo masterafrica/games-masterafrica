@@ -8,6 +8,8 @@ import type {
   SetupProfileResponse,
   GetGameResultsInput,
   GetGameResultsResponse,
+  GetGamerResultInput,
+  GetGamerResultResponse,
   GetGameSettingResponse,
   GetGameSoundsResponse,
   GetGameLevelInfoResponse,
@@ -34,6 +36,7 @@ import Cookies from "js-cookie";
 import {
   GET_USER,
   GET_GAME_RESULTS,
+  GET_GAMER_RESULT,
   GET_GAME_SETTING,
   GET_GAME_SOUNDS,
   GET_GAME_LEVEL_INFORMATION,
@@ -121,6 +124,20 @@ export const useGetGameResults = (input: GetGameResultsInput = {}) => {
     variables: { input: input || {} },
     errorPolicy: "all",
   });
+};
+
+export const useGetGamerResult = (input: GetGamerResultInput = {}) => {
+  const result = useQuery<GetGamerResultResponse>(GET_GAMER_RESULT, {
+    variables: { input: input || {} },
+    errorPolicy: "all",
+  });
+
+  // Log the results
+  if (result.data) {
+    console.log("GetGamerResult data:", result.data);
+  }
+
+  return result;
 };
 
 export const useGetGameSetting = (type: string) => {

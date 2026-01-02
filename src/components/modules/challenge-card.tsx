@@ -1,6 +1,7 @@
 import { Card, CardBody } from "@heroui/card";
 import { Progress } from "@heroui/progress";
 import { Button } from "@heroui/button";
+import { ShareButton } from "@/components/shared/share-button";
 
 interface ChallengeCardProps {
   type: "challenge" | "reward";
@@ -13,6 +14,9 @@ interface ChallengeCardProps {
   buttonText?: string;
   badge?: string; // Added badge property
   theme?: string;
+  playerName?: string;
+  pointsValue?: number;
+  showShare?: boolean;
 }
 
 export const ChallengeCard = ({
@@ -26,6 +30,9 @@ export const ChallengeCard = ({
   buttonText,
   badge,
   theme,
+  playerName,
+  pointsValue,
+  showShare = false,
 }: ChallengeCardProps) => {
   const baseColor = theme || "#9747FF";
   const bg = baseColor + "15";
@@ -97,6 +104,18 @@ export const ChallengeCard = ({
             size="md"
             value={progress}
           />
+          {showShare && playerName && pointsValue !== undefined && (
+            <div className="pt-4">
+              <ShareButton
+                playerName={playerName}
+                points={pointsValue}
+                title={title}
+                gameTitle="Master Africa Games"
+                buttonSize="sm"
+                buttonVariant="solid"
+              />
+            </div>
+          )}
         </div>
       </CardBody>
     </Card>

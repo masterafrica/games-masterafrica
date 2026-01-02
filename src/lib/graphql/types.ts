@@ -88,6 +88,23 @@ export interface GetGameResultsResponse {
   getGameResults: GameResult[];
 }
 
+export interface GamerResult {
+  id: string;
+  point: number;
+  user: {
+    id: string;
+    username: string;
+  };
+}
+
+export interface GetGamerResultInput {
+  username?: string;
+}
+
+export interface GetGamerResultResponse {
+  getGamerResult: GamerResult;
+}
+
 export interface GameSetting {
   type: string;
   music?: string;

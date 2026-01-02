@@ -1,4 +1,5 @@
 import { Card, CardBody } from "@heroui/card";
+import { ShareButton } from "./share-button";
 
 interface Props {
   data: {
@@ -75,6 +76,9 @@ const Leaderboard = ({ data }: Props) => {
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
                         Titles
                       </th>
+                      <th className="text-center py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -118,6 +122,16 @@ const Leaderboard = ({ data }: Props) => {
                           <span className="text-sm text-gray-600 dark:text-gray-400">
                             {getTitleIcon(player.title)}
                           </span>
+                        </td>
+                        <td className="py-3 px-2 text-center">
+                          <ShareButton
+                            playerName={player.name}
+                            points={Math.round(player.xp)}
+                            title="Master Africa Games"
+                            rank={player.rank}
+                            buttonSize="sm"
+                            showLabel={false}
+                          />
                         </td>
                       </tr>
                     ))}
