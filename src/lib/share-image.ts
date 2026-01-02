@@ -7,8 +7,6 @@ export interface ShareImageConfig {
   playerName: string;
   points: number;
   title?: string;
-  gameTitle?: string;
-  rank?: number;
   imageUrl?: string;
 }
 
@@ -22,8 +20,6 @@ export const generateShareImage = async (
     playerName,
     points,
     title = "Master Africa Games",
-    gameTitle,
-    rank,
     imageUrl = "/images/image.png",
   } = config;
 
@@ -43,68 +39,49 @@ export const generateShareImage = async (
     const img = new Image();
     img.crossOrigin = "anonymous";
 
-    img.onload = () => {
+    img.onload = async () => {
       // Draw the base image scaled to canvas
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      // Add a semi-transparent overlay at the bottom
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-      ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.5);
-
-      // Add gradient overlay for better text visibility
-      const gradient = ctx.createLinearGradient(
-        0,
-        canvas.height * 0.5,
-        0,
-        canvas.height
-      );
-      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0.7)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.5);
 
       // Set up text styles
       ctx.fillStyle = "#FFFFFF";
       ctx.textAlign = "center";
 
-      // Draw rank badge if provided
-      if (rank) {
-        ctx.font = "bold 48px Arial";
-        ctx.fillStyle = "#FFD700";
-        ctx.fillText(`#${rank}`, canvas.width / 2, canvas.height - 520);
+      // Ensure Google font is loaded before drawing
+      try {
+        await document.fonts.load('700 80px "Stack Sans Text"');
+        await document.fonts.load('400 22px "Stack Sans Text"');
+      } catch (_) {
+        // If font fails to load, canvas will fallback to system fonts
       }
 
       // Draw player name
-      ctx.font = "bold 72px Arial";
+      // ctx.font = "bold 72px Arial";
+      // ctx.fillStyle = "#FFFFFF";
+      // ctx.fillText(playerName, canvas.width / 2, canvas.height - 380);
+
+      ctx.font = 'bold 80px "Stack Sans Text"';
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 6;
+      const scoreText = `${points.toLocaleString()}`;
+      const scoreX = Number(canvas.width * 0.10);
+      const scoreY = Number(canvas.height / 2) + 120;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.strokeText(scoreText, scoreX, scoreY);
+      ctx.fillStyle = "#4c2e86";
+      ctx.fillText(scoreText, scoreX, scoreY);
+
+      // Draw "POINTS" label (left-aligned, no stroke)
+      ctx.font = '22px "Stack Sans Text"';
+      const labelText = "Points:";
+      const labelX = scoreX; 
+      const labelY = Number(canvas.height / 2) + 45;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
       ctx.fillStyle = "#FFFFFF";
-      ctx.fillText(playerName, canvas.width / 2, canvas.height - 380);
-
-      // Draw game title if provided
-      if (gameTitle) {
-        ctx.font = "48px Arial";
-        ctx.fillStyle = "#FFD700";
-        ctx.fillText(gameTitle, canvas.width / 2, canvas.height - 280);
-      }
-
-      // Draw points
-      ctx.font = "bold 96px Arial";
-      ctx.fillStyle = "#FFD700";
-      ctx.fillText(`${points.toLocaleString()}`, canvas.width / 2, canvas.height - 120);
-
-      // Draw "POINTS" label
-      ctx.font = "48px Arial";
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillText("POINTS", canvas.width / 2, canvas.height - 20);
-
-      // Draw title/branding at the top
-      ctx.font = "bold 56px Arial";
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillText(title, canvas.width / 2, 100);
-
-      // Draw hashtag
-      ctx.font = "42px Arial";
-      ctx.fillStyle = "#FFD700";
-      ctx.fillText("#MAG", canvas.width / 2, 170);
+      ctx.fillText(labelText, labelX, labelY);
 
       // Convert canvas to blob
       canvas.toBlob(

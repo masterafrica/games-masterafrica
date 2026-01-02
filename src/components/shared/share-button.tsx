@@ -21,8 +21,6 @@ export const ShareButton = ({
   playerName,
   points,
   title,
-  gameTitle,
-  rank,
   imageUrl,
   buttonSize = "md",
   buttonVariant = "flat",
@@ -40,8 +38,6 @@ export const ShareButton = ({
         playerName,
         points,
         title,
-        gameTitle,
-        rank,
         imageUrl,
       };
 
@@ -69,8 +65,6 @@ export const ShareButton = ({
         playerName,
         points,
         title,
-        gameTitle,
-        rank,
         imageUrl,
       };
 
@@ -98,8 +92,6 @@ export const ShareButton = ({
         playerName,
         points,
         title,
-        gameTitle,
-        rank,
         imageUrl,
       };
 

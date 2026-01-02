@@ -27,7 +27,7 @@ const DashboardPage = () => {
         result.user.firstName && result.user.lastName
           ? `${result.user.firstName} ${result.user.lastName}`
           : result.user.username,
-      skillInterest: result.user.username || "Player",
+      username: result.user.username || "Player",
       location: "Nigeria",
       xp: result.point,
       title: getTitleFromPoints(result.point),

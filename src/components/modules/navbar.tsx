@@ -55,14 +55,14 @@ export const Navbar = () => {
               </div>
             </div>
 
-            <Input
+            {/* <Input
               classNames={{
                 mainWrapper: "rounded-full!",
               }}
               placeholder="Search"
               size="sm"
               startContent={<Search className="w-4 h-4 text-gray-400" />}
-            />
+            /> */}
 
             <div className="hidden md:block">
               <img alt="Reward" className="w-20" src="/images/reward.png" />

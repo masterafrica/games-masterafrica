@@ -66,8 +66,6 @@ export const WinLineBannerWithShare = ({
                 playerName={playerName}
                 points={points}
                 title="Master Africa Games"
-                rank={rank}
-                gameTitle="Daily Challenge Win"
                 buttonSize="sm"
                 buttonVariant="solid"
               />
