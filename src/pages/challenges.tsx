@@ -1,43 +1,10 @@
 import { GiftIcon } from "lucide-react";
-import Lottie from "lottie-react";
 
 import { ChallengeCard } from "@/components/modules/challenge-card";
 import { WeeklyChallengerBanner } from "@/components/modules/weekly-challenge-banner";
-import { useChallenges } from "@/lib/graphql/hooks/use-challenges";
-import loadingAnimation from "@/assets/lotties/loading.json";
 
 const ChallengesPage = () => {
-  const { challenges, isLoading, hasError } = useChallenges();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-4">
-          <Lottie
-            loop
-            animationData={loadingAnimation}
-            style={{ width: 200, height: 200 }}
-          />
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Loading challenges...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (hasError) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">Error loading challenges</p>
-          <p className="text-gray-600 dark:text-gray-400">
-            Please try refreshing the page
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Hardcoded challenges listing (static)
 
   return (
     <>
@@ -63,31 +30,30 @@ const ChallengesPage = () => {
         </div>
 
         <div className="max-w-6xl px-4 mx-auto space-y-6">
-          {challenges.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-              {challenges.map((challenge) => (
-                <ChallengeCard
-                  key={challenge.gameType}
-                  badge={challenge.badge}
-                  buttonText="Play Now"
-                  currentValue={challenge.currentValue}
-                  description={challenge.description}
-                  maxValue={challenge.maxValue}
-                  points={challenge.points}
-                  progress={challenge.progress}
-                  theme={challenge.theme}
-                  title={challenge.title}
-                  type={challenge.type}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-600 dark:text-gray-400">
-                No challenges available at the moment
-              </p>
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <ChallengeCard
+              description="Compete daily to win real life reward"
+              currentValue="0"
+              maxValue="0"
+              points="Coming soon"
+              progress={0}
+              theme="#9747FF"
+              title="Daily Challenges"
+              type="challenge"
+            />
+
+            <ChallengeCard
+              // buttonText="Check out"
+              description="Check out reward achieved from last wek"
+              currentValue="0"
+              maxValue="0"
+              points="Coming soon"
+              progress={0}
+              theme="#FFD06A"
+              title="Reward"
+              type="reward"
+            />
+          </div>
 
           <WeeklyChallengerBanner />
         </div>

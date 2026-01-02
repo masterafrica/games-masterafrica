@@ -4,14 +4,10 @@ import { ChallengeCard } from "@/components/modules/challenge-card";
 import { WeeklyChallengerBanner } from "@/components/modules/weekly-challenge-banner";
 import { WinLineBanner } from "@/components/modules/win-line-banner";
 import Leaderboard from "@/components/shared/leaderboard";
-import { useGetGameResults, useGetGamerResult } from "@/lib/graphql";
+import { useGetGameResults } from "@/lib/graphql";
 
 const DashboardPage = () => {
   const { data, loading } = useGetGameResults();
-  const dashData = useGetGamerResult({
-    username:"timileyinoyelekan1111111"
-  });
-  console.log(dashData, "data in dashboard");
   const getTitleFromPoints = (points: number) => {
     if (points >= 1500) return "Grand Master";
     if (points >= 1000) return "Master";
@@ -59,21 +55,23 @@ const DashboardPage = () => {
       <div className="max-w-6xl px-4 mx-auto space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ChallengeCard
-            currentValue="3"
             description="Compete daily to win real life reward"
-            maxValue="5"
-            points="50 points"
-            progress={60}
+            currentValue="0"
+            maxValue="0"
+            points="Coming soon"
+            progress={0}
             theme="#9747FF"
             title="Daily Challenges"
             type="challenge"
           />
 
           <ChallengeCard
-            buttonText="Check out"
+            // buttonText="Check out"
             description="Check out reward achieved from last wek"
-            points="50 games Played"
-            progress={80}
+            currentValue="0"
+            maxValue="0"
+            points="Coming soon"
+            progress={0}
             theme="#FFD06A"
             title="Reward"
             type="reward"
