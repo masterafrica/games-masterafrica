@@ -7,8 +7,9 @@ import {
   useVerifyAnswer,
   useGetGameLevelInformation,
   useGetGamersCurrentPassedResult,
-  useUpdateGamersResult,
+  useGetGameResults,
 } from "@/lib/graphql";
+import { useAuth } from "@/lib/auth-context";
 
 import Header from "../components/header";
 import Loader, { LoaderRef } from "../components/loader";
@@ -37,6 +38,15 @@ const InterviewQuest = () => {
   const [timeUp, setTimeUp] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Persisted user points
+  const { user } = useAuth();
+  const username = user?.username;
+  const {
+    data: myData,
+    loading: myLoading,
+  } = useGetGameResults(username ? { username } : {});
+  const myPoints = myData?.getGameResults?.[0]?.point || 0;
+
   // Get current passed level to determine starting level
   const { data: passedResultData } = useGetGamersCurrentPassedResult(
     "interviewquest"
@@ -52,8 +62,7 @@ const InterviewQuest = () => {
   // Verify answer hook
   const { verifyAnswer, loading: verifying } = useVerifyAnswer();
 
-  // Update game result hook
-  const { updateGamersResult } = useUpdateGamersResult();
+  // Removed client-side update of gamer result; server-side verification handles scoring
 
   // Initialize level from passed result
   useEffect(() => {
@@ -143,8 +152,8 @@ const InterviewQuest = () => {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
     }
-    // Submit results when time is up
-    await submitResults();
+    // Mark as completed without client-side mutation
+    setGameCompleted(true);
   };
 
   const handleAnswer = async () => {
@@ -167,8 +176,12 @@ const InterviewQuest = () => {
         answer: answerText,
       });
 
-      if (result.data?.VerifyInterviewquestAnswer) {
-        const { correct, expected } = result.data.VerifyInterviewquestAnswer;
+      const verification =
+        (result.data as any)?.VerifyAndScoreRandomQuizAnswer ||
+        (result.data as any)?.VerifyInterviewquestAnswer;
+
+      if (verification) {
+        const { correct, expected } = verification;
 
         if (correct) {
           setScore(score + (levelInfo?.perclick || 10));
@@ -176,13 +189,12 @@ const InterviewQuest = () => {
           setQuestionsAnswered(questionsAnswered + 1);
         } else {
           setIsWrong(true);
-          setExpectedAnswer(expected || null);
+          // Do not reveal the correct answer to the user when they fail
+          setExpectedAnswer(null);
         }
 
-        // After answering one question, submit results
-        setTimeout(() => {
-          submitResults();
-        }, 2000);
+        // After answering, no client-side mutation or auto-complete
+        // User can press Finish or Retry
       }
     } catch (error) {
       console.error("Error verifying answer:", error);
@@ -190,38 +202,7 @@ const InterviewQuest = () => {
     }
   };
 
-  const submitResults = async () => {
-    if (!startTime) return;
-
-    const timeTaken = Math.floor((Date.now() - startTime) / 1000);
-    const finalScore = score;
-    const finalTotalScore = totalScore || 100;
-
-    try {
-      const result = await updateGamersResult({
-        level: currentLevel,
-        score: finalScore,
-        totalscore: finalTotalScore,
-        type: "interviewquest",
-        time: timeTaken,
-      });
-
-      if (result.data?.update_gamers_result) {
-        const { pass } = result.data.update_gamers_result;
-
-        if (pass) {
-          // Level passed, move to next level or complete game
-          setGameCompleted(true);
-          // You might want to show a success screen and allow progression
-        } else {
-          // Level not passed, allow retry
-          setGameCompleted(true);
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting results:", error);
-    }
-  };
+  // Removed submitResults mutation flow; server-side verification handles scoring
 
   const handleStart = async () => {
     setStarted(true);
@@ -340,7 +321,7 @@ const InterviewQuest = () => {
                     Time: {timeUp ? 0 : Math.max(0, (timeLimit || 0) - elapsedTime)}s
                   </p>
                 )}
-                <p>Score: {score}</p>
+                <p>Points: {myLoading ? "..." : myPoints}</p>
               </div>
             </div>
             <div className="flex-1 flex items-center justify-center min-h-[200px]">
@@ -590,13 +571,7 @@ const InterviewQuest = () => {
                 {currentQuestion.question}
               </p>
             </div>
-            {expectedAnswer && (
-              <div className="mb-4 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
-                <p className="text-blue-300 text-sm text-center">
-                  Correct answer: {expectedAnswer}
-                </p>
-              </div>
-            )}
+            {/* Intentionally not displaying the correct answer when user fails */}
             <div className="flex flex-col gap-2 mt-auto">
               <button
                 className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
@@ -639,29 +614,22 @@ const InterviewQuest = () => {
                   "#8B5CF6",
                 ];
                 const isSelected = selectedAnswer === index;
-                const isCorrectAnswer =
-                  expectedAnswer &&
-                  answer.toLowerCase().trim() ===
-                    expectedAnswer.toLowerCase().trim();
 
                 return (
                   <button
                     key={index}
                     className={`w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all ${
-                      isCorrectAnswer ? "ring-4 ring-green-500" : ""
+                      isSelected ? "ring-4 ring-red-500" : ""
                     }`}
                     style={{
                       backgroundColor: answerColors[index % answerColors.length],
-                      opacity: isCorrectAnswer ? 1 : isSelected ? 0.7 : 0.5,
+                      opacity: isSelected ? 0.8 : 0.5,
                     }}
                   >
                     <span className="font-bold mr-2">
                       {String(index + 1).padStart(2, "0")}:
                     </span>
                     {answer}
-                    {isCorrectAnswer && (
-                      <span className="ml-2 text-green-300">✓</span>
-                    )}
                   </button>
                 );
               })}
@@ -676,7 +644,7 @@ const InterviewQuest = () => {
         </div>
       )}
 
-      {gameCompleted && (
+      {gameCompleted && !timeUp && !isCorrect && !isWrong && (
         <div className="min-h-full flex items-center justify-center p-4 md:p-6">
           <div className="bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-8 max-w-2xl w-full">
             <div className="text-center">

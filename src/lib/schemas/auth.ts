@@ -10,6 +10,10 @@ export const loginSchema = Yup.object({
 });
 
 export const signupSchema = Yup.object({
+  username: Yup.string()
+    .required("Username is required")
+    .min(3, "Username must be at least 3 characters")
+    .matches(/^[a-zA-Z0-9_\.]+$/, "Only letters, numbers, underscores and dots are allowed"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),

@@ -45,13 +45,13 @@ import {
   GET_INTERVIEW_QUESTS,
   GET_INTERVIEW_QUEST,
   VERIFY_INTERVIEW_QUEST_ANSWER,
+  VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER,
   GET_WALLET,
 } from "./queries";
 import {
   LOGIN_USER,
   CREATE_USER,
   SETUP_PROFILE,
-  UPDATE_GAMERS_RESULT,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   ADD_INTERVIEW_QUEST,
@@ -163,20 +163,7 @@ export const useGetGameLevelInformation = (level: number, type: string) => {
   });
 };
 
-export const useUpdateGamersResult = () => {
-  const [updateResultMutation, { data, loading, error }] =
-    useMutation<UpdateGameResultResponse>(UPDATE_GAMERS_RESULT);
-
-  const updateGamersResult = async (input: GameResultUpdate) => {
-    const result = await updateResultMutation({
-      variables: { input },
-    });
-
-    return result;
-  };
-
-  return { updateGamersResult, data, loading, error };
-};
+// Removed client-side gamer result mutation; server-side verification now handles scoring
 
 export const useGetGamersCurrentResult = (type: string) => {
   return useQuery<GetGamersCurrentResultResponse>(GET_GAMERS_CURRENT_RESULT, {
@@ -257,8 +244,9 @@ export const useGetInterviewQuest = () => {
 };
 
 export const useVerifyAnswer = () => {
+  // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing
   const [verifyAnswerQuery, { data, loading, error }] =
-    useLazyQuery<VerifyAnswerResponse>(VERIFY_INTERVIEW_QUEST_ANSWER);
+    useLazyQuery<VerifyAnswerResponse>(VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER);
 
   const verifyAnswer = async (input: VerifyAnswerInput) => {
     try {

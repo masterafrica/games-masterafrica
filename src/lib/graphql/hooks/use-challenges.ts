@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useAuth } from "@/lib/auth-context";
 import {
   useGetGameSetting,
   useGetGamersCurrentPassedResult,
@@ -97,7 +98,11 @@ export interface ChallengeData {
 }
 
 export const useChallenges = () => {
-  const { data: gameResultsData, loading: pointsLoading } = useGetGameResults({});
+  const { user } = useAuth();
+  const username = user?.username || undefined;
+  const { data: gameResultsData, loading: pointsLoading } = useGetGameResults(
+    username ? { username } : {}
+  );
 
   // const crosswordSetting = useGetGameSetting("crossword");
   // const crosswordProgress = useGetGamersCurrentPassedResult("crossword");

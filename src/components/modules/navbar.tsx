@@ -49,8 +49,7 @@ export const Navbar = () => {
                   Welcome,
                 </p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {String(user?.username || user?.email).split("@")[0] ||
-                    "Guest"}
+                  {user?.username || "Guest"}
                 </p>
               </div>
             </div>
@@ -64,9 +63,9 @@ export const Navbar = () => {
               startContent={<Search className="w-4 h-4 text-gray-400" />}
             /> */}
 
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <img alt="Reward" className="w-20" src="/images/reward.png" />
-            </div>
+            </div> */}
           </div>
 
           <div className="flex items-center gap-2">

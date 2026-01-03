@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth-context";
 const Header = () => {
   const { user } = useAuth();
 
-  const displayName = user?.username || user?.email || "Guest";
+  const displayName = user?.username || "Guest";
 
   return <div>{displayName}</div>;
 };

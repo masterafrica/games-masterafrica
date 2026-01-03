@@ -1,14 +1,14 @@
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import { AtSign, Key, Phone } from "lucide-react";
+import { AtSign, Key, Phone, User as UserIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
 import { useSignup } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 import { signupSchema } from "@/lib/schemas";
-import { ENUMSKILLGROUP } from "@/lib/graphql/types";
+// import { ENUMSKILLGROUP } from "@/lib/graphql/types"; // commented: skill group selection not used during signup
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const SignupPage = () => {
 
   const formik = useFormik({
     initialValues: {
+      username: "",
       email: "",
       phoneNumber: "",
       password: "",
@@ -28,6 +29,7 @@ const SignupPage = () => {
     onSubmit: async (values) => {
       try {
         const result = await signup({
+          username: values.username,
           email: values.email,
           // phoneNumber: normalizedPhone,
           password: values.password,
@@ -56,6 +58,28 @@ const SignupPage = () => {
       </div>
 
       <form className="space-y-6" onSubmit={formik.handleSubmit}>
+        <div>
+          <Input
+            classNames={{
+              input: "!text-white placeholder:text-white/80",
+              inputWrapper:
+                "bg-purple-900 border-none focus-within:bg-purple-900 focus-within:border-none focus-within:ring-0 focus-within:ring-offset-0 data-[hover=true]:bg-purple-900",
+              label: "text-white/70",
+            }}
+            isInvalid={formik.touched.username && Boolean(formik.errors.username)}
+            label="Username"
+            name="username"
+            placeholder="yourusername"
+            startContent={<UserIcon className="text-white" size={16} />}
+            type="text"
+            value={formik.values.username}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          />
+          {formik.touched.username && formik.errors.username && (
+            <p className="text-red-400 text-xs mt-1">{formik.errors.username}</p>
+          )}
+        </div>
         <div>
           <Input
             classNames={{
@@ -161,6 +185,7 @@ const SignupPage = () => {
           )}
         </div>
 
+        {/*
         <div>
           <label className="text-white/70 text-sm mb-2 block">Skill</label>
           <Input
@@ -181,7 +206,9 @@ const SignupPage = () => {
             <p className="text-red-400 text-xs mt-1">{formik.errors.skill}</p>
           )}
         </div>
+        */}
 
+        {/*
         <div>
           <label className="text-white/70 text-sm mb-2 block">Skill Group</label>
           <select
@@ -213,6 +240,7 @@ const SignupPage = () => {
             </p>
           )}
         </div>
+        */}
 
         {error && <p className="text-red-400 text-sm">{error.message}</p>}
 

@@ -188,3 +188,13 @@ export const VERIFY_INTERVIEW_QUEST_ANSWER = gql`
     }
   }
 `;
+
+// Alternative verification endpoint that also scores on the server
+export const VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER = gql`
+  query VerifyAndScoreRandomQuizAnswer($input: VerifyAnswerInput!) {
+    VerifyAndScoreRandomQuizAnswer(input: $input) {
+      expected
+      correct
+    }
+  }
+`;

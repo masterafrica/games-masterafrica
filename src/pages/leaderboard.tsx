@@ -1,11 +1,22 @@
 import { Tabs, Tab } from "@heroui/tabs";
 
 import { WinLineBanner } from "@/components/modules/win-line-banner";
+import { WinLineBannerWithShare } from "@/components/modules/win-line-banner-with-share";
 import Leaderboard from "@/components/shared/leaderboard";
 import { useGetGameResults } from "@/lib/graphql";
+import { useAuth } from "@/lib/auth-context";
 
 const LeaderboardPage = () => {
+  const { user } = useAuth();
+  const username = user?.username;
+
+  // Global leaderboard
   const { data, loading } = useGetGameResults();
+  // User-specific points
+  const {
+    data: myData,
+    loading: myLoading,
+  } = useGetGameResults(username ? { username } : {});
 
   const getTitleFromPoints = (points: number) => {
     if (points >= 1500) return "Grand Master";
@@ -46,6 +57,17 @@ const LeaderboardPage = () => {
               <div className="my-10">
                 <WinLineBanner />
               </div>
+              {/* Show the user's own points banner if available */}
+              {!myLoading && myData?.getGameResults?.length ? (
+                <div className="mb-6">
+                  <WinLineBannerWithShare
+                    playerName={user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : (user?.username || "Player")}
+                    points={myData.getGameResults[0].point}
+                    title="Your Points"
+                    showShare={true}
+                  />
+                </div>
+              ) : null}
               {loading ? (
                 <div className="text-center py-8">
                   <p className="text-gray-600">Loading leaderboard...</p>
