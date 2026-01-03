@@ -19,6 +19,7 @@ const InterviewQuest = () => {
   const [loading, setLoading] = useState(true);
   const ref = useRef<LoaderRef>(null);
   const [started, setStarted] = useState(false);
+  const [blockedToday, setBlockedToday] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<InterviewQuest | null>(
     null
@@ -27,7 +28,6 @@ const InterviewQuest = () => {
   const [isWrong, setIsWrong] = useState(false);
   const [score, setScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
-  const [expectedAnswer, setExpectedAnswer] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -71,6 +71,15 @@ const InterviewQuest = () => {
       setCurrentLevel(passedLevel + 1); // Start at next level
     }
   }, [passedResultData]);
+
+  // Daily play restriction: block if already played today
+  useEffect(() => {
+    const today = new Date();
+    const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
+    const gameKey = `mag:played:interviewquest:${username || "guest"}:${todayKey}`;
+    const played = localStorage.getItem(gameKey);
+    setBlockedToday(!!played);
+  }, [username]);
 
   // Update level info when it changes
   useEffect(() => {
@@ -138,7 +147,6 @@ const InterviewQuest = () => {
         setSelectedAnswer(null);
         setIsCorrect(false);
         setIsWrong(false);
-        setExpectedAnswer(null);
       }
     } catch (error) {
       console.error("Error fetching question:", error);
@@ -181,7 +189,7 @@ const InterviewQuest = () => {
         (result.data as any)?.VerifyInterviewquestAnswer;
 
       if (verification) {
-        const { correct, expected } = verification;
+        const { correct } = verification;
 
         if (correct) {
           setScore(score + (levelInfo?.perclick || 10));
@@ -189,8 +197,6 @@ const InterviewQuest = () => {
           setQuestionsAnswered(questionsAnswered + 1);
         } else {
           setIsWrong(true);
-          // Do not reveal the correct answer to the user when they fail
-          setExpectedAnswer(null);
         }
 
         // After answering, no client-side mutation or auto-complete
@@ -205,18 +211,23 @@ const InterviewQuest = () => {
   // Removed submitResults mutation flow; server-side verification handles scoring
 
   const handleStart = async () => {
+    if (blockedToday) return;
     setStarted(true);
     setScore(0);
     setQuestionsAnswered(0);
     setGameCompleted(false);
     setTimeUp(false);
     setElapsedTime(0);
+
+    // Mark played today
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const gameKey = `mag:played:interviewquest:${username || "guest"}:${todayKey}`;
+    localStorage.setItem(gameKey, "1");
     await fetchQuestion();
   };
 
   const handleRetry = () => {
     setIsWrong(false);
-    setExpectedAnswer(null);
     setSelectedAnswer(null);
   };
 
@@ -264,44 +275,47 @@ const InterviewQuest = () => {
             <div className="absolute top-8 right-8 w-4 h-4 bg-white rounded-full opacity-20" />
             <div className="absolute bottom-16 right-12 w-24 h-24 bg-white rounded-full opacity-20" />
           </div>
-          <div className="flex flex-col items-center justify-between h-full px-4 w-full">
-            <div className="flex-1">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#E69A17] mb-4 uppercase tracking-wide">
-                  INTERVIEW QUEST
-                </h1>
-                <p className="text-white text-lg md:text-xl mb-2">
-                  Master The Questions.
-                </p>
-                <p className="text-white text-lg md:text-xl">
-                  Unlock Your Future
-                </p>
-                {levelInfo && (
-                  <div className="mt-4 text-white/70">
-                    <p>Level {currentLevel}</p>
-                    {timeLimit && <p>Time Limit: {timeLimit}s</p>}
-                    <p>Pass Threshold: {levelInfo.pass || 50}%</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center justify-center gap-6 md:gap-8 mb-12">
-                <img alt="Icon 1" src="/images/games/interview-Icon.png" />
-              </div>
+          <div className="flex flex-col items-center justify-center h-full px-4 w-full gap-8">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#E69A17] mb-4 uppercase tracking-wide">
+                INTERVIEW QUEST
+              </h1>
+              <p className="text-white text-lg md:text-xl mb-2">Master The Questions.</p>
+              <p className="text-white text-lg md:text-xl">Unlock Your Future</p>
+              {levelInfo && (
+                <div className="mt-4 text-white/70">
+                  <p>Level {currentLevel}</p>
+                  {timeLimit && <p>Time Limit: {timeLimit}s</p>}
+                  <p>Pass Threshold: {levelInfo.pass || 50}%</p>
+                  {blockedToday && (
+                    <p className="mt-2 text-red-300">You've already played today. Come back tomorrow.</p>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="ml-auto">
+            <div className="flex items-center justify-center gap-6 md:gap-8">
+              <img alt="Icon 1" src="/images/games/interview-Icon.png" />
+            </div>
+
+            <div className="text-center">
               <button
                 className="cursor-pointer"
-                disabled={levelInfoLoading}
+                disabled={levelInfoLoading || blockedToday}
                 onClick={handleStart}
               >
-                <img
-                  alt="Play"
-                  className="w-36"
-                  src="/images/games/Interview-play.png"
-                />
+                <img alt="Play" className="w-36" src="/images/games/Interview-play.png" />
               </button>
+              {blockedToday && (
+                <div className="mt-4">
+                  {/* <button
+                    className="text-white font-medium text-base md:text-lg hover:opacity-90 transition-opacity py-2"
+                    onClick={() => navigate("/games")}
+                  >
+                    Return to Games
+                  </button> */}
+                </div>
+              )}
             </div>
           </div>
         </div>
