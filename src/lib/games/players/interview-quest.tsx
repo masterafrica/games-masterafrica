@@ -8,6 +8,7 @@ import {
   useGetGameLevelInformation,
   useGetGamersCurrentPassedResult,
   useGetGameResults,
+  usePickRandomQuizWinnerToday,
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 
@@ -46,6 +47,9 @@ const InterviewQuest = () => {
     loading: myLoading,
   } = useGetGameResults(username ? { username } : {});
   const myPoints = myData?.getGameResults?.[0]?.point || 0;
+
+  const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
+  const winnerUsername = (winnerData as any)?.pickRandomQuizWinnerToday?.user?.username || null;
 
   // Get current passed level to determine starting level
   const { data: passedResultData } = useGetGamersCurrentPassedResult(
@@ -287,6 +291,9 @@ const InterviewQuest = () => {
                   <p>Level {currentLevel}</p>
                   {timeLimit && <p>Time Limit: {timeLimit}s</p>}
                   <p>Pass Threshold: {levelInfo.pass || 50}%</p>
+                  {!winnerLoading && winnerUsername && (
+                    <p className="mt-2">Today's Winner: {winnerUsername}</p>
+                  )}
                   {blockedToday && (
                     <p className="mt-2 text-red-300">You've already played today. Come back tomorrow.</p>
                   )}
@@ -336,6 +343,7 @@ const InterviewQuest = () => {
                   </p>
                 )}
                 <p>Points: {myLoading ? "..." : myPoints}</p>
+                {!winnerLoading && winnerUsername && <p>Winner: {winnerUsername}</p>}
               </div>
             </div>
             <div className="flex-1 flex items-center justify-center min-h-[200px]">

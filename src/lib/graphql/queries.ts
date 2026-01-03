@@ -198,3 +198,17 @@ export const VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER = gql`
     }
   }
 `;
+
+export const PICK_RANDOM_QUIZ_WINNER_TODAY = gql`
+  query PickRandomQuizWinnerToday {
+    pickRandomQuizWinnerToday {
+      id
+      createdAt
+      updatedAt
+      user {
+        username
+      }
+      questionId
+    }
+  }
+`;

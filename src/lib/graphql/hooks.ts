@@ -46,6 +46,7 @@ import {
   GET_INTERVIEW_QUEST,
   VERIFY_INTERVIEW_QUEST_ANSWER,
   VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER,
+  PICK_RANDOM_QUIZ_WINNER_TODAY,
   GET_WALLET,
 } from "./queries";
 import {
@@ -265,6 +266,13 @@ export const useVerifyAnswer = () => {
 export const useGetWallet = (walletId?: string | null) => {
   return useQuery<GetWalletResponse>(GET_WALLET, {
     variables: { walletId: walletId || null },
+  });
+};
+
+export const usePickRandomQuizWinnerToday = () => {
+  return useQuery(PICK_RANDOM_QUIZ_WINNER_TODAY, {
+    fetchPolicy: "network-only",
+    errorPolicy: "all",
   });
 };
 

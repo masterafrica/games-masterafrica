@@ -3,7 +3,7 @@ import { Tabs, Tab } from "@heroui/tabs";
 import { WinLineBanner } from "@/components/modules/win-line-banner";
 import { WinLineBannerWithShare } from "@/components/modules/win-line-banner-with-share";
 import Leaderboard from "@/components/shared/leaderboard";
-import { useGetGameResults } from "@/lib/graphql";
+import { useGetGameResults, usePickRandomQuizWinnerToday } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 
 const LeaderboardPage = () => {
@@ -17,6 +17,10 @@ const LeaderboardPage = () => {
     data: myData,
     loading: myLoading,
   } = useGetGameResults(username ? { username } : {});
+
+  // Today's quiz winner
+  const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
+  const winner = (winnerData as any)?.pickRandomQuizWinnerToday;
 
   const getTitleFromPoints = (points: number) => {
     if (points >= 1500) return "Grand Master";
@@ -57,7 +61,19 @@ const LeaderboardPage = () => {
               <div className="my-10">
                 <WinLineBanner />
               </div>
-              {/* Show the user's own points banner if available */}
+              {!winnerLoading && winner ? (
+                <div className="mb-6 bg-white rounded-xl p-4 md:p-6 border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Today's Quiz Winner</p>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {winner?.user?.username || "Winner"}
+                      </p>
+                    </div>
+                    <div />
+                  </div>
+                </div>
+              ) : null}
               {!myLoading && myData?.getGameResults?.length ? (
                 <div className="mb-6">
                   <WinLineBannerWithShare
