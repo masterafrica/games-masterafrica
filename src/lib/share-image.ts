@@ -17,9 +17,7 @@ export const generateShareImage = async (
   config: ShareImageConfig
 ): Promise<Blob> => {
   const {
-    playerName,
     points,
-    title = "Master Africa Games",
     imageUrl = "/images/image.png",
   } = config;
 
