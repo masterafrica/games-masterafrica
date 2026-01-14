@@ -107,7 +107,21 @@ export const useSetupProfile = () => {
   const [setupProfileMutation, { data, loading, error }] =
     useMutation<SetupProfileResponse>(SETUP_PROFILE);
 
-  const setupProfile = async (setUpProfileInput: SetupProfileInput) => {
+  const setupProfile = async (input: Partial<SetupProfileInput>) => {
+    // Build the input object, filtering out empty optional fields
+    // but always keeping required fields (firstName, lastName, heardPlatform)
+    const setUpProfileInput: Record<string, string> = {};
+    
+    Object.entries(input).forEach(([key, value]) => {
+      // Always include firstName, lastName, heardPlatform (required fields)
+      if (key === "firstName" || key === "lastName" || key === "heardPlatform") {
+        setUpProfileInput[key] = value || "";
+      } else if (value !== null && value !== undefined && value !== "") {
+        // Only include optional fields if they have values
+        setUpProfileInput[key] = value;
+      }
+    });
+
     const result = await setupProfileMutation({
       variables: { setUpProfileInput },
     });

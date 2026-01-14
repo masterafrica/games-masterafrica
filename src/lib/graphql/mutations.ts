@@ -51,7 +51,7 @@ export const CREATE_USER = gql`
 `;
 
 export const SETUP_PROFILE = gql`
-  mutation SetupProfile($setUpProfileInput: SetUpProfileInput!) {
+  mutation SetupProfile($setUpProfileInput: SetupUserInput!) {
     SetupProfile(setUpProfileInput: $setUpProfileInput) {
       id
       firstName
@@ -62,6 +62,7 @@ export const SETUP_PROFILE = gql`
       avatar
       type
       verified
+      phoneNumber
     }
   }
 `;

@@ -11,6 +11,7 @@ import ChallengesPage from "./pages/challenges";
 import GamesPage from "./pages/games";
 import LeaderboardPage from "./pages/leaderboard";
 import PlayGame from "./pages/play";
+import ProfilePage from "./pages/profile";
 import { ProtectedRoute, AuthRoute } from "./components/shared/protected-route";
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route element={<GamesPage />} path="games" />
         <Route element={<PlayGame />} path="games/:id" />
         <Route element={<LeaderboardPage />} path="leaderboard" />
+        <Route element={<ProfilePage />} path="profile" />
       </Route>
     </Routes>
   );

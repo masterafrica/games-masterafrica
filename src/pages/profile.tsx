@@ -1,0 +1,266 @@
+import { useState, useRef } from "react";
+import { Card, CardBody } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Avatar } from "@heroui/avatar";
+import { Mail, Pencil } from "lucide-react";
+
+import { useAuth } from "@/lib/auth-context";
+import { useSetupProfile } from "@/lib/graphql";
+
+const ProfilePage = () => {
+  const { user, setUser } = useAuth();
+  const { setupProfile, loading } = useSetupProfile();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState({
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    campus: "",
+    skill: "",
+    phoneNumber: user?.phoneNumber || "",
+  });
+
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    user?.avatar || null
+  );
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      // firstName, lastName, and heardPlatform are required fields
+      const result = await setupProfile({
+        firstName: formData.firstName || user?.firstName || user?.username || "User",
+        lastName: formData.lastName || user?.lastName || "",
+        heardPlatform: "website",
+        // ...(formData.skill && { skill: formData.skill }),
+        ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
+      });
+
+      if (result.data?.SetupProfile) {
+        // Update local user state
+        const updatedUser = { ...user, ...result.data.SetupProfile };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Recently";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMonths = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24 * 30)
+    );
+
+    if (diffInMonths < 1) return "Recently";
+    if (diffInMonths === 1) return "1 month ago";
+    return `${diffInMonths} months ago`;
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Card className="bg-gray-50 dark:bg-gray-900/50 shadow-sm">
+        <CardBody className="p-6 md:p-10">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
+            <div className="flex items-center gap-4">
+              {/* Avatar with edit button */}
+              <div className="relative">
+                <Avatar
+                  className="w-24 h-24 text-large"
+                  src={
+                    avatarPreview ||
+                    "https://i.pravatar.cc/150?u=a042581f4e29026024d"
+                  }
+                />
+                <button
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                  onClick={handleAvatarClick}
+                >
+                  <Pencil className="w-4 h-4 text-white" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Welcome,
+                </p>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {user?.username || "User"}
+                </h2>
+              </div>
+            </div>
+
+            <Button
+              className="bg-primary/80 text-white font-semibold px-8"
+              isLoading={loading}
+              radius="full"
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+          </div>
+
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                First Name
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="Enter your first name"
+                radius="lg"
+                size="lg"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange("firstName", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Last Name
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="Enter your last name"
+                radius="lg"
+                size="lg"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange("lastName", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Your email
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                isReadOnly
+                placeholder="your@email.com"
+                radius="lg"
+                size="lg"
+                value={user?.email || ""}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Campus
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="Enter your campus"
+                radius="lg"
+                size="lg"
+                value={formData.campus}
+                onChange={(e) => handleInputChange("campus", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Skill
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="e.g. Software Designer"
+                radius="lg"
+                size="lg"
+                value={formData.skill}
+                onChange={(e) => handleInputChange("skill", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Phone Number
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="+234 9047810207"
+                radius="lg"
+                size="lg"
+                value={formData.phoneNumber}
+                onChange={(e) =>
+                  handleInputChange("phoneNumber", e.target.value)
+                }
+              />
+            </div>
+          </div>
+
+          {/* Email Address Section */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+              My email Address
+            </h3>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mail className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {user?.email || "No email set"}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {formatDate(user?.createdAt)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+    </div>
+  );
+};
+
+export default ProfilePage;

@@ -37,11 +37,11 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
+            <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Avatar
                 className="w-10 h-10"
                 size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+                src={user?.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026024d"}
               />
               <div className="hidden sm:block">
                 <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -51,7 +51,7 @@ export const Navbar = () => {
                   {user?.username || "Guest"}
                 </p>
               </div>
-            </div>
+            </Link>
 
             {/* <Input
               classNames={{
