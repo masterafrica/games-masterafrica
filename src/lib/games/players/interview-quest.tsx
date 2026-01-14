@@ -44,19 +44,19 @@ const InterviewQuest = () => {
   // Persisted user points
   const { user } = useAuth();
   const username = user?.username;
-  const {
-    data: myData,
-    loading: myLoading,
-  } = useGetGameResults(username ? { username } : {});
+  const { data: myData, loading: myLoading } = useGetGameResults(
+    username ? { username } : {}
+  );
   const myPoints = myData?.getGameResults?.[0]?.point || 0;
 
-  const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
-  const winnerUsername = winnerData?.pickRandomQuizWinnerToday?.user?.username || null;
+  const { data: winnerData, loading: winnerLoading } =
+    usePickRandomQuizWinnerToday();
+  const winnerUsername =
+    winnerData?.pickRandomQuizWinnerToday?.user?.username || null;
 
   // Get current passed level to determine starting level
-  const { data: passedResultData } = useGetGamersCurrentPassedResult(
-    "interviewquest"
-  );
+  const { data: passedResultData } =
+    useGetGamersCurrentPassedResult("interviewquest");
 
   // Get level information
   const { data: levelInfoData, loading: levelInfoLoading } =
@@ -85,7 +85,7 @@ const InterviewQuest = () => {
       setBlockedToday(false);
       return;
     }
-    
+
     // Challenge mode: only once per day
     const today = new Date();
     const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
@@ -246,6 +246,16 @@ const InterviewQuest = () => {
     setSelectedAnswer(null);
   };
 
+  const handleNextQuestion = async () => {
+    // Reset states and fetch next question
+    setIsCorrect(false);
+    setIsWrong(false);
+    setSelectedAnswer(null);
+    setStartTime(Date.now());
+    setElapsedTime(0);
+    await fetchQuestion();
+  };
+
   const handleFinish = () => {
     navigate("/games");
   };
@@ -295,8 +305,12 @@ const InterviewQuest = () => {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#E69A17] mb-4 uppercase tracking-wide">
                 INTERVIEW QUEST
               </h1>
-              <p className="text-white text-lg md:text-xl mb-2">Master The Questions.</p>
-              <p className="text-white text-lg md:text-xl">Unlock Your Future</p>
+              <p className="text-white text-lg md:text-xl mb-2">
+                Master The Questions.
+              </p>
+              <p className="text-white text-lg md:text-xl">
+                Unlock Your Future
+              </p>
               {levelInfo && (
                 <div className="mt-4 text-white/70">
                   <p>Level {currentLevel}</p>
@@ -306,7 +320,9 @@ const InterviewQuest = () => {
                     <p className="mt-2">Today's Winner: {winnerUsername}</p>
                   )}
                   {blockedToday && (
-                    <p className="mt-2 text-red-300">You've already played today. Come back tomorrow.</p>
+                    <p className="mt-2 text-red-300">
+                      You've already played today. Come back tomorrow.
+                    </p>
                   )}
                 </div>
               )}
@@ -322,7 +338,11 @@ const InterviewQuest = () => {
                 disabled={levelInfoLoading || blockedToday}
                 onClick={handleStart}
               >
-                <img alt="Play" className="w-36" src="/images/games/Interview-play.png" />
+                <img
+                  alt="Play"
+                  className="w-36"
+                  src="/images/games/Interview-play.png"
+                />
               </button>
               {blockedToday && (
                 <div className="mt-4">
@@ -350,11 +370,14 @@ const InterviewQuest = () => {
                 <p>Level {currentLevel}</p>
                 {timeLimit && (
                   <p>
-                    Time: {timeUp ? 0 : Math.max(0, (timeLimit || 0) - elapsedTime)}s
+                    Time:{" "}
+                    {timeUp ? 0 : Math.max(0, (timeLimit || 0) - elapsedTime)}s
                   </p>
                 )}
                 <p>Points: {myLoading ? "..." : myPoints}</p>
-                {!winnerLoading && winnerUsername && <p>Winner: {winnerUsername}</p>}
+                {!winnerLoading && winnerUsername && (
+                  <p>Winner: {winnerUsername}</p>
+                )}
               </div>
             </div>
             <div className="flex-1 flex items-center justify-center min-h-[200px]">
@@ -395,7 +418,8 @@ const InterviewQuest = () => {
                           : "hover:opacity-90"
                       }`}
                       style={{
-                        backgroundColor: answerColors[index % answerColors.length],
+                        backgroundColor:
+                          answerColors[index % answerColors.length],
                       }}
                       onClick={() => {
                         if (!timeUp) {
@@ -458,7 +482,24 @@ const InterviewQuest = () => {
                 {currentQuestion.question}
               </p>
             </div>
-            <button
+            {/* <div className="flex flex-col gap-2 mt-auto">
+              {!fromChallenge && (
+                <button
+                  className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  onClick={handleNextQuestion}
+                  disabled={questionLoading}
+                >
+                  {questionLoading ? "Loading..." : "Next Question"}
+                </button>
+              )}
+              <button
+                className={`w-full ${!fromChallenge ? "text-white font-medium text-base md:text-lg hover:opacity-90 transition-opacity py-2" : "bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"}`}
+                onClick={handleFinish}
+              >
+                {!fromChallenge ? "Exit" : "Finish"}
+              </button>
+            </div> */}
+               <button
               className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
               onClick={handleFinish}
             >
@@ -487,7 +528,8 @@ const InterviewQuest = () => {
                       isSelected ? "ring-4 ring-green-500" : ""
                     }`}
                     style={{
-                      backgroundColor: answerColors[index % answerColors.length],
+                      backgroundColor:
+                        answerColors[index % answerColors.length],
                       opacity: isSelected ? 1 : 0.5,
                     }}
                   >
@@ -561,7 +603,8 @@ const InterviewQuest = () => {
                     key={index}
                     className="w-full rounded-xl md:rounded-2xl p-4 md:p-5 text-left text-white font-medium text-base md:text-lg transition-all opacity-50"
                     style={{
-                      backgroundColor: answerColors[index % answerColors.length],
+                      backgroundColor:
+                        answerColors[index % answerColors.length],
                     }}
                     disabled
                   >
@@ -625,6 +668,15 @@ const InterviewQuest = () => {
                 </svg>
                 Try again
               </button>
+              {!fromChallenge && (
+                <button
+                  className="w-full bg-[#8B5CF6] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity"
+                  onClick={handleNextQuestion}
+                  disabled={questionLoading}
+                >
+                  {questionLoading ? "Loading..." : "Skip to Next Question"}
+                </button>
+              )}
               <button
                 className="w-full text-white font-medium text-base md:text-lg hover:opacity-90 transition-opacity py-2"
                 onClick={handleFinish}
@@ -655,7 +707,8 @@ const InterviewQuest = () => {
                       isSelected ? "ring-4 ring-red-500" : ""
                     }`}
                     style={{
-                      backgroundColor: answerColors[index % answerColors.length],
+                      backgroundColor:
+                        answerColors[index % answerColors.length],
                       opacity: isSelected ? 0.8 : 0.5,
                     }}
                   >
