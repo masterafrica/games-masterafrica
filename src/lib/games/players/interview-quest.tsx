@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import type { InterviewQuest } from "@/lib/graphql/types";
 import {
@@ -17,6 +17,8 @@ import Loader, { LoaderRef } from "../components/loader";
 
 const InterviewQuest = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const fromChallenge = searchParams.get("fromChallenge") === "true";
   const [loading, setLoading] = useState(true);
   const ref = useRef<LoaderRef>(null);
   const [started, setStarted] = useState(false);
@@ -76,14 +78,21 @@ const InterviewQuest = () => {
     }
   }, [passedResultData]);
 
-  // Daily play restriction: block if already played today
+  // Daily play restriction: block if already played today (only when from challenge)
   useEffect(() => {
+    if (!fromChallenge) {
+      // Regular interview quest can be played multiple times
+      setBlockedToday(false);
+      return;
+    }
+    
+    // Challenge mode: only once per day
     const today = new Date();
     const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
-    const gameKey = `mag:played:interviewquest:${username || "guest"}:${todayKey}`;
+    const gameKey = `mag:played:interviewquest:challenge:${username || "guest"}:${todayKey}`;
     const played = localStorage.getItem(gameKey);
     setBlockedToday(!!played);
-  }, [username]);
+  }, [username, fromChallenge]);
 
   // Update level info when it changes
   useEffect(() => {
@@ -223,10 +232,12 @@ const InterviewQuest = () => {
     setTimeUp(false);
     setElapsedTime(0);
 
-    // Mark played today
-    const todayKey = new Date().toISOString().slice(0, 10);
-    const gameKey = `mag:played:interviewquest:${username || "guest"}:${todayKey}`;
-    localStorage.setItem(gameKey, "1");
+    // Mark played today (only for challenge mode)
+    if (fromChallenge) {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const gameKey = `mag:played:interviewquest:challenge:${username || "guest"}:${todayKey}`;
+      localStorage.setItem(gameKey, "1");
+    }
     await fetchQuestion();
   };
 

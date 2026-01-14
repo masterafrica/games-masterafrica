@@ -1,5 +1,6 @@
 import { GiftIcon } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { ChallengeCard } from "@/components/modules/challenge-card";
 import { DailyWinnerPopup } from "@/components/modules/daily-winner-popup";
@@ -9,11 +10,17 @@ import Leaderboard from "@/components/shared/leaderboard";
 import { useGetGameResults, usePickRandomQuizWinnerToday } from "@/lib/graphql";
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   const { data, loading } = useGetGameResults();
   const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
   const [showWinnerPopup, setShowWinnerPopup] = useState(false);
 
   const winnerUsername = winnerData?.pickRandomQuizWinnerToday?.user?.username || null;
+
+  const handleDailyChallengeClick = () => {
+    // Navigate to Interview Quest with challenge flag
+    navigate("/games/2?fromChallenge=true");
+  };
 
   // Show winner popup when data is fetched
   useEffect(() => {
@@ -86,11 +93,12 @@ const DashboardPage = () => {
             description="Compete daily to win real life reward"
             currentValue="0"
             maxValue="0"
-            points="Coming soon"
+            points="Play now"
             progress={0}
             theme="#9747FF"
             title="Daily Challenges"
             type="challenge"
+            onClick={handleDailyChallengeClick}
           />
 
           <ChallengeCard

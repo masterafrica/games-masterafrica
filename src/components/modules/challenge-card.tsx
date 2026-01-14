@@ -16,6 +16,7 @@ interface ChallengeCardProps {
   playerName?: string;
   pointsValue?: number;
   showShare?: boolean;
+  onClick?: () => void;
 }
 
 export const ChallengeCard = ({
@@ -29,6 +30,7 @@ export const ChallengeCard = ({
   buttonText,
   badge,
   theme,
+  onClick,
 }: ChallengeCardProps) => {
   const baseColor = theme || "#9747FF";
   const bg = baseColor + "15";
@@ -41,6 +43,8 @@ export const ChallengeCard = ({
         backgroundColor: bg,
         border: `1px solid ${border}`,
       }}
+      isPressable={!!onClick}
+      onPress={onClick}
     >
       <CardBody className="p-6 md:p-8">
         <div className="flex items-start gap-4 mb-6">
