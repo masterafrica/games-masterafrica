@@ -20,7 +20,7 @@ const PlayGame = () => {
 
       <div className="my-5">
         <div className="flex justify-evenly flex-wrap gap-5">
-          {GAMES.map((game) => (
+          {GAMES.filter((game) => game.id !== parseInt(id)).map((game) => (
             <GameCard
               key={game.id}
               game={{
