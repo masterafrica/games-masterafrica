@@ -26,6 +26,7 @@ import type {
   VerifyAnswerInput,
   VerifyAnswerResponse,
   GetWalletResponse,
+  PickRandomQuizWinnerTodayResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -267,7 +268,7 @@ export const useGetWallet = (walletId?: string | null) => {
 };
 
 export const usePickRandomQuizWinnerToday = () => {
-  return useQuery(PICK_RANDOM_QUIZ_WINNER_TODAY, {
+  return useQuery<PickRandomQuizWinnerTodayResponse>(PICK_RANDOM_QUIZ_WINNER_TODAY, {
     fetchPolicy: "network-only",
     errorPolicy: "all",
   });

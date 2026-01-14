@@ -1,13 +1,27 @@
 import { GiftIcon } from "lucide-react";
+import { useState, useEffect } from "react";
 
 import { ChallengeCard } from "@/components/modules/challenge-card";
+import { DailyWinnerPopup } from "@/components/modules/daily-winner-popup";
 import { WeeklyChallengerBanner } from "@/components/modules/weekly-challenge-banner";
 import { WinLineBanner } from "@/components/modules/win-line-banner";
 import Leaderboard from "@/components/shared/leaderboard";
-import { useGetGameResults } from "@/lib/graphql";
+import { useGetGameResults, usePickRandomQuizWinnerToday } from "@/lib/graphql";
 
 const DashboardPage = () => {
   const { data, loading } = useGetGameResults();
+  const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
+  const [showWinnerPopup, setShowWinnerPopup] = useState(false);
+
+  const winnerUsername = winnerData?.pickRandomQuizWinnerToday?.user?.username || null;
+
+  // Show winner popup when data is fetched
+  useEffect(() => {
+    if (winnerData?.pickRandomQuizWinnerToday && !winnerLoading) {
+      setShowWinnerPopup(true);
+    }
+  }, [winnerData, winnerLoading]);
+
   const getTitleFromPoints = (points: number) => {
     if (points >= 1500) return "Grand Master";
     if (points >= 1000) return "Master";
@@ -31,6 +45,20 @@ const DashboardPage = () => {
 
   return (
     <div className="container mx-auto overflow-hidden">
+      {/* Daily Winner Popup */}
+      <DailyWinnerPopup
+        winner={
+          winnerUsername
+            ? {
+                username: winnerUsername,
+                gameName: "Interview Quest",
+              }
+            : null
+        }
+        isOpen={showWinnerPopup}
+        onClose={() => setShowWinnerPopup(false)}
+      />
+
       <div className="relative mb-12 p-6 px-3 py-12">
         <div className="w-full opacity-50 md:opacity-100 absolute left-[-25%] md:left-[10%]  flex justify-space-between">
           <img alt="" src="/images/asset-1.png" width={120} />

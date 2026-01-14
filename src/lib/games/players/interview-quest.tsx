@@ -49,7 +49,7 @@ const InterviewQuest = () => {
   const myPoints = myData?.getGameResults?.[0]?.point || 0;
 
   const { data: winnerData, loading: winnerLoading } = usePickRandomQuizWinnerToday();
-  const winnerUsername = (winnerData as any)?.pickRandomQuizWinnerToday?.user?.username || null;
+  const winnerUsername = winnerData?.pickRandomQuizWinnerToday?.user?.username || null;
 
   // Get current passed level to determine starting level
   const { data: passedResultData } = useGetGamersCurrentPassedResult(

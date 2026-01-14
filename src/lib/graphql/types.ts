@@ -298,3 +298,17 @@ export interface GetWalletResponse {
 export interface GetWalletInput {
   walletId?: string | null;
 }
+
+export interface RandomQuizWinner {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  questionId: string;
+  user: {
+    username: string;
+  };
+}
+
+export interface PickRandomQuizWinnerTodayResponse {
+  pickRandomQuizWinnerToday: RandomQuizWinner | null;
+}

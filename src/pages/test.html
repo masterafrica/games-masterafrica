@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAG Daily Winner</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: radial-gradient(circle at top, #0b3c5d, #031927);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .card {
+      width: 360px;
+      background: linear-gradient(180deg, #0e4b73, #06293f);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(#ffd700 2px, transparent 2px),
+                        radial-gradient(#00d1ff 2px, transparent 2px),
+                        radial-gradient(#ff6f00 2px, transparent 2px);
+      background-size: 60px 60px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 18px;
+    }
+
+    .winner-box {
+      background: #ffffff;
+      color: #0b3c5d;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .winner-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .info {
+      font-size: 14px;
+      margin: 6px 0;
+    }
+
+    .points {
+      font-weight: bold;
+    }
+
+    .reward {
+      font-weight: bold;
+      color: #0a8f3c;
+    }
+
+    .badge {
+      margin-top: 12px;
+      background: linear-gradient(135deg, #ff9800, #ff5722);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .mascot {
+      margin: 20px 0 10px;
+    }
+
+    .mascot img {
+      width: 140px;
+      height: auto;
+    }
+
+    .footer {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="confetti"></div>
+
+    <div class="title">🎉 CONGRATULATIONS!</div>
+    <div class="subtitle">Interview Quest – Daily Challenge Winner</div>
+
+    <div class="winner-box">
+      <div class="winner-name">WINNER NAME</div>
+
+      <div class="info">
+        Points Earned: <span class="points">1,250 pts ⭐</span>
+      </div>
+
+      <div class="info">
+        Reward Won: <span class="reward">₦2,000</span>
+      </div>
+
+      <div class="badge">Daily Winner</div>
+    </div>
+
+    <div class="mascot">
+      <!-- Replace src with actual MAG mascot image -->
+      <img src="mag-mascot.png" alt="MAG Mascot">
+    </div>
+
+    <div class="footer">PLAY IS POWER</div>
+  </div>
+
+</body>
+</html>
