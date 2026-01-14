@@ -1,10 +1,17 @@
 import { GiftIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { ChallengeCard } from "@/components/modules/challenge-card";
 import { WeeklyChallengerBanner } from "@/components/modules/weekly-challenge-banner";
 
 const ChallengesPage = () => {
   // Hardcoded challenges listing (static)
+  const navigate = useNavigate();
+
+  const handleDailyChallengeClick = () => {
+    // Navigate to Interview Quest with challenge flag
+    navigate("/games/2?fromChallenge=true");
+  };
 
   return (
     <>
@@ -35,11 +42,12 @@ const ChallengesPage = () => {
               description="Compete daily to win real life reward"
               currentValue="0"
               maxValue="0"
-              points="Coming soon"
+              points="Play now"
               progress={0}
               theme="#9747FF"
               title="Daily Challenges"
               type="challenge"
+              onClick={handleDailyChallengeClick}
             />
 
             <ChallengeCard
