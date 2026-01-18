@@ -7,8 +7,6 @@ import {
   useGetInterviewQuest,
   useGetGameLevelInformation,
   useGetGamersCurrentPassedResult,
-  useGetGameResults,
-  usePickRandomQuizWinnerToday,
   useVerifyInterviewQuestAnswer,
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";

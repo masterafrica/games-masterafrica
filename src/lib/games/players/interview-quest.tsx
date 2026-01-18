@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import type { InterviewQuest } from "@/lib/graphql/types";
 import {
   useGetInterviewQuest,
-  useVerifyAnswer,
   useGetGameLevelInformation,
   useGetGamersCurrentPassedResult,
   useGetGameResults,

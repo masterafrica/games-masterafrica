@@ -1,10 +1,6 @@
 import { Button } from "@heroui/button";
-
-import { GameCard, GameTheme } from "@/components/modules/game-card";
-import { GAMES } from "@/config/games";
 import { GameCanvas } from "@/lib/games";
 import { useParams } from "react-router-dom";
-import InterviewQuestModal from "@/components/dailychalanges/games/interview_quest";
 
 const PlayGame = () => {
   const { id } = useParams();
