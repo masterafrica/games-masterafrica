@@ -19,7 +19,7 @@ const DashboardPage = () => {
 
   const handleDailyChallengeClick = () => {
     // Navigate to Interview Quest with challenge flag
-    navigate("/games/2?fromChallenge=true");
+    navigate("/challenge");
   };
 
   // Show winner popup when data is fetched

@@ -9,6 +9,7 @@ import {
   useGetGamersCurrentPassedResult,
   useGetGameResults,
   usePickRandomQuizWinnerToday,
+  useVerifyInterviewQuestAnswer,
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 
@@ -38,6 +39,7 @@ const InterviewQuest = () => {
   const [timeLimit, setTimeLimit] = useState<number | null>(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [getQuestionLoading, setGetQuestionLoading] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -66,7 +68,7 @@ const InterviewQuest = () => {
   const [getQuestion, { loading: questionLoading }] = useGetInterviewQuest();
 
   // Verify answer hook
-  const { verifyAnswer, loading: verifying } = useVerifyAnswer();
+  const { verifyAnswer, loading: verifying } = useVerifyInterviewQuestAnswer();
 
   // Removed client-side update of gamer result; server-side verification handles scoring
 
@@ -145,6 +147,7 @@ const InterviewQuest = () => {
   // Fetch a new random question
   const fetchQuestion = async () => {
     try {
+      setGetQuestionLoading(true)
       const input: any = {
         level: currentLevel.toString(),
       };
@@ -163,6 +166,8 @@ const InterviewQuest = () => {
       }
     } catch (error) {
       console.error("Error fetching question:", error);
+    }finally{
+      setGetQuestionLoading(false)
     }
   };
 
@@ -198,8 +203,9 @@ const InterviewQuest = () => {
       });
 
       const verification =
-        (result.data as any)?.VerifyAndScoreRandomQuizAnswer ||
-        (result.data as any)?.VerifyInterviewquestAnswer;
+        (result.data as any)?.VerifyInterviewquestAnswerAndScore;
+        // ||
+        // (result.data as any)?.VerifyInterviewquestAnswer;
 
       if (verification) {
         const { correct } = verification;
@@ -240,7 +246,14 @@ const InterviewQuest = () => {
     }
     await fetchQuestion();
   };
-
+// useEffect(()=>{
+//   if(isCorrect){
+//     const timeout = setTimeout(() => {  
+//       handleStart()
+//     }, 100);
+//     return () => clearTimeout(timeout);
+//   }
+// })
   const handleRetry = () => {
     setIsWrong(false);
     setSelectedAnswer(null);
@@ -353,7 +366,7 @@ const InterviewQuest = () => {
                     Time: {timeUp ? 0 : Math.max(0, (timeLimit || 0) - elapsedTime)}s
                   </p>
                 )}
-                <p>Points: {myLoading ? "..." : myPoints}</p>
+                <p>Points: {myLoading ? "..." : myPoints.toFixed(2)}</p>
                 {!winnerLoading && winnerUsername && <p>Winner: {winnerUsername}</p>}
               </div>
             </div>
@@ -459,10 +472,17 @@ const InterviewQuest = () => {
               </p>
             </div>
             <button
-              className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
+              className="w-full bg-[red] mb-2 rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
               onClick={handleFinish}
             >
               Finish
+            </button>
+            <button
+            disabled={getQuestionLoading}
+              className="w-full bg-[#27C840] rounded-xl md:rounded-2xl py-4 md:py-5 text-white font-bold text-lg md:text-xl hover:opacity-90 transition-opacity mt-auto"
+              onClick={handleStart}
+            >
+            {getQuestionLoading ? "Loading..." : "Next Question"}
             </button>
           </div>
 

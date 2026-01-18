@@ -4,6 +4,7 @@ import { GameCard, GameTheme } from "@/components/modules/game-card";
 import { GAMES } from "@/config/games";
 import { GameCanvas } from "@/lib/games";
 import { useParams } from "react-router-dom";
+import InterviewQuestModal from "@/components/dailychalanges/games/interview_quest";
 
 const PlayGame = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const PlayGame = () => {
       </div>
 
       <GameCanvas gameId={id} />
-
+{/* 
       <div className="my-5">
         <div className="flex justify-evenly flex-wrap gap-5">
           {GAMES.map((game) => (
@@ -33,7 +34,7 @@ const PlayGame = () => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

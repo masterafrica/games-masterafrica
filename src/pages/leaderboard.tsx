@@ -59,7 +59,7 @@ const LeaderboardPage = () => {
           <Tab key="xp" title="Xp Point">
             <div className="bg-[#F1F1F1] mt-6 p-4 md:p-12 rounded-xl">
               <div className="my-10">
-                <WinLineBanner />
+                {/* <WinLineBanner /> */}
               </div>
               {!winnerLoading && winner ? (
                 <div className="mb-6 bg-white rounded-xl p-4 md:p-6 border border-gray-100">

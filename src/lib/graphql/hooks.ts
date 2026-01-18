@@ -46,6 +46,7 @@ import {
   VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER,
   PICK_RANDOM_QUIZ_WINNER_TODAY,
   GET_WALLET,
+  VERIFY_INTERVIEW_QUEST_ANSWER,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -260,6 +261,24 @@ export const useVerifyAnswer = () => {
   // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing
   const [verifyAnswerQuery, { data, loading, error }] =
     useLazyQuery<VerifyAnswerResponse>(VERIFY_AND_SCORE_RANDOM_QUIZ_ANSWER);
+
+  const verifyAnswer = async (input: VerifyAnswerInput) => {
+    try {
+      const result = await verifyAnswerQuery({
+        variables: { input },
+      });
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return { verifyAnswer, data, loading, error };
+};
+export const useVerifyInterviewQuestAnswer = () => {
+  // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing
+  const [verifyAnswerQuery, { data, loading, error }] =
+    useLazyQuery<VerifyAnswerResponse>(VERIFY_INTERVIEW_QUEST_ANSWER);
 
   const verifyAnswer = async (input: VerifyAnswerInput) => {
     try {

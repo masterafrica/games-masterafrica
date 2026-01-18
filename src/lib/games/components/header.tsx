@@ -29,7 +29,7 @@ const Header = () => {
         />
 
         {/* Right side: Share then Points */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3  ">
           <ShareButton
             playerName={displayName}
             points={myPoints}
@@ -48,7 +48,7 @@ const Header = () => {
             </div>
 
             <span className="relative font-bold text-white text-center text-[20px] ml-12 w-[55px]">
-              {myLoading ? "..." : myPoints}
+              {myLoading ? "..." : myPoints.toFixed(2)}
             </span>
           </div>
         </div>

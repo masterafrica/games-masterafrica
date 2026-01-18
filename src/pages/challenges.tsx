@@ -10,7 +10,8 @@ const ChallengesPage = () => {
 
   const handleDailyChallengeClick = () => {
     // Navigate to Interview Quest with challenge flag
-    navigate("/games/2?fromChallenge=true");
+    // navigate("/games/2?fromChallenge=true");
+    navigate("/challenge");
   };
 
   return (

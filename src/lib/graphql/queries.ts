@@ -182,7 +182,7 @@ export const GET_INTERVIEW_QUEST = gql`
 
 export const VERIFY_INTERVIEW_QUEST_ANSWER = gql`
   query VerifyInterviewquestAnswer($input: VerifyAnswerInput!) {
-    VerifyInterviewquestAnswer(input: $input) {
+    VerifyInterviewquestAnswerAndScore(input: $input) {
       correct
       expected
     }

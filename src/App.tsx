@@ -13,6 +13,7 @@ import LeaderboardPage from "./pages/leaderboard";
 import PlayGame from "./pages/play";
 import ProfilePage from "./pages/profile";
 import { ProtectedRoute, AuthRoute } from "./components/shared/protected-route";
+import ChallengeModelManager from "./components/dailychalanges/challangemodalmanager";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
       >
         <Route index element={<DashboardPage />} />
         <Route element={<ChallengesPage />} path="challenges" />
+        <Route element={<ChallengeModelManager />} path="challenge" />
         <Route element={<GamesPage />} path="games" />
         <Route element={<PlayGame />} path="games/:id" />
         <Route element={<LeaderboardPage />} path="leaderboard" />
