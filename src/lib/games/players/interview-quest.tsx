@@ -14,6 +14,7 @@ import { useAuth } from "@/lib/auth-context";
 
 import Header from "../components/header";
 import Loader, { LoaderRef } from "../components/loader";
+import { ENUMGAMEUSAGETYPES } from "@/enum";
 
 const InterviewQuest = () => {
   const navigate = useNavigate();
@@ -149,6 +150,7 @@ const InterviewQuest = () => {
       setGetQuestionLoading(true)
       const input: any = {
         level: currentLevel.toString(),
+        usageType:ENUMGAMEUSAGETYPES.NORMAL
       };
 
       const result = await getQuestion({

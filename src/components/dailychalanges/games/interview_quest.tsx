@@ -11,6 +11,7 @@ import {
 } from "@/lib/graphql";
 import { useAuth } from "@/lib/auth-context";
 import Loader, { LoaderRef } from "@/lib/games/components/loader";
+import { ENUMGAMEUSAGETYPES } from "@/enum";
 
 const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => 
     localStorage.setItem(`mag:played:interviewquest:challenge:${username || "guest"}:${todayKey}`, "1");
     
     try {
-      const result = await getQuestion({ variables: { input: { level: currentLevel.toString() } } });
+      const result = await getQuestion({ variables: { input: { level: currentLevel.toString() ,usageType:ENUMGAMEUSAGETYPES.DAILY_CHALLENGE} } });
       if (result.data?.GetInterviewQuest) {
         setCurrentQuestion(result.data.GetInterviewQuest);
         setStartTime(Date.now());
