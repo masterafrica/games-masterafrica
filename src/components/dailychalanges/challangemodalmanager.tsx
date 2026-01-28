@@ -36,7 +36,7 @@ const ChallengeManager = () => {
         
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-5xl font-bold text-primary mb-4">
-            Daily Interview <span className="text-[#E69A17]">Quest</span>
+            Daily Pop <span className="text-[#E69A17]">Quiz</span>
           </h1>
           <p className="opacity-80 max-w-lg mx-auto">
             Test your knowledge, earn points, and win a daily prize. 

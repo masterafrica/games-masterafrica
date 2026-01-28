@@ -6,24 +6,28 @@ import { Avatar } from "@heroui/avatar";
 import { Mail, Pencil } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
-import { useSetupProfile } from "@/lib/graphql";
+import { useUpdateUser } from "@/lib/graphql";
+import { uploadProfilePicture } from "@/lib/profile-picture";
 
 const ProfilePage = () => {
   const { user, setUser } = useAuth();
-  const { setupProfile, loading } = useSetupProfile();
+  const { updateUser, loading } = useUpdateUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
-    campus: "",
-    skill: "",
+    username: user?.username || "",
+    // campus: "",
+    // skill: "",
     phoneNumber: user?.phoneNumber || "",
   });
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user?.avatar || null
   );
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -36,6 +40,19 @@ const ProfilePage = () => {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image size should be less than 5MB");
+        return;
+      }
+
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onload = () => {
         setAvatarPreview(reader.result as string);
@@ -46,20 +63,39 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      // firstName, lastName, and heardPlatform are required fields
-      const result = await setupProfile({
-        firstName: formData.firstName || user?.firstName || user?.username || "User",
-        lastName: formData.lastName || user?.lastName || "",
-        heardPlatform: "website",
-        // ...(formData.skill && { skill: formData.skill }),
-        ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
+      let avatarUrl: string | null = null;
+
+      // Upload avatar to server if a new file was selected
+      if (avatarFile) {
+        setUploadingAvatar(true);
+        try {
+          avatarUrl = await uploadProfilePicture(avatarFile);
+        } catch (error) {
+          console.error("Error uploading avatar:", error);
+          alert("Failed to upload avatar. Please try again.");
+          setUploadingAvatar(false);
+          return;
+        } finally {
+          setUploadingAvatar(false);
+        }
+      }
+
+      const result = await updateUser({
+        firstName: formData.firstName || null,
+        lastName: formData.lastName || null,
+        username: formData.username || null,
+        phoneNumber: formData.phoneNumber || null,
+        avatar: avatarUrl || null,
       });
 
-      if (result.data?.SetupProfile) {
+      if (result.data?.updateUser) {
         // Update local user state
-        const updatedUser = { ...user, ...result.data.SetupProfile };
+        const updatedUser = { ...user, ...result.data.updateUser };
         setUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
+        
+        // Clear the avatar file after successful upload
+        setAvatarFile(null);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -122,7 +158,7 @@ const ProfilePage = () => {
 
             <Button
               className="bg-primary/80 text-white font-semibold px-8"
-              isLoading={loading}
+              isLoading={loading || uploadingAvatar}
               radius="full"
               onClick={handleSave}
             >
@@ -185,6 +221,23 @@ const ProfilePage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Username
+              </label>
+              <Input
+                classNames={{
+                  inputWrapper:
+                    "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
+                }}
+                placeholder="Enter your username"
+                radius="lg"
+                size="lg"
+                value={formData.username}
+                onChange={(e) => handleInputChange("username", e.target.value)}
+              />
+            </div>
+
+            {/* <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Campus
               </label>
               <Input
@@ -198,9 +251,9 @@ const ProfilePage = () => {
                 value={formData.campus}
                 onChange={(e) => handleInputChange("campus", e.target.value)}
               />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Skill
               </label>
@@ -215,7 +268,7 @@ const ProfilePage = () => {
                 value={formData.skill}
                 onChange={(e) => handleInputChange("skill", e.target.value)}
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

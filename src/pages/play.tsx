@@ -10,7 +10,7 @@ const PlayGame = () => {
   return (
     <div className="container grid px-4 gap-8 mx-auto m-2">
       <div className="">
-        <Button color="primary">Referral Link</Button>
+        <Button disabled className="cursor-none pointer-events-none opacity-50 " color="primary">Referral Link (Coming Soon)</Button>
       </div>
 
       <GameCanvas gameId={id} />

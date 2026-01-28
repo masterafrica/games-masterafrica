@@ -2,9 +2,10 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { HttpLink } from "@apollo/client/link/http";
 import { setContext } from "@apollo/client/link/context";
 import Cookies from "js-cookie";
+import { BASE_API_URL } from "@/config/site";
 
 const httpLink = new HttpLink({
-  uri: "https://master-api-mun0.onrender.com/graphql",
+  uri: `${BASE_API_URL}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {

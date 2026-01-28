@@ -11,9 +11,11 @@ export interface User {
   username: string;
   firstName?: string;
   lastName?: string;
+  heardPlatform?: string;
   verified?: boolean;
   bio?: string;
   dateOfBirth?: string;
+  phoneCode?: string;
   phoneNumber?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -21,6 +23,27 @@ export interface User {
   type?: string;
   setup?: boolean;
   EmailisVerified?: boolean;
+  isDeleted?: boolean;
+  followerCount?: number;
+  followingCount?: number;
+  CommunityCount?: number;
+  CenterCount?: number;
+  ApprenticeshipCount?: number;
+  isFollowing?: boolean;
+  isBlocked?: boolean;
+  isBlockedByUser?: boolean;
+  skill?: Skill | null;
+}
+
+export interface Skill {
+  id: string;
+  createdAt?: string;
+  updatedAt?: string;
+  isDeleted?: boolean;
+  name?: string;
+  group?: ENUMSKILLGROUP | string;
+  apprentices?: number;
+  masters?: number;
 }
 
 export interface LoginUserInput {
@@ -68,6 +91,20 @@ export interface SignupResponse {
 
 export interface SetupProfileResponse {
   SetupProfile: User;
+}
+
+export interface UpdateUserInput {
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  username?: string | null;
+  phoneNumber?: string | null;
+  avatar?: string | null;
+  phoneCode?: string | null;
+}
+
+export interface UpdateUserResponse {
+  updateUser: User;
 }
 
 export interface GetUserResponse {
