@@ -34,6 +34,10 @@ export const GET_GAME_RESULTS = gql`
         username
         avatar
         email
+        skill{
+        
+        name
+        }
       }
     }
   }
@@ -211,4 +215,19 @@ export const PICK_RANDOM_QUIZ_WINNER_TODAY = gql`
       questionId
     }
   }
+`;
+
+
+export const GETSKILLSQUERY = gql`
+query GetSkills($input:GetSkillsInput!) {
+    GetSkills(input:$input) {
+        hasMore
+        nextPage
+        skills{
+          name
+          id
+          group
+        }
+    }
+}
 `;

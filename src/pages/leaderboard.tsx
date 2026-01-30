@@ -32,6 +32,7 @@ const LeaderboardPage = () => {
 
   const leaderboardData =
     data?.getGameResults.map((result, index) => ({
+      maindata:result,
       rank: index + 1,
       name: result.user.firstName && result.user.lastName
         ? `${result.user.firstName} ${result.user.lastName}`

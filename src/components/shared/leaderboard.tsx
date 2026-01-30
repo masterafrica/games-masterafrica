@@ -64,7 +64,7 @@ const Leaderboard = ({ data }: Props) => {
                         Player
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
-                        Username
+                        Skill
                       </th>
                       <th className="text-left py-3 px-2 text-sm font-semibold text-gray-900 dark:text-white">
                         Location
@@ -99,12 +99,12 @@ const Leaderboard = ({ data }: Props) => {
                         </td>
                         <td className="py-3 px-2">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            {player.name}
+                            {player.username}
                           </span>
                         </td>
                         <td className="py-3 px-2">
                           <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {player.username}
+                            {(player as any)?.maindata?.user?.skill?.name||"N/A"}
                           </span>
                         </td>
                         <td className="py-3 px-2">

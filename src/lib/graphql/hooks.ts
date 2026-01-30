@@ -27,6 +27,11 @@ import type {
   VerifyAnswerResponse,
   GetWalletResponse,
   PickRandomQuizWinnerTodayResponse,
+  getSkillInput,
+  GetSkillsResponse,
+  VerifyOtpInput,
+  User,
+  AuthResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -47,6 +52,7 @@ import {
   PICK_RANDOM_QUIZ_WINNER_TODAY,
   GET_WALLET,
   VERIFY_INTERVIEW_QUEST_ANSWER,
+  GETSKILLSQUERY,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -55,6 +61,8 @@ import {
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   ADD_INTERVIEW_QUEST,
+  VERIFY_OTP,
+  RESENDOTPQUERY,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -65,8 +73,7 @@ export const useGetUser = (id: string) => {
 };
 
 export const useLogin = () => {
-  const [loginMutation, { data, loading, error }] =
-    useMutation<LoginResponse>(LOGIN_USER);
+  const [loginMutation, { data, loading, error }] = useMutation<LoginResponse>(LOGIN_USER);
 
   const login = async (loginUserInput: LoginUserInput) => {
     const result = await loginMutation({
@@ -105,6 +112,7 @@ export const useSignup = () => {
 };
 
 export const useSetupProfile = () => {
+  
   const [setupProfileMutation, { data, loading, error }] =
     useMutation<SetupProfileResponse>(SETUP_PROFILE);
 
@@ -131,6 +139,48 @@ export const useSetupProfile = () => {
   };
 
   return { setupProfile, data, loading, error };
+};
+export const useVerifyOtp = () => {
+
+  const [verifyOtpMutation, { data, loading, error }] =
+    useMutation<User>(VERIFY_OTP);
+
+  const verifyOtp = async (input: Partial<VerifyOtpInput>) => {
+    // Build the input object, filtering out empty optional fields
+    // but always keeping required fields (firstName, lastName, heardPlatform)
+
+
+    const result = await verifyOtpMutation({
+      variables: { input },
+    });
+
+    return result;
+  };
+
+  return { verifyOtp, data, loading, error };
+};
+export const useResendOtp = () => {
+  return useLazyQuery<AuthResponse>(RESENDOTPQUERY, {
+    // variables: { input },
+    errorPolicy: "all",
+    fetchPolicy: "network-only",
+  });
+  // const [resendOtpMutation, { data, loading, error }] =
+  //   useMutation<User>(RESENDOTPQUERY);
+
+  // const resendOtp = async (identifier: string) => {
+  //   // Build the input object, filtering out empty optional fields
+  //   // but always keeping required fields (firstName, lastName, heardPlatform)
+
+
+  //   const result = await resendOtpMutation({
+  //     variables: { identifier },
+  //   });
+
+  //   return result;
+  // };
+
+  // return { resendOtp, data, loading, error };
 };
 
 export const useGetGameResults = (input: GetGameResultsInput = {}) => {
@@ -250,12 +300,32 @@ export const useGetInterviewQuests = (input: GetInterviewQuestsInput = {}) => {
     fetchPolicy: "network-only",
   });
 };
+export const useGetSkills = () => {
+
+  return useLazyQuery<GetSkillsResponse>(GETSKILLSQUERY, {
+    // variables: { input },
+    errorPolicy: "all",
+    fetchPolicy: "network-only",
+  });
+//   let getSkills = async (input: getSkillInput)=>{
+// // useLazyQuery
+//   }
+//   const { mutateAsync, ...getSkillsResult } = useMutation(getSkills);
+
+//   return { getSkills: mutateAsync, getSkillsResult };
+  // return {getSkills}
+};
 
 export const useGetInterviewQuest = () => {
   return useLazyQuery<GetInterviewQuestResponse>(GET_INTERVIEW_QUEST, {
     fetchPolicy: "network-only",
   });
 };
+// export const useGetSkills = () => {
+//   return useLazyQuery<any>(GETSKILLSQUERY, {
+//     fetchPolicy: "network-only",
+//   });
+// };
 
 export const useVerifyAnswer = () => {
   // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing

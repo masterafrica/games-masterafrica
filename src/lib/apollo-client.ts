@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 const httpLink = new HttpLink({
   uri: "https://master-api-mun0.onrender.com/graphql",
+  // uri: "http://localhost:8000/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -46,11 +46,11 @@ const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => 
     }
   }, [passedResultData]);
 
-  useEffect(() => {
-    const todayKey = new Date().toISOString().slice(0, 10);
-    const gameKey = `mag:played:interviewquest:challenge:${username || "guest"}:${todayKey}`;
-    setBlockedToday(!!localStorage.getItem(gameKey));
-  }, [username]);
+  // useEffect(() => {
+  //   // const todayKey = new Date().toISOString().slice(0, 10);
+  //   // const gameKey = `mag:played:interviewquest:challenge:${username || "guest"}:${todayKey}`;
+  //   // setBlockedToday(!!localStorage.getItem(gameKey));
+  // }, [username]);
 
   useEffect(() => {
     if (levelInfoData?.getGameLevelInformation) {

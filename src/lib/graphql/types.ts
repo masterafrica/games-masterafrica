@@ -47,6 +47,23 @@ export interface SetupProfileInput {
   phoneCode?: string;
   phoneNumber?: string;
 }
+export interface VerifyOtpInput {
+  code: string;
+
+ 
+  identifier: string;
+}
+
+
+export interface AuthResponse {
+
+
+
+  success: boolean;
+
+ 
+  message?: string;
+}
 
 export interface LoginResponse {
   loginUser: {
@@ -184,6 +201,19 @@ export interface GetGamersCurrentPassedResultResponse {
   getGamersCurrentPassedResult: GameResultData;
 }
 
+export interface document{
+  id: string;
+}
+
+export interface timestamp{
+    createdAt?: string;
+  updatedAt?: string;
+}
+
+
+export interface document_timestamp extends document ,timestamp{
+
+}
 export interface InterviewQuest {
   id: string;
   question: string;
@@ -230,6 +260,44 @@ export interface GetInterviewQuestsResponse {
     page: number;
     limit: number;
   };
+}
+
+
+export interface  Skills extends document_timestamp{
+
+
+
+
+  
+  isDeleted: boolean;
+
+ 
+  name: string;
+
+  
+  group: string;
+
+  apprentices: number;
+
+  masters: number;
+
+ 
+
+ 
+}
+export interface GetSkillsResponse{
+
+
+
+  hasMore: boolean;
+
+ 
+  nextPage:number
+
+  skills: Skills[];
+  
+
+
 }
 
 export interface GetInterviewQuestInput {
@@ -311,4 +379,14 @@ export interface RandomQuizWinner {
 
 export interface PickRandomQuizWinnerTodayResponse {
   pickRandomQuizWinnerToday: RandomQuizWinner | null;
+}
+
+
+export type getSkillInput =  {
+
+    group: string;
+
+    page:number
+    filter?:string
+
 }

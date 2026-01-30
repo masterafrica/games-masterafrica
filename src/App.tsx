@@ -14,9 +14,13 @@ import PlayGame from "./pages/play";
 import ProfilePage from "./pages/profile";
 import { ProtectedRoute, AuthRoute } from "./components/shared/protected-route";
 import ChallengeModelManager from "./components/dailychalanges/challangemodalmanager";
-
+import { Toaster } from "react-hot-toast";
+import ProfileSetup from "./pages/auth/ProfileSetup";
+import VerifyEmail from "./pages/auth/otp";
+// import Otp from "./pages/auth/otp";
 function App() {
   return (
+    <>
     <Routes>
       <Route
         element={
@@ -28,8 +32,11 @@ function App() {
       >
         <Route element={<LoginPage />} path="login" />
         <Route element={<SignupPage />} path="signup" />
+     
         <Route element={<ForgotPasswordPage />} path="forgot-password" />
         <Route element={<ResetPasswordPage />} path="reset-password" />
+      <Route element={<VerifyEmail />} path="verify-email" />
+      <Route element={<ProfileSetup />} path="profile-setup" />
       </Route>
       <Route
         element={
@@ -39,6 +46,7 @@ function App() {
         }
         path="/"
       >
+           {/* <Route element={<VerifyEmail />} path="verify-email" /> */}
         <Route index element={<DashboardPage />} />
         <Route element={<ChallengesPage />} path="challenges" />
         <Route element={<ChallengeModelManager />} path="challenge" />
@@ -48,6 +56,8 @@ function App() {
         <Route element={<ProfilePage />} path="profile" />
       </Route>
     </Routes>
+       <Toaster position="top-right" reverseOrder={false} />
+    </>
   );
 }
 

@@ -42,7 +42,7 @@ const SignupPage = () => {
             "user",
             JSON.stringify(result.data.createUser.user)
           );
-          navigate("/");
+          navigate("/auth/verify-email");
         }
       } catch {
         return;

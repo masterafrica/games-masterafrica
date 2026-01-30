@@ -25,11 +25,20 @@ const LoginPage = () => {
         const result = await login(values);
 
         if (result.data?.loginUser?.user) {
+          let user = result.data?.loginUser?.user
           setUser(result.data.loginUser.user);
           localStorage.setItem(
             "user",
             JSON.stringify(result.data.loginUser.user),
           );
+          if(!user?.EmailisVerified){
+            navigate("/auth/verify-email");
+            return
+          }
+          if(!user?.setup){
+               navigate("/auth/profile-setup");
+               return
+          }
           navigate("/");
         }
       } catch {

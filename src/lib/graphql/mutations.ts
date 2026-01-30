@@ -113,3 +113,20 @@ export const ADD_INTERVIEW_QUEST = gql`
     }
   }
 `;
+
+
+export const VERIFY_OTP = gql`
+  mutation verifyUser($input: VerifyOtpInput!) {
+    verifyUser(input: $input) {
+      EmailisVerified
+    }
+  }
+`;
+
+export const RESENDOTPQUERY = gql`
+query sendVerificationCode($identifier:String!) {
+    sendVerificationCode(identifier:$identifier) {
+       success
+    }
+}
+`;
