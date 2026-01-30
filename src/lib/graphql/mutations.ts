@@ -67,6 +67,49 @@ export const SETUP_PROFILE = gql`
   }
 `;
 
+export const UPDATE_USER = gql`
+  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
+    updateUser(updateUserInput: $updateUserInput) {
+      id
+      createdAt
+      updatedAt
+      firstName
+      lastName
+      heardPlatform
+      username
+      email
+      bio
+      dateOfBirth
+      phoneCode
+      avatar
+      type
+      verified
+      EmailisVerified
+      phoneNumber
+      setup
+      isDeleted
+      followerCount
+      followingCount
+      CommunityCount
+      CenterCount
+      ApprenticeshipCount
+      isFollowing
+      isBlocked
+      isBlockedByUser
+      # skill {
+      #   id
+      #   createdAt
+      #   updatedAt
+      #   isDeleted
+      #   name
+      #   group
+      #   apprentices
+      #   masters
+      # }
+    }
+  }
+`;
+
 export const UPDATE_GAMERS_RESULT = gql`
   mutation UpdateGamersResult($input: UpdateGamersResultInput!) {
     update_gamers_result(input: $input) {

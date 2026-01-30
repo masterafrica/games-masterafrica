@@ -141,7 +141,7 @@ const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => 
                 <span>Daily Challenge Bonus</span>
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3">Interview Quest</h1>
+                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3">Pop Quiz</h1>
                 <p className="text-slate-500 max-w-md mx-auto">Level {currentLevel}: One question, one shot at glory. Are you ready?</p>
               </div>
               <button

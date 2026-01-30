@@ -6,6 +6,8 @@ import type {
   CreateNewUserInput,
   SetupProfileInput,
   SetupProfileResponse,
+  UpdateUserInput,
+  UpdateUserResponse,
   GetGameResultsInput,
   GetGameResultsResponse,
   GetGamerResultInput,
@@ -58,6 +60,7 @@ import {
   LOGIN_USER,
   CREATE_USER,
   SETUP_PROFILE,
+  UPDATE_USER,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   ADD_INTERVIEW_QUEST,
@@ -181,6 +184,21 @@ export const useResendOtp = () => {
   // };
 
   // return { resendOtp, data, loading, error };
+};
+
+export const useUpdateUser = () => {
+  const [updateUserMutation, { data, loading, error }] =
+    useMutation<UpdateUserResponse>(UPDATE_USER);
+
+  const updateUser = async (input: UpdateUserInput) => {
+    const result = await updateUserMutation({
+      variables: { updateUserInput: input },
+    });
+
+    return result;
+  };
+
+  return { updateUser, data, loading, error };
 };
 
 export const useGetGameResults = (input: GetGameResultsInput = {}) => {
