@@ -29,7 +29,7 @@ import type {
   VerifyAnswerResponse,
   GetWalletResponse,
   PickRandomQuizWinnerTodayResponse,
-  getSkillInput,
+  
   GetSkillsResponse,
   VerifyOtpInput,
   User,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo } from 'react';
+import  { memo } from 'react';
 // import Image from 'next/image';
 // import { SkillDropdown } from '../components/skill-dropdown';
 import { ENUMSKILLGROUP } from '@/lib/graphql';

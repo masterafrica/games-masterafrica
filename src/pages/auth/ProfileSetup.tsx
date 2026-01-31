@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, createContext } from 'react';
+import React, { useState, createContext } from 'react';
 // import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
@@ -161,7 +161,7 @@ const Button = ({
 
 // Main ProfileSetup Component
 const ProfileSetup = () => {
-      const { setupProfile, loading } = useSetupProfile();
+      const { setupProfile, loading:_loading } = useSetupProfile();
   let logout =()=>{}
   // const { logout } = useLogout();
   const navigate = useNavigate();

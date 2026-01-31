@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState } from 'react';
 // import { DropdownList } from './dropdown-list';
 // import { useGetSkills, GetSkillInput } from '@/hooks/use-skills';
 // import { showToast } from '@/utils/toast';

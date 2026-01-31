@@ -2,7 +2,7 @@
 
 import React, {
   forwardRef,
-  memo,
+ 
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -40,7 +40,7 @@ const DropdownList = forwardRef<any, DropdownListProps>(
       onEndReached,
       data: data_,
       onChangeText,
-      ...prop
+      // ...prop
     },
     ref
   ) => {

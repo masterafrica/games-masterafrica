@@ -20,7 +20,7 @@ const LoadingScreen = () => {
 };
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading,user } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -34,7 +34,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading,isAuthenticatedAndVerified } = useAuth();
+  const {  isLoading,isAuthenticatedAndVerified } = useAuth();
 
   if (isLoading) {
     return <LoadingScreen />;

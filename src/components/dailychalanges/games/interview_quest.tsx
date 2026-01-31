@@ -18,7 +18,7 @@ const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => 
   const [loading, setLoading] = useState(true);
   const ref = useRef<LoaderRef>(null);
   const [started, setStarted] = useState(false);
-  const [blockedToday, setBlockedToday] = useState(false);
+  const [blockedToday, _setBlockedToday] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<InterviewQuest | null>(null);
   const [isCorrect, setIsCorrect] = useState(false);

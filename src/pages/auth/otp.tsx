@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 // import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { gql } from '@apollo/client';
+
 import { useNavigate } from 'react-router-dom';
 import { useResendOtp, useVerifyOtp } from '@/lib/graphql';
 import toast from 'react-hot-toast';
@@ -160,7 +160,7 @@ const Otp = () => {
   const DEFAULTTIME = 20;
   const [time, setTime] = useState(DEFAULTTIME);
 //   const [user, setUser] = useRecoilState(userState);
-  const { user, setUser ,logout} = useAuth();
+  const { user, setUser:_st ,logout} = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
 //   const { logout } = useLogout();
 
@@ -172,7 +172,7 @@ const Otp = () => {
 
   const handleSubmit = async (
     data: typeof initialValues,
-    helpers: FormikHelpers<typeof initialValues>
+    _helpers: FormikHelpers<typeof initialValues>
   ) => {
     console.log('muteeee', user);
        try{
