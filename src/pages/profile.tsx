@@ -3,14 +3,15 @@ import { Card, CardBody } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Avatar } from "@heroui/avatar";
-import { Mail, Pencil } from "lucide-react";
+import { Loader, Mail, Pencil, Save, X } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
 import { useUpdateUser } from "@/lib/graphql";
 import { uploadProfilePicture } from "@/lib/profile-picture";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser ,updateUser:updateU} = useAuth();
   const { updateUser, loading } = useUpdateUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,6 +29,7 @@ const ProfilePage = () => {
   );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -42,13 +44,13 @@ const ProfilePage = () => {
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
+        toast.error("Please select an image file");
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+        toast.error("Image size should be less than 5MB");
         return;
       }
 
@@ -61,18 +63,21 @@ const ProfilePage = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleUploadAvatar = async () => {
     try {
-      let avatarUrl: string | null = null;
+      // let avatarUrl: string | null = null;
 
       // Upload avatar to server if a new file was selected
       if (avatarFile) {
         setUploadingAvatar(true);
         try {
-          avatarUrl = await uploadProfilePicture(avatarFile);
+          console.log(avatarFile)
+ let url = await uploadProfilePicture(avatarFile);
+ updateU({avatar:url})
+ setAvatarFile(null)
         } catch (error) {
           console.error("Error uploading avatar:", error);
-          alert("Failed to upload avatar. Please try again.");
+          toast.error("Failed to upload avatar. Please try again.");
           setUploadingAvatar(false);
           return;
         } finally {
@@ -80,12 +85,21 @@ const ProfilePage = () => {
         }
       }
 
+    
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+  const handleSave = async () => {
+    try {
+     
+setUploading(true)
       const result = await updateUser({
         firstName: formData.firstName || null,
         lastName: formData.lastName || null,
         username: formData.username || null,
         phoneNumber: formData.phoneNumber || null,
-        avatar: avatarUrl || null,
+        avatar: user?.avatar  || null,
       });
 
       if (result.data?.updateUser) {
@@ -97,8 +111,11 @@ const ProfilePage = () => {
         // Clear the avatar file after successful upload
         setAvatarFile(null);
       }
-    } catch (error) {
+    } catch (error:any) {
+      toast.error(error?.message||"Error updating profile:")
       console.error("Error updating profile:", error);
+    }finally{
+      setUploading(false)
     }
   };
 
@@ -125,18 +142,57 @@ const ProfilePage = () => {
               {/* Avatar with edit button */}
               <div className="relative">
                 <Avatar
+                onClick={(e)=>{
+                  if(avatarFile){
+handleAvatarClick()
+                  }
+                }}
                   className="w-24 h-24 text-large"
                   src={
                     avatarPreview ||
                     "https://i.pravatar.cc/150?u=a042581f4e29026024d"
                   }
                 />
-                <button
+               {avatarFile? 
+               <>
+               {
+                uploadingAvatar?    
+                
+                 <button
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
+
+                    <Loader className="w-12 h-12 animate-spin text-white" />
+                  </button>
+                :<>
+                
+                
+               <button
+                  className="absolute top-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                  onClick={()=>{
+                    setAvatarFile(null);setAvatarPreview(user?.avatar??null)
+                  }}
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+                  <button
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                  onClick={handleUploadAvatar}
+                >
+                  <Save className="w-4 h-4 text-white" />
+                </button>
+                </>
+               }
+               </>
+                
+                :
+               <button
                   className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
                   onClick={handleAvatarClick}
                 >
                   <Pencil className="w-4 h-4 text-white" />
-                </button>
+                </button> 
+                }
+              
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -158,7 +214,8 @@ const ProfilePage = () => {
 
             <Button
               className="bg-primary/80 text-white font-semibold px-8"
-              isLoading={loading || uploadingAvatar}
+              isLoading={uploading || loading}
+              disabled={loading || uploadingAvatar || uploading}
               radius="full"
               onClick={handleSave}
             >

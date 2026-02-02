@@ -112,7 +112,7 @@ const Slide2 = memo(({ data_, setdata_ }: Slide2Props) => {
       ))}
 
       {/* Content Types */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <p className="text-lg font-medium mb-4 text-white">Content type</p>
         <div className="flex flex-wrap gap-3">
           {contentTypes.map((content, index) => (
@@ -125,7 +125,7 @@ const Slide2 = memo(({ data_, setdata_ }: Slide2Props) => {
             </span>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 });

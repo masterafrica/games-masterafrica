@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  updateUser: (user:Record<string,any>) => void;
   isAuthenticated: boolean;
   isAuthenticatedAndVerified: boolean;
   isLoading: boolean;
@@ -21,8 +22,22 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser_] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const updateUser = (data:Record<string,any>)=>{
+    setUser_((state:any)=>{
+      let data_ = {...(state||{}),...(data||{})}
+        localStorage.setItem("user",JSON.stringify(data_))
+      return data_
+    })
+  }
+  const setUser = (data:User|null)=>{
+    setUser_(data as any)
+    if(data){
+
+      localStorage.setItem("user",JSON.stringify(data))
+    }
+  }
 
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
@@ -51,7 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, isAuthenticated, isLoading, logout ,isAuthenticatedAndVerified}}
+      value={{ user, setUser, isAuthenticated, isLoading, logout ,isAuthenticatedAndVerified,updateUser}}
     >
       {children}
     </AuthContext.Provider>

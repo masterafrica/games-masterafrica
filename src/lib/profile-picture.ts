@@ -9,7 +9,9 @@ export const uploadProfilePicture = async (file: File): Promise<string> => {
 
   const uploadUrl = `${BASE_API_URL}/files/upload-profile-picture`;
 
-  const headers: HeadersInit = {};
+  const headers: HeadersInit = {
+    // "Content-Type":"Application/json"
+  };
   if (token) {
     headers.authorization = `Bearer ${token}`;
   }
