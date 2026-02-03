@@ -142,7 +142,7 @@ setUploading(true)
               {/* Avatar with edit button */}
               <div className="relative">
                 <Avatar
-                onClick={(e)=>{
+                onClick={()=>{
                   if(avatarFile){
 handleAvatarClick()
                   }

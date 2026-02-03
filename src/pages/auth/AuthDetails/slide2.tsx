@@ -22,15 +22,15 @@ interface Slide2Props {
   data_: DataType;
 }
 
-const contentTypes = [
-  { name: 'Online courses', bg: 'purple-500' },
-  { name: 'Stock Videos', bg: 'green-500' },
-  { name: 'Podcast', bg: 'yellow-500' },
-  { name: 'Edutainment short film', bg: 'blue-500' },
-  { name: 'Education games', bg: 'orange-500' },
-  { name: 'Reels', bg: 'pink-500' },
-  { name: 'News & Current affairs', bg: 'pink-600' },
-];
+// const _contentTypes_ = [
+//   { name: 'Online courses', bg: 'purple-500' },
+//   { name: 'Stock Videos', bg: 'green-500' },
+//   { name: 'Podcast', bg: 'yellow-500' },
+//   { name: 'Edutainment short film', bg: 'blue-500' },
+//   { name: 'Education games', bg: 'orange-500' },
+//   { name: 'Reels', bg: 'pink-500' },
+//   { name: 'News & Current affairs', bg: 'pink-600' },
+// ];
 
 const skillGroups = [
   {
