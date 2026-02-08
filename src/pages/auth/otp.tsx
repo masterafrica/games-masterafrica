@@ -189,7 +189,7 @@ const Otp = () => {
           //   return { ...prevData, ...res?.data?.SetupProfile };
           // });
         // localStorage.setItem("user", JSON.stringify(updatedUser));
-           navigate('/profile-setup');
+           navigate('/auth/profile-setup');
       }else{
              toast('an error occurred');
       }
