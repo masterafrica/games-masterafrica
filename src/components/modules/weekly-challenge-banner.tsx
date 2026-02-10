@@ -18,11 +18,11 @@ export const WeeklyChallengerBanner = () => {
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <img alt="MTN logo" src="/images/mtn.png" />
-            <p className="text-xs md:text-sm text-center max-w-[250px] px-2">
+            <img alt="FESTAC PHASE 2"  className="max-w-[600px] object-contain w-full" src="/images/partners/festac-phase-2.jpg" />
+            {/* <p className="text-xs md:text-sm text-center max-w-[250px] px-2">
               This week challenge proudly sponsored by{" "}
               <span className="font-semibold">MTN</span>
-            </p>
+            </p> */}
           </div>
         </div>
       </CardBody>
