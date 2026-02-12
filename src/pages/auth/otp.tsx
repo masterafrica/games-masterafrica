@@ -157,7 +157,7 @@ const Otp = () => {
 //   const { resendOtp, resendOtpResult } = useResendOtp();
   const navigate = useNavigate();
 
-  const DEFAULTTIME = 20;
+  const DEFAULTTIME = 40;
   const [time, setTime] = useState(DEFAULTTIME);
 //   const [user, setUser] = useRecoilState(userState);
   const { user, setUser:_st ,logout} = useAuth();
@@ -235,6 +235,23 @@ const Otp = () => {
     //   });
   };
 
+  let [send,setSend] = useState(false)
+useEffect(()=>{
+let v = async ()=>{
+  try{
+
+    if(!user?.EmailisVerified  && !send){
+      const data = await resendOtp({variables:{identifier:user?.email}});
+      setSend(true)
+    }
+  }catch(e){
+
+  }
+
+}
+
+v()
+},[])
   const handleResendOtp = async () => {
     try {
         if(!user?.email){
