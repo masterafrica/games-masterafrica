@@ -157,7 +157,7 @@ const Otp = () => {
 //   const { resendOtp, resendOtpResult } = useResendOtp();
   const navigate = useNavigate();
 
-  const DEFAULTTIME = 40;
+  const DEFAULTTIME = 60;
   const [time, setTime] = useState(DEFAULTTIME);
 //   const [user, setUser] = useRecoilState(userState);
   const { user, setUser:_st ,logout} = useAuth();

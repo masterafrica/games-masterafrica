@@ -42,6 +42,7 @@ const LeaderboardPage = () => {
       xp: result.point,
       title: getTitleFromPoints(result.point),
     })) || [];
+console.log(myData,"myData.getGameResults",user)
 
   return (
     <div className="relative md:mt-[1%]">
@@ -83,6 +84,12 @@ const LeaderboardPage = () => {
                     title="Your Points"
                     showShare={true}
                   />
+              <div className="bg-gradient-to-r relative from-yellow-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
+              <div className=" ">
+                <p className="font-bold">Skill :</p>
+                <p>{myData.getGameResults[0]?.user?.skill?.name}</p>
+              </div>
+              </div>
                 </div>
               ) : null}
               {loading ? (
