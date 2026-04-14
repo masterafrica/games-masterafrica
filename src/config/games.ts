@@ -13,14 +13,14 @@ export const GAMES: GameWithOffset[] = [
     theme: "yellow",
     offset: "none",
   },
-//   {
-//     id: 2,
-//     title: "Afro IQ",
-//     description: "Sharpening the mind",
-//     image: "/images/games/afro-iq.jpg",
-//     theme: "purple",
-//     offset: "sm",
-//   },
+  {
+    id: 1,
+    title: "Afro IQ",
+    description: "Sharpening the mind",
+    image: "/images/games/afro-iq.jpg",
+    theme: "purple",
+    offset: "sm",
+  },
 //   {
 //     id: 3,
 //     title: "Match the picture",
