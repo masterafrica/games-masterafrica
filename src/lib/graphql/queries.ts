@@ -183,10 +183,38 @@ export const GET_INTERVIEW_QUEST = gql`
     }
   }
 `;
+export const GET_AFROIQ = gql`
+  query GetAfroIq($input: GetAfroIqInput!) {
+    GetAfroIq(input: $input) {
+      id
+     
+   
+      hint
+      images
+      level
+    }
+  }
+`;
 
 export const VERIFY_INTERVIEW_QUEST_ANSWER = gql`
   query VerifyInterviewquestAnswer($input: VerifyAnswerInput!) {
     VerifyInterviewquestAnswerAndScore(input: $input) {
+      correct
+      expected
+    }
+  }
+`;
+export const VERIFY_AFRO_IQ_ANSWER = gql`
+  query VerifyAfroiqAnswer($input: VerifyAnswerInput!) {
+    VerifyAfroiqAnswer(input: $input) {
+      correct
+      expected
+    }
+  }
+`;
+export const VERIFY_AND_SCORE_AFRO_IQ_ANSWER = gql`
+  query VerifyAndScoreAfroiqAnswer($input: VerifyAnswerInput!) {
+    VerifyAndScoreAfroiqAnswer(input: $input) {
       correct
       expected
     }

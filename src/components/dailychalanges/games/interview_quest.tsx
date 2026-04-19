@@ -156,7 +156,7 @@ const InterviewQuestChallengeModal = ({ onClose }: { onClose?: () => void }) => 
 
           {/* 2. ACTIVE QUESTION STATE */}
           {started && !isCorrect && !isWrong && !timeUp && currentQuestion && (
-            <div className="space-y-8">
+            <div className="space-y-8 max-h-[80vh] overflow-y-scroll">
               <div className="flex justify-between items-center border-b pb-6">
                 <div className="flex items-center gap-3 text-primary">
                   <div className="p-3 bg-secondary/10 rounded-xl text-secondary">

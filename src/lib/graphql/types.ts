@@ -266,6 +266,21 @@ export interface InterviewQuest {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface IAfroIq {
+  id: string;
+  question: string;
+  answer?: string; // Hidden from user, shown only after verification
+  options?: string[];
+  hint?: string;
+  images?: string[];
+  level?: string;
+  category?: string; // Legacy field
+  difficulty?: string; // Legacy field
+  correctAnswer?: number; // Legacy field for multiple choice
+  explanation?: string; // Legacy field
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 export interface AddInterviewQuestInput {
   question: string;
@@ -345,6 +360,9 @@ export interface GetInterviewQuestInput {
 
 export interface GetInterviewQuestResponse {
   GetInterviewQuest: InterviewQuest;
+}
+export interface GetAfroIqResponse {
+  GetAfroIq: IAfroIq;
 }
 
 export interface VerifyAnswerInput {

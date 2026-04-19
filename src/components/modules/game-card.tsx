@@ -47,7 +47,7 @@ function themeClasses(theme: GameTheme) {
 
 export function GameCard({ game }: { game: GameCardData }) {
   const t = themeClasses(game.theme);
-
+console.log(game,"gameeee")
   return (
     <Card
       className={`relative ${t.card} w-full flex-1 md:w-auto min-w-[250px] border rounded-2xl px-5 pb-6 pt-10 transition-shadow hover:shadow-md`}

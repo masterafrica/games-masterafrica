@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import InterviewQuest from "./players/interview-quest";
+import Afroiq from "./players/afroiq";
+import MatchPictures from "./players/match-pictures";
 
 export const GameCanvas = ({ gameId: _gameId }: { gameId: string }) => {
   const [dimensions, setDimensions] = useState({
@@ -26,8 +28,8 @@ export const GameCanvas = ({ gameId: _gameId }: { gameId: string }) => {
       className="w-full flex items-start justify-center bg-black mx-auto"
       style={{ minWidth: dimensions.width, minHeight: dimensions.height }}
     >
-      {/* {_gameId === "1" && <Afroiq />} */}
-      {_gameId === "2" && <InterviewQuest />}
+      {_gameId === "1" && <InterviewQuest />}
+      {_gameId === "2" && <Afroiq />}
       {/* {_gameId === "3" && <MatchPictures />} */}
     </div>
   );

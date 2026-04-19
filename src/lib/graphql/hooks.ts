@@ -34,6 +34,8 @@ import type {
   VerifyOtpInput,
   User,
   AuthResponse,
+  IAfroIq,
+  GetAfroIqResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -55,6 +57,9 @@ import {
   GET_WALLET,
   VERIFY_INTERVIEW_QUEST_ANSWER,
   GETSKILLSQUERY,
+  GET_AFROIQ,
+  VERIFY_AFRO_IQ_ANSWER,
+  VERIFY_AND_SCORE_AFRO_IQ_ANSWER,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -339,6 +344,11 @@ export const useGetInterviewQuest = () => {
     fetchPolicy: "network-only",
   });
 };
+export const useGetAfroIq = () => {
+  return useLazyQuery<GetAfroIqResponse>(GET_AFROIQ, {
+    fetchPolicy: "network-only",
+  });
+};
 // export const useGetSkills = () => {
 //   return useLazyQuery<any>(GETSKILLSQUERY, {
 //     fetchPolicy: "network-only",
@@ -367,6 +377,25 @@ export const useVerifyInterviewQuestAnswer = () => {
   // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing
   const [verifyAnswerQuery, { data, loading, error }] =
     useLazyQuery<VerifyAnswerResponse>(VERIFY_INTERVIEW_QUEST_ANSWER);
+
+  const verifyAnswer = async (input: VerifyAnswerInput) => {
+    try {
+      const result = await verifyAnswerQuery({
+        variables: { input },
+      });
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return { verifyAnswer, data, loading, error };
+};
+export const useVerifyAfroIqAnswer = () => {
+  // Prefer the newer VerifyAndScoreRandomQuizAnswer; fallback exists via server routing
+  const [verifyAnswerQuery, { data, loading, error }] =
+    // useLazyQuery<VerifyAnswerResponse>(VERIFY_AFRO_IQ_ANSWER);
+    useLazyQuery<VerifyAnswerResponse>(VERIFY_AND_SCORE_AFRO_IQ_ANSWER);
 
   const verifyAnswer = async (input: VerifyAnswerInput) => {
     try {
