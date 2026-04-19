@@ -195,7 +195,7 @@ const MatchPictures = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 md:gap-4 lg:gap-6">
+              <div className="grid grid-cols-2 gap-4 md:gap-5 lg:gap-8">
                 {cards.map((card, index) => (
                   <button
                     key={index}

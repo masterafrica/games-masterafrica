@@ -726,8 +726,20 @@ const Afroiq = () => {
                   <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 mb-4 md:mb-6">
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 lg:gap-6">
                       {(currentQuestion?.images ?? []).map((img, idx) => (
-                        <div key={idx} className="flex-1 flex items-center justify-center">
-                          <img alt={`Puzzle piece ${idx + 1}`} className="w-full max-w-[100px] sm:max-w-[120px] h-auto object-contain" src={img} />
+                        <div 
+                          key={idx} 
+                          className="flex-1 w-full flex items-center justify-center rounded-lg overflow-hidden"
+                          style={{
+                            backgroundImage: `url(${img})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            minHeight: '150px',
+                            maxHeight: '200px',
+                            height: 'auto',
+                            aspectRatio: '1'
+                          }}
+                        >
                         </div>
                       ))}
                     </div>
