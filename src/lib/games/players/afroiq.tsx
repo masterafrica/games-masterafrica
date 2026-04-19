@@ -479,7 +479,7 @@ import { ENUMGAMEUSAGETYPES } from "@/enum";
 
 import Button from "../components/button";
 import Loader, { LoaderRef } from "../components/loader";
-import Header from "../components/header";
+// import Header from "../components/header";
 import toast from "react-hot-toast";
 
 const Afroiq = () => {
@@ -495,7 +495,7 @@ const Afroiq = () => {
   const [showHint, setShowHint] = useState(false); // Hint Modal State
   
   // Game Logic & Meta
-  const [currentLevel, setCurrentLevel] = useState(1);
+  const [currentLevel, _setCurrentLevel] = useState(1);
   const [levelInfo, setLevelInfo] = useState<any>(null);
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -504,7 +504,7 @@ const Afroiq = () => {
   const [timeUp, setTimeUp] = useState(false);
 
   // Queries/Mutations
-  const [getQuestion, { loading: questionLoading }] = useGetAfroIq();
+  const [getQuestion, { loading: _questionLoading }] = useGetAfroIq();
   const { verifyAnswer, loading: verifying } = useVerifyAfroIqAnswer();
   const { data: levelInfoData } = useGetGameLevelInformation(currentLevel, "afroiq");
   

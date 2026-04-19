@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import InterviewQuest from "./players/interview-quest";
 import Afroiq from "./players/afroiq";
-import MatchPictures from "./players/match-pictures";
+// import MatchPictures from "./players/match-pictures";
 
 export const GameCanvas = ({ gameId: _gameId }: { gameId: string }) => {
   const [dimensions, setDimensions] = useState({

@@ -241,7 +241,7 @@ let v = async ()=>{
   try{
 
     if(!user?.EmailisVerified  && !send){
-      const data = await resendOtp({variables:{identifier:user?.email}});
+       await resendOtp({variables:{identifier:user?.email}});
       setSend(true)
     }
   }catch(e){

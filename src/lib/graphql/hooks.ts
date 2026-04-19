@@ -34,7 +34,7 @@ import type {
   VerifyOtpInput,
   User,
   AuthResponse,
-  IAfroIq,
+  IAfroIq as _,
   GetAfroIqResponse,
 } from "./types";
 
@@ -58,7 +58,7 @@ import {
   VERIFY_INTERVIEW_QUEST_ANSWER,
   GETSKILLSQUERY,
   GET_AFROIQ,
-  VERIFY_AFRO_IQ_ANSWER,
+  VERIFY_AFRO_IQ_ANSWER as _VERIFY_AFRO_IQ_ANSWER,
   VERIFY_AND_SCORE_AFRO_IQ_ANSWER,
 } from "./queries";
 import {
