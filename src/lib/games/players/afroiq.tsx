@@ -482,10 +482,15 @@ import Loader, { LoaderRef } from "../components/loader";
 // import Header from "../components/header";
 import toast from "react-hot-toast";
 
+const SUCCESS_AUDIO_SRC = "/audio/success.mp4";
+const FAIL_AUDIO_SRC = "/audio/fail.mp4";
+
 const Afroiq = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const ref = useRef<LoaderRef>(null);
+  const successAudioRef = useRef<HTMLAudioElement | null>(null);
+  const failAudioRef = useRef<HTMLAudioElement | null>(null);
   
   // Gameplay States
   const [started, setStarted] = useState(false);
@@ -547,6 +552,45 @@ const Afroiq = () => {
     return () => clearTimeout(timeout);
   }, []);
 
+  useEffect(() => {
+    const successAudio = new Audio(SUCCESS_AUDIO_SRC);
+    successAudio.preload = "auto";
+
+    const failAudio = new Audio(FAIL_AUDIO_SRC);
+    failAudio.preload = "auto";
+
+    successAudioRef.current = successAudio;
+    failAudioRef.current = failAudio;
+
+    successAudio.load();
+    failAudio.load();
+
+    return () => {
+      [successAudioRef.current, failAudioRef.current].forEach((audio) => {
+        if (!audio) return;
+        audio.pause();
+        audio.src = "";
+      });
+
+      successAudioRef.current = null;
+      failAudioRef.current = null;
+    };
+  }, []);
+
+  const playAudio = (audio: HTMLAudioElement | null) => {
+    if (!audio) return;
+
+    audio.currentTime = 0;
+    void audio.play().catch((error) => {
+      console.error("Audio playback failed:", error);
+    });
+  };
+
+  useEffect(() => {
+    if (!timeUp || isCorrect || isWrong) return;
+    playAudio(failAudioRef.current);
+  }, [timeUp, isCorrect, isWrong]);
+
   const triggerHint = () => {
     setShowHint(true);
     // Automatically hide after 5 seconds
@@ -599,11 +643,14 @@ const Afroiq = () => {
 
       if (verification?.correct) {
         setScore(score + (levelInfo?.perclick || 10));
+        playAudio(successAudioRef.current);
         setIsCorrect(true);
       } else {
+        playAudio(failAudioRef.current);
         setIsWrong(true);
       }
     } catch (error) {
+      playAudio(failAudioRef.current);
       setIsWrong(true);
     }
   };
