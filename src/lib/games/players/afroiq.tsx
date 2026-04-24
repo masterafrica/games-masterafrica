@@ -752,7 +752,7 @@ const Afroiq = () => {
           {!isCorrect && !isWrong && !timeUp && (
             <>
               {/* Mobile Buttons */}
-              <div className="fixed bottom-6 right-4 z-20 flex flex-col gap-3 md:hidden">
+              <div className=" flex item-center justify-between   z-20 flex flex-cl gap-3 md:hidden md:mt-3">
                 <button className="cursor-pointer">
                   <img alt="Wait" className="w-14 h-14 object-contain" src="/images/games/wait.png" />
                 </button>
