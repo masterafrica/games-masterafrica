@@ -754,10 +754,10 @@ const Afroiq = () => {
               {/* Mobile Buttons */}
               <div className=" flex item-center justify-between   z-20 flex flex-cl gap-3 md:hidden md:mt-3">
                 <button className="cursor-pointer">
-                  <img alt="Wait" className="w-16 h-16 object-contain" src="/images/games/wait.png" />
+                  <img alt="Wait" className="w-20  object-contain" src="/images/games/wait.png" />
                 </button>
                 <button onClick={triggerHint} className="cursor-pointer">
-                  <img alt="Hints" className="w-16 h-16 object-contain" src="/images/games/hint.png" />
+                  <img alt="Hints" className="w-20  object-contain" src="/images/games/hint.png" />
                 </button>
               </div>
 
