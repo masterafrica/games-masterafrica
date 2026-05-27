@@ -365,6 +365,54 @@ export interface GetAfroIqResponse {
   GetAfroIq: IAfroIq;
 }
 
+
+export interface GetWeekStats {
+  
+  totalSignups: number;
+
+  
+  totalLogins: number;
+}
+
+
+export interface GetLoginStats {
+  
+  todayLogins: number;
+
+  
+  todaySignups: number;
+
+
+  totalSignups: number;
+
+  
+  weekstats: GetWeekStats;
+}
+export interface GetLoginStatsResponse {
+  
+ GetLoginStats:GetLoginStats
+}
+
+
+export interface SignupGraphPoint {
+ 
+  date: string;
+
+  
+  totalSignups: number;
+}
+
+
+
+export interface SignupGraphResponse {
+
+  GetSignupGraph: SignupGraphPoint[];
+}
+export interface GetRecentSignUpUsersResponse {
+
+  GetRecentSignups: User[];
+}
+
 export interface VerifyAnswerInput {
   id: string; // Question ID
   answer: string; // User's answer

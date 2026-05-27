@@ -36,6 +36,9 @@ import type {
   AuthResponse,
   IAfroIq as _,
   GetAfroIqResponse,
+  GetLoginStatsResponse,
+  SignupGraphResponse,
+  GetRecentSignUpUsersResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -60,6 +63,9 @@ import {
   GET_AFROIQ,
   VERIFY_AFRO_IQ_ANSWER as _VERIFY_AFRO_IQ_ANSWER,
   VERIFY_AND_SCORE_AFRO_IQ_ANSWER,
+  GET_LOGIN_STATS,
+  GET_SIGNUP_GRAPH,
+  GET_RECENT_SIGNUP_USERS,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -346,6 +352,21 @@ export const useGetInterviewQuest = () => {
 };
 export const useGetAfroIq = () => {
   return useLazyQuery<GetAfroIqResponse>(GET_AFROIQ, {
+    fetchPolicy: "network-only",
+  });
+};
+export const useGetLoginStats = () => {
+  return useLazyQuery<GetLoginStatsResponse>(GET_LOGIN_STATS, {
+    fetchPolicy: "network-only",
+  });
+};
+export const useGetSignUpGraph = () => {
+  return useLazyQuery<SignupGraphResponse>(GET_SIGNUP_GRAPH, {
+    fetchPolicy: "network-only",
+  });
+};
+export const useGetRecentSignUpUsers = () => {
+  return useLazyQuery<GetRecentSignUpUsersResponse>(GET_RECENT_SIGNUP_USERS, {
     fetchPolicy: "network-only",
   });
 };

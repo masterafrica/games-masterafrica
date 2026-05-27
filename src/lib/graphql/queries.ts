@@ -195,6 +195,38 @@ export const GET_AFROIQ = gql`
     }
   }
 `;
+export const GET_LOGIN_STATS = gql`
+query GetLoginStats {
+  GetLoginStats {
+    todayLogins
+    todaySignups
+    totalSignups
+    weekstats {
+      totalSignups
+      totalLogins
+    }
+  }
+}
+`;
+export const GET_SIGNUP_GRAPH = gql`
+query GetSignupGraph {
+  GetSignupGraph {
+    date
+    totalSignups
+  }
+}
+`;
+export const GET_RECENT_SIGNUP_USERS = gql`
+query GetRecentSignups {
+  GetRecentSignups {
+  id
+    createdAt
+    lastName
+    firstName
+    username
+  }
+}
+`;
 
 export const VERIFY_INTERVIEW_QUEST_ANSWER = gql`
   query VerifyInterviewquestAnswer($input: VerifyAnswerInput!) {
