@@ -60,7 +60,7 @@ interface StatCardProps {
   iconColor: string;
 }
 
-const StatCard = ({ icon, label, value, sub, accent, iconColor }: StatCardProps) => (
+const StatCard = ({ icon, label, value, sub, accent, iconColor :_ }: StatCardProps) => (
   <div className="relative rounded-2xl border border-gray-100 bg-white shadow-sm p-6 flex flex-col gap-4 overflow-hidden hover:shadow-md transition-all duration-200">
     <div className={`absolute -top-6 -right-6 w-28 h-28 rounded-full opacity-10 ${accent}`} />
     <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-white ${accent}`}>
@@ -94,9 +94,9 @@ const BarChart = ({ data }: { data: { day: string; value: number }[] }) => {
 
 const AdminUserAnalyticPage = () => {
   const [range] = useState("This Week");
- const [getLoginStats, { loading: getLoginStatsLoading }] = useGetLoginStats();
- const [getSignUpGraph, { loading: getSignUpGraphLoading }] = useGetSignUpGraph();
- const [getRecentSignUpUsers, { loading: getRecentSignUpUsersLoading }] = useGetRecentSignUpUsers();
+ const [getLoginStats, { loading: _getLoginStatsLoading }] = useGetLoginStats();
+ const [getSignUpGraph, { loading: _getSignUpGraphLoading }] = useGetSignUpGraph();
+ const [getRecentSignUpUsers, { loading: _getRecentSignUpUsersLoading }] = useGetRecentSignUpUsers();
  
 const [statsData,setStatsData] = useState({
     todayLogins: 0,
