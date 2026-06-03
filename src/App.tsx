@@ -18,12 +18,14 @@ import { Toaster } from "react-hot-toast";
 import ProfileSetup from "./pages/auth/ProfileSetup";
 import VerifyEmail from "./pages/auth/otp";
 import AdminUserAnalyticPage from "./pages/adminUserAnalyticPage";
+import DonatePage from "./pages/donate";
 // import Otp from "./pages/auth/otp";
 function App() {
   return (
     <>
     <Routes>
       <Route element={<AdminUserAnalyticPage />} path="admin-user-analytic-page" />
+      <Route element={<DonatePage />} path="donate" />
       <Route
         element={
           <AuthRoute>

@@ -1,4 +1,6 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import { Button } from "@heroui/button";
+import { Heart } from "lucide-react";
 
 import { subtitle, title } from "@/components/shared/primitives";
 
@@ -13,6 +15,20 @@ const AuthLayout = () => {
           src="/images/background.png"
         />
       </div>
+
+      {/* Header */}
+      <header className="absolute top-0 inset-x-0 z-20 flex items-center justify-end p-4 lg:p-6">
+        <Button
+          as={Link}
+          className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium"
+          radius="full"
+          startContent={<Heart className="w-4 h-4" />}
+          to="/donate"
+          variant="flat"
+        >
+          Donate
+        </Button>
+      </header>
 
       <div className="relative z-10 min-h-screen flex">
         <div className="w-full flex">
