@@ -19,6 +19,7 @@ import ProfileSetup from "./pages/auth/ProfileSetup";
 import VerifyEmail from "./pages/auth/otp";
 import AdminUserAnalyticPage from "./pages/adminUserAnalyticPage";
 import DonatePage from "./pages/donate";
+import MagChallengePage from "./pages/mag-challenge";
 // import Otp from "./pages/auth/otp";
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
            {/* <Route element={<VerifyEmail />} path="verify-email" /> */}
         <Route index element={<DashboardPage />} />
         <Route element={<ChallengesPage />} path="challenges" />
+        <Route element={<MagChallengePage />} path="mag-challenge" />
         <Route element={<ChallengeModelManager />} path="challenge" />
         <Route element={<GamesPage />} path="games" />
         <Route element={<PlayGame />} path="games/:id" />

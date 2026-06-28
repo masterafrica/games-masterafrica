@@ -14,6 +14,10 @@ const ChallengesPage = () => {
     navigate("/challenge");
   };
 
+  const handleMagChallengeClick = () => {
+    navigate("/mag-challenge");
+  };
+
   return (
     <>
       <div className="relative mb-12 p-6 px-3 py-12">
@@ -49,6 +53,17 @@ const ChallengesPage = () => {
               title="Daily Challenges"
               type="challenge"
               onClick={handleDailyChallengeClick}
+            />
+
+            <ChallengeCard
+              description="Show your talent & win ₦10,000 cash"
+              points="Join now"
+              progress={0}
+              theme="#18F172"
+              title="MAG Challenge"
+              type="challenge"
+              badge="Weekly"
+              onClick={handleMagChallengeClick}
             />
 
             <ChallengeCard
