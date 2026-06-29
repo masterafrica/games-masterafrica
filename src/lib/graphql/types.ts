@@ -281,7 +281,23 @@ export interface IAfroIq {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface SocialPostSubmissionsInput {
 
+
+  url?: string;
+  
+  description?: string;
+
+  title?: string;
+  category?: string;
+
+
+  // @Field(() => [String])
+  // @IsArray({ message: "Please provide at least one skill for this reel" })
+  // skill?: string[];
+
+ 
+}
 export interface AddInterviewQuestInput {
   question: string;
   answer: string;
@@ -296,6 +312,9 @@ export interface AddInterviewQuestInput {
 
 export interface AddInterviewQuestResponse {
   AddInterviewQuest: InterviewQuest;
+}
+export interface SocialPostSubmissionsResponse {
+  SubmitSubmissions: {id:string};
 }
 
 export interface GetInterviewQuestsInput {
@@ -391,6 +410,28 @@ export interface GetLoginStats {
 export interface GetLoginStatsResponse {
   
  GetLoginStats:GetLoginStats
+}
+
+export interface GetSocialPost {
+  user:User,
+  id:string,
+  title?:string
+  description?:string
+  url?:string
+  category?:string
+  createdAt:string
+  updatedAt:string
+
+}
+
+export type GetSocialPostsState = {
+  nextPage: number;
+  hasMore: boolean;
+  data: GetSocialPost[];
+};
+export interface GetSocialPostResponse {
+  
+ GetSubmissions:GetSocialPostsState
 }
 
 

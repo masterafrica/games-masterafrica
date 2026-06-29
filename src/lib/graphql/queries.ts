@@ -208,6 +208,29 @@ query GetLoginStats {
   }
 }
 `;
+export const GET_SOCIAL_POST_SUBMISSIONS = gql`
+query GetSubmissions ($input: GetSocialPostSubmissionsInput!) {
+  GetSubmissions(input: $input) {
+  hasMore
+  nextPage
+  data { 
+  id
+  user{
+  id
+    email
+    firstName
+    lastName
+    }
+title
+description
+url
+category
+createdAt
+updatedAt
+}
+  }
+}
+`;
 export const GET_SIGNUP_GRAPH = gql`
 query GetSignupGraph {
   GetSignupGraph {

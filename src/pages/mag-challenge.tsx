@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Link as LinkIcon,
 } from "lucide-react";
+import { useSubmitSocialPost } from "@/lib/graphql";
 
 const CATEGORIES = [
   {
@@ -87,7 +88,10 @@ const MagChallengePage = () => {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
+
+
+    const { submitPost, loading: submitting,   error: _, } = useSubmitSocialPost();
 
   const handleSubmit = async () => {
     if (!selectedCategory) {
@@ -103,10 +107,20 @@ const MagChallengePage = () => {
       return;
     }
 
-    setSubmitting(true);
+    // setSubmitting(true);
     try {
       // TODO: wire up to backend API
-      await new Promise((r) => setTimeout(r, 1500));
+
+
+
+      await submitPost({
+        url:link,
+        title,
+        description,
+        category:selectedCategory
+
+      })
+      // await new Promise((r) => setTimeout(r, 1500));
       toast.success("Entry submitted! Good luck!");
       setSelectedCategory(null);
       setTitle("");
@@ -115,7 +129,7 @@ const MagChallengePage = () => {
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setSubmitting(false);
+      // setSubmitting(false);
     }
   };
 

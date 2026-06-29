@@ -156,6 +156,14 @@ export const ADD_INTERVIEW_QUEST = gql`
     }
   }
 `;
+export const SUBMISSION_MAG_SOCIAL_POST = gql`
+  mutation SubmitSubmissions($input: SocialPostSubmissionsInput!) {
+    SubmitSubmissions(input: $input) {
+      id
+  
+    }
+  }
+`;
 
 
 export const VERIFY_OTP = gql`

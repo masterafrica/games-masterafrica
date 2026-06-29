@@ -39,6 +39,9 @@ import type {
   GetLoginStatsResponse,
   SignupGraphResponse,
   GetRecentSignUpUsersResponse,
+  SocialPostSubmissionsResponse,
+  SocialPostSubmissionsInput,
+  GetSocialPostResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -66,6 +69,7 @@ import {
   GET_LOGIN_STATS,
   GET_SIGNUP_GRAPH,
   GET_RECENT_SIGNUP_USERS,
+  GET_SOCIAL_POST_SUBMISSIONS,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -77,6 +81,7 @@ import {
   ADD_INTERVIEW_QUEST,
   VERIFY_OTP,
   RESENDOTPQUERY,
+  SUBMISSION_MAG_SOCIAL_POST,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -321,6 +326,20 @@ export const useAddInterviewQuest = () => {
 
   return { addInterviewQuest, data, loading, error };
 };
+export const useSubmitSocialPost = () => {
+  const [submitPostMutation, { data, loading, error }] =
+    useMutation<SocialPostSubmissionsResponse>(SUBMISSION_MAG_SOCIAL_POST);
+
+  const submitPost = async (input: SocialPostSubmissionsInput) => {
+    const result = await submitPostMutation({
+      variables: { input },
+    });
+
+    return result;
+  };
+
+  return { submitPost, data, loading, error };
+};
 
 export const useGetInterviewQuests = (input: GetInterviewQuestsInput = {}) => {
   return useQuery<GetInterviewQuestsResponse>(GET_INTERVIEW_QUESTS, {
@@ -357,6 +376,11 @@ export const useGetAfroIq = () => {
 };
 export const useGetLoginStats = () => {
   return useLazyQuery<GetLoginStatsResponse>(GET_LOGIN_STATS, {
+    fetchPolicy: "network-only",
+  });
+};
+export const useGetSocialPostSubmissions = () => {
+  return useLazyQuery<GetSocialPostResponse>(GET_SOCIAL_POST_SUBMISSIONS, {
     fetchPolicy: "network-only",
   });
 };
