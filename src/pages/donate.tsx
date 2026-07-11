@@ -11,7 +11,6 @@ import {
   MapPin,
   Phone,
   Send,
-  Quote,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -60,31 +59,31 @@ const TESTIMONIALS = [
     name: "Funke Olabanjo",
     role: "Lead Trainer · Lagos",
     tag: "Real Change",
-    img: "/images/donate/test-1.jpg",
+    img: "/images/donate/5.jpg",
   },
   {
     name: "Chukwuemeka Obi",
     role: "Player · Enugu",
     tag: "Leadership",
-    img: "/images/donate/test-2.jpg",
+    img: "/images/donate/6.jpg",
   },
   {
     name: "Adenike Olabisi",
     role: "Mentor · Ibadan",
     tag: "Growth",
-    img: "/images/donate/test-3.jpg",
+    img: "/images/donate/7.jpg",
   },
   {
     name: "Taiwo Adeyemi",
     role: "Developer · Abuja",
     tag: "Opportunity",
-    img: "/images/donate/test-4.jpg",
+    img: "/images/donate/8.jpg",
   },
   {
     name: "Kwabena Poku",
     role: "Coach · Accra",
     tag: "Community",
-    img: "/images/donate/test-5.jpg",
+    img: "/images/donate/1.jpg",
   },
 ];
 
@@ -102,7 +101,7 @@ const DonatePage = () => {
           <img
             alt="Community"
             className="w-full h-full object-cover object-top grayscale"
-            src="/images/donate-img-bg.jpg"
+            src="/images/donate/9.jpg"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/65 to-black/90" />
         </div>
@@ -247,7 +246,7 @@ const DonatePage = () => {
           <img
             alt="Building Africa's Digital Future"
             className="w-full rounded-2xl object-cover"
-            src="/images/building-image.png"
+            src="/images/donate/2.jpg"
           />
         </div>
       </section>
@@ -265,12 +264,10 @@ const DonatePage = () => {
         </div>
 
         <div className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-4">
-          {TESTIMONIALS.map((person, i) => (
+          {TESTIMONIALS.map((person) => (
             <div
               key={person.name}
-              className={`relative rounded-2xl overflow-hidden bg-neutral-800 ${
-                i === 0 ? "col-span-2 md:col-span-1" : ""
-              }`}
+              className="relative rounded-2xl overflow-hidden bg-neutral-800"
             >
               <img
                 alt={person.name}
@@ -280,34 +277,6 @@ const DonatePage = () => {
               <span className="absolute top-3 left-3 text-[10px] font-semibold text-white bg-violet-500 rounded-full px-3 py-1">
                 {person.tag}
               </span>
-              {i === 0 && (
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-                  <Quote className="w-5 h-5 text-violet-400 mb-2" />
-                  <p className="text-xs text-white/90 leading-relaxed mb-3">
-                    Now I train others. This platform didn&apos;t just skill me
-                    up — it gave me purpose.
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center text-[10px] font-bold text-white">
-                      FO
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white">
-                        {person.name}
-                      </p>
-                      <p className="text-[10px] text-white/60">{person.role}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {i !== 0 && (
-                <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-xs font-semibold text-white">
-                    {person.name}
-                  </p>
-                  <p className="text-[10px] text-white/60">{person.role}</p>
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -328,7 +297,7 @@ const DonatePage = () => {
         <img
           alt="Fund A Future Today"
           className="mt-14 w-full rounded-2xl object-cover"
-          src="/images/fund-future.png"
+          src="/images/donate/3.jpg"
         />
 
         <div className="mt-12 flex justify-center">
@@ -362,7 +331,7 @@ const DonatePage = () => {
           <img
             alt="Get in touch"
             className="min-h-[360px] h-full w-full object-cover rounded-2xl"
-            src="/images/contact.png"
+            src="/images/donate/4.jpg"
           />
 
           <ContactForm />
