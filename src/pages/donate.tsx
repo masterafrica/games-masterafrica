@@ -432,8 +432,8 @@ const Footer = () => (
               src="/images/master-logo.png"
             />
           </div>
-          <p className="text-sm text-gray-600">masterafrica@gmail.com</p>
-          <p className="text-sm text-gray-600 mt-1">+458 843 5849</p>
+          <p className="text-sm text-gray-600">masterdotafrica@gmail.com</p>
+          <p className="text-sm text-gray-600 mt-1">08133081773</p>
           <div className="flex items-center gap-3 mt-4 text-violet-600">
             <Instagram className="w-5 h-5" />
             <Linkedin className="w-5 h-5" />
@@ -457,15 +457,15 @@ const Footer = () => (
           <div className="space-y-3 text-sm text-gray-700">
             <p className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-violet-600" />
-              masterafrica@gmail.com
+              masterdotafrica@gmail.com
             </p>
             <p className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-violet-600" />
-              Number 1 Alar street, Yaba, Lagos
+              Number 9 Abadat Banjoko Street, Ebute, Ikorodu Lagos
             </p>
             <p className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-violet-600" />
-              +234 810 5137 361
+              08133081773
             </p>
           </div>
 

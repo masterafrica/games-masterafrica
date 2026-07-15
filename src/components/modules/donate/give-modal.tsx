@@ -125,7 +125,7 @@ export const GiveModal = ({ isOpen, onClose }: GiveModalProps) => {
               <input
                 className="w-full bg-gray-200/80 rounded-full py-3.5 px-5 text-gray-700 placeholder-gray-400 text-sm outline-none focus:ring-2 focus:ring-violet-300 mb-7"
                 inputMode="numeric"
-                placeholder="$ Other"
+                placeholder="₦ Other"
                 type="text"
                 value={customAmount}
                 onChange={(e) => {
