@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: "Challenge", to: "/challenges" },
   { label: "Games", to: "/games" },
   { label: "Leaderboard", to: "/leaderboard" },
+  { label: "FAQ", to: "/faq" },
 ];
 
 export const Navbar = () => {

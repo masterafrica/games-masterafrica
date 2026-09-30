@@ -21,6 +21,7 @@ import AdminUserAnalyticPage from "./pages/adminUserAnalyticPage";
 import DonatePage from "./pages/donate";
 import MagChallengePage from "./pages/mag-challenge";
 import AdminSubmissionsPage from "./pages/AdminSubmissionsPage";
+import FaqPage from "./pages/faq";
 // import Otp from "./pages/auth/otp";
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route element={<AdminUserAnalyticPage />} path="admin-user-analytic-page" />
       <Route element={<AdminSubmissionsPage />} path="social-post-submissions" />
       <Route element={<DonatePage />} path="donate" />
+      <Route element={<FaqPage />} path="faq" />
       <Route
         element={
           <AuthRoute>
