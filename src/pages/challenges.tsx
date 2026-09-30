@@ -67,6 +67,17 @@ const ChallengesPage = () => {
             />
 
             <ChallengeCard
+              description="Tell an African story in one photo & win ₦10,000 + a Power Bank"
+              points="Join now"
+              progress={0}
+              theme="#F59E0B"
+              title="African Story Photography"
+              type="challenge"
+              badge="New"
+              onClick={() => navigate("/photo-challenge")}
+            />
+
+            <ChallengeCard
               // buttonText="Check out"
               description="Check out reward achieved from last wek"
               currentValue="0"

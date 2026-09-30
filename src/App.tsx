@@ -22,6 +22,7 @@ import DonatePage from "./pages/donate";
 import MagChallengePage from "./pages/mag-challenge";
 import AdminSubmissionsPage from "./pages/AdminSubmissionsPage";
 import FaqPage from "./pages/faq";
+import PhotoChallengePage from "./pages/photo-challenge";
 // import Otp from "./pages/auth/otp";
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
         <Route index element={<DashboardPage />} />
         <Route element={<ChallengesPage />} path="challenges" />
         <Route element={<MagChallengePage />} path="mag-challenge" />
+        <Route element={<PhotoChallengePage />} path="photo-challenge" />
         <Route element={<ChallengeModelManager />} path="challenge" />
         <Route element={<GamesPage />} path="games" />
         <Route element={<PlayGame />} path="games/:id" />
