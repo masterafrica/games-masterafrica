@@ -1,3 +1,5 @@
+// graphql1
+
 import type {
   GetUserResponse,
   LoginResponse,
@@ -42,6 +44,31 @@ import type {
   SocialPostSubmissionsResponse,
   SocialPostSubmissionsInput,
   GetSocialPostResponse,
+
+
+
+
+
+
+    GetVotingSubmissionsResponse,
+  // GetVotingSubmissionsInput,
+  ToggleVoteInput,
+  ToggleVoteResponse,
+  // GetLeaderboardInput,
+  GetLeaderboardResponse,
+  // GetMySubmissionsInput,
+  GetMySubmissionsResponse,
+  // GetUserSubmissionsInput,
+  GetUserSubmissionsResponse,
+  // GetVotersInput,
+  GetVotersResponse,
+  SetQualifiedInput,
+  SetQualifiedResponse,
+  GetMyChallengeStatusResponse,
+  GetChallengeStatsResponse,
+  // GetSubmissionResponse,
+  GetPublicSubmissionResponse,
+  GetSubmissionVoteStatusResponse,
 } from "./types";
 
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
@@ -70,6 +97,18 @@ import {
   GET_SIGNUP_GRAPH,
   GET_RECENT_SIGNUP_USERS,
   GET_SOCIAL_POST_SUBMISSIONS,
+
+
+    GET_VOTING_SUBMISSIONS,
+  GET_LEADERBOARD,
+  GET_MY_SUBMISSIONS,
+  GET_USER_SUBMISSIONS,
+  GET_VOTERS,
+  GET_MY_CHALLENGE_STATUS,
+  GET_CHALLENGE_STATS,
+  GET_SUBMISSION,
+  GET_PUBLIC_SUBMISSION,
+  GET_SUBMISSION_VOTE_STATUS,
 } from "./queries";
 import {
   LOGIN_USER,
@@ -82,6 +121,10 @@ import {
   VERIFY_OTP,
   RESENDOTPQUERY,
   SUBMISSION_MAG_SOCIAL_POST,
+
+
+    TOGGLE_VOTE,
+  SET_SUBMISSION_QUALIFIED,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -472,3 +515,170 @@ export const usePickRandomQuizWinnerToday = () => {
 // Re-export useChallenges hook
 export { useChallenges } from "./hooks/use-challenges";
 export type { ChallengeData, GameType } from "./hooks/use-challenges";
+
+
+
+
+// ── single submission page (shareable link)
+// export const useGetSubmission = () => {
+//   return useLazyQuery<GetSubmissionResponse>(GET_SUBMISSION, {
+//     fetchPolicy: "network-only",
+//   });
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ── user side: entries open for voting (+ "did I vote?")
+export const useGetVotingSubmissions = () => {
+  return useLazyQuery<GetVotingSubmissionsResponse>(GET_VOTING_SUBMISSIONS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── user + admin: weekly leaderboard
+export const useGetLeaderboard = () => {
+  return useLazyQuery<GetLeaderboardResponse>(GET_LEADERBOARD, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── user side: my own submissions
+export const useGetMySubmissions = () => {
+  return useLazyQuery<GetMySubmissionsResponse>(GET_MY_SUBMISSIONS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── admin: one user's submissions
+export const useGetUserSubmissions = () => {
+  return useLazyQuery<GetUserSubmissionsResponse>(GET_USER_SUBMISSIONS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── admin: who voted for a user
+export const useGetVoters = () => {
+  return useLazyQuery<GetVotersResponse>(GET_VOTERS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── user dashboard: this week's status (submitted? can I still submit?)
+export const useGetMyChallengeStatus = () => {
+  return useLazyQuery<GetMyChallengeStatusResponse>(GET_MY_CHALLENGE_STATUS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── admin dashboard: this week's headline numbers
+export const useGetChallengeStats = () => {
+  return useLazyQuery<GetChallengeStatsResponse>(GET_CHALLENGE_STATS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── single submission page (shareable link): public, no login needed
+export const useGetPublicSubmission = () => {
+  return useLazyQuery<GetPublicSubmissionResponse>(GET_PUBLIC_SUBMISSION, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── single submission page: only called when the visitor is logged in
+export const useGetSubmissionVoteStatus = () => {
+  return useLazyQuery<GetSubmissionVoteStatusResponse>(GET_SUBMISSION_VOTE_STATUS, {
+    fetchPolicy: "network-only",
+  });
+};
+
+// ── user side: vote / un-vote
+export const useToggleVote = () => {
+  const [toggleVoteMutation, { data, loading, error }] =
+    useMutation<ToggleVoteResponse>(TOGGLE_VOTE);
+
+  const toggleVote = async (input: ToggleVoteInput) => {
+    const result = await toggleVoteMutation({ variables: { input } });
+    return result;
+  };
+
+  return { toggleVote, data, loading, error };
+};
+
+// ── admin: mark an entry qualified / unqualified
+export const useSetSubmissionQualified = () => {
+  const [setQualifiedMutation, { data, loading, error }] =
+    useMutation<SetQualifiedResponse>(SET_SUBMISSION_QUALIFIED);
+
+  const setQualified = async (input: SetQualifiedInput) => {
+    const result = await setQualifiedMutation({ variables: { input } });
+    return result;
+  };
+
+  return { setQualified, data, loading, error };
+};
+
+/* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
+      Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
+      probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
+export type {
+  VotingSubmission,
+  LeaderboardEntry,
+  VoterEntry,
+  Submission,
+  SubUser,
+  ChallengeStatus,
+  ChallengeStats,
+  PublicSubmission,
+  SubmissionVoteStatus,
+} from "./types";
+
+
+// /* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
+//       Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
+//       probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
+// export type {
+//   VotingSubmission,
+//   LeaderboardEntry,
+//   VoterEntry,
+//   Submission,
+//   SubUser,
+//   ChallengeStatus,
+//   ChallengeStats,
+//   SubmissionDetail,
+// } from "./types";
+
+
+
+
+
+/* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
+      Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
+      probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
+// export type {
+//   VotingSubmission,
+//   LeaderboardEntry,
+//   VoterEntry,
+//   Submission,
+//   SubUser,
+// } from "./types";

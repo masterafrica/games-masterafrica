@@ -73,18 +73,12 @@ export interface SetupProfileInput {
 export interface VerifyOtpInput {
   code: string;
 
- 
   identifier: string;
 }
 
-
 export interface AuthResponse {
-
-
-
   success: boolean;
 
- 
   message?: string;
 }
 
@@ -238,19 +232,17 @@ export interface GetGamersCurrentPassedResultResponse {
   getGamersCurrentPassedResult: GameResultData;
 }
 
-export interface document{
+export interface document {
   id: string;
 }
 
-export interface timestamp{
-    createdAt?: string;
+export interface timestamp {
+  createdAt?: string;
   updatedAt?: string;
 }
 
+export interface document_timestamp extends document, timestamp {}
 
-export interface document_timestamp extends document ,timestamp{
-
-}
 export interface InterviewQuest {
   id: string;
   question: string;
@@ -282,21 +274,16 @@ export interface IAfroIq {
   updatedAt?: string;
 }
 export interface SocialPostSubmissionsInput {
-
-
   url?: string;
-  
+
   description?: string;
 
   title?: string;
   category?: string;
 
-
   // @Field(() => [String])
   // @IsArray({ message: "Please provide at least one skill for this reel" })
   // skill?: string[];
-
- 
 }
 export interface AddInterviewQuestInput {
   question: string;
@@ -314,7 +301,7 @@ export interface AddInterviewQuestResponse {
   AddInterviewQuest: InterviewQuest;
 }
 export interface SocialPostSubmissionsResponse {
-  SubmitSubmissions: {id:string};
+  SubmitSubmissions: { id: string };
 }
 
 export interface GetInterviewQuestsInput {
@@ -333,42 +320,23 @@ export interface GetInterviewQuestsResponse {
   };
 }
 
-
-export interface  Skills extends document_timestamp{
-
-
-
-
-  
+export interface Skills extends document_timestamp {
   isDeleted: boolean;
 
- 
   name: string;
 
-  
   group: string;
 
   apprentices: number;
 
   masters: number;
-
- 
-
- 
 }
-export interface GetSkillsResponse{
-
-
-
+export interface GetSkillsResponse {
   hasMore: boolean;
 
- 
-  nextPage:number
+  nextPage: number;
 
   skills: Skills[];
-  
-
-
 }
 
 export interface GetInterviewQuestInput {
@@ -384,44 +352,34 @@ export interface GetAfroIqResponse {
   GetAfroIq: IAfroIq;
 }
 
-
 export interface GetWeekStats {
-  
   totalSignups: number;
 
-  
   totalLogins: number;
 }
 
-
 export interface GetLoginStats {
-  
   todayLogins: number;
 
-  
   todaySignups: number;
-
 
   totalSignups: number;
 
-  
   weekstats: GetWeekStats;
 }
 export interface GetLoginStatsResponse {
-  
- GetLoginStats:GetLoginStats
+  GetLoginStats: GetLoginStats;
 }
 
 export interface GetSocialPost {
-  user:User,
-  id:string,
-  title?:string
-  description?:string
-  url?:string
-  category?:string
-  createdAt:string
-  updatedAt:string
-
+  user: User;
+  id: string;
+  title?: string;
+  description?: string;
+  url?: string;
+  category?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type GetSocialPostsState = {
@@ -430,27 +388,19 @@ export type GetSocialPostsState = {
   data: GetSocialPost[];
 };
 export interface GetSocialPostResponse {
-  
- GetSubmissions:GetSocialPostsState
+  GetSubmissions: GetSocialPostsState;
 }
 
-
 export interface SignupGraphPoint {
- 
   date: string;
 
-  
   totalSignups: number;
 }
 
-
-
 export interface SignupGraphResponse {
-
   GetSignupGraph: SignupGraphPoint[];
 }
 export interface GetRecentSignUpUsersResponse {
-
   GetRecentSignups: User[];
 }
 
@@ -525,12 +475,185 @@ export interface PickRandomQuizWinnerTodayResponse {
   pickRandomQuizWinnerToday: RandomQuizWinner | null;
 }
 
+export type getSkillInput = {
+  group: string;
 
-export type getSkillInput =  {
+  page: number;
+  filter?: string;
+};
 
-    group: string;
+// ═════════════════════════════════════════════════════════════
+//  MAG CHALLENGE: submissions, voting, leaderboard, dashboards
+// ═════════════════════════════════════════════════════════════
 
-    page:number
-    filter?:string
+export interface SubUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
+export interface Submission {
+  id: string;
+  title?: string;
+  url?: string;
+  description?: string;
+  category?: string;
+  qualified: boolean;
+  voteCount: number;
+  createdAt: string;
+  user: SubUser;
+}
+
+export interface PageMeta {
+  hasMore: boolean;
+  nextPage: number;
+}
+
+/* ---- vote list (user side) ---- */
+export interface VotingSubmission {
+  submission: Submission;
+  hasVoted: boolean;
+}
+export interface GetVotingSubmissionsResponse {
+  GetVotingSubmissions: PageMeta & { data: VotingSubmission[] };
+}
+export interface GetVotingSubmissionsInput {
+  page?: number;
+  weekStart?: string;
+  category?: string;
+}
+
+/* ---- toggle vote ---- */
+export interface ToggleVoteInput {
+  submissionId: string;
+}
+export interface ToggleVoteResponse {
+  ToggleVote: { voted: boolean; voteCount: number };
+}
+
+/* ---- leaderboard (user + admin) ---- */
+export interface LeaderboardEntry {
+  rank: number;
+  user: SubUser;
+  voteCount: number;
+  submissionsCount: number;
+  categories: string[];
+  topSubmission?: Submission | null;
+}
+export interface GetLeaderboardInput {
+  page?: number;
+  weekStart?: string;
+  category?: string;
+}
+export interface GetLeaderboardResponse {
+  GetLeaderboard: PageMeta & {
+    data: LeaderboardEntry[];
+    weekStart: string;
+    weekEnd: string;
+  };
+}
+
+/* ---- submissions of a user (mine + admin) ---- */
+export interface UserSubmissionsPage extends PageMeta {
+  user: SubUser;
+  totalSubmissions: number;
+  totalVotes: number;
+  categories: string[];
+  data: Submission[];
+}
+export interface GetMySubmissionsInput {
+  page?: number;
+}
+export interface GetMySubmissionsResponse {
+  GetMySubmissions: UserSubmissionsPage;
+}
+export interface GetUserSubmissionsInput {
+  page?: number;
+  userId: string;
+}
+export interface GetUserSubmissionsResponse {
+  GetUserSubmissions: UserSubmissionsPage;
+}
+
+/* ---- voters (admin) ---- */
+export interface VoterEntry {
+  voter: SubUser;
+  submission: Submission;
+  votedAt: string;
+}
+export interface GetVotersInput {
+  page?: number;
+  userId: string;
+  weekStart?: string;
+}
+export interface GetVotersResponse {
+  GetVoters: PageMeta & { data: VoterEntry[] };
+}
+
+/* ---- qualify (admin) ---- */
+export interface SetQualifiedInput {
+  submissionId: string;
+  qualified: boolean;
+}
+export interface SetQualifiedResponse {
+  SetSubmissionQualified: { id: string; qualified: boolean };
+}
+
+/* ---- user challenge dashboard ---- */
+export interface ChallengeStatus {
+  weekStart: string;
+  weekEnd: string; // exclusive: the following Monday
+  oneSubmissionPerWeek: boolean;
+  hasSubmittedThisWeek: boolean;
+  canSubmit: boolean;
+  entriesThisWeek: number;
+  votesThisWeek: number;
+  entry?: Submission | null;
+}
+export interface GetMyChallengeStatusResponse {
+  GetMyChallengeStatus: ChallengeStatus;
+}
+
+/* ---- admin dashboard: this week's numbers ---- */
+export interface ChallengeStats {
+  weekStart: string;
+  weekEnd: string; // exclusive: the following Monday
+  entriesThisWeek: number;
+  qualifiedThisWeek: number;
+  participantsThisWeek: number;
+  votesThisWeek: number;
+  totalEntries: number;
+}
+export interface GetChallengeStatsResponse {
+  GetChallengeStats: ChallengeStats;
+}
+
+/* ---- single submission page (public link) ---- */
+export interface PublicSubmission {
+  id: string;
+  title?: string | null;
+  url?: string | null;
+  description?: string | null;
+  category?: string | null;
+  qualified: boolean;
+  votingOpen: boolean;
+  voteCount: number;
+  createdAt: string;
+  ownerName: string;
+}
+export interface GetPublicSubmissionResponse {
+  GetPublicSubmission: PublicSubmission;
+}
+export interface SubmissionVoteStatus {
+  hasVoted: boolean;
+  isOwner: boolean;
+  canVote: boolean;
+  voteBlockedReason?: string | null;
+}
+export interface GetSubmissionVoteStatusResponse {
+  GetSubmissionVoteStatus: SubmissionVoteStatus;
+}
+export interface GetSubmissionInput {
+  submissionId: string;
 }

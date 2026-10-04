@@ -1,3 +1,5 @@
+// graphqlquerry
+
 import { gql } from "@apollo/client";
 
 export const LOGIN_USER = gql`
@@ -180,4 +182,27 @@ query sendVerificationCode($identifier:String!) {
        success
     }
 }
+`;
+
+
+
+
+// ➜ APPEND to ./mutations.ts  (gql is already imported there)
+
+export const TOGGLE_VOTE = gql`
+  mutation ToggleVote($input: ToggleVoteInput!) {
+    ToggleVote(input: $input) {
+      voted
+      voteCount
+    }
+  }
+`;
+
+export const SET_SUBMISSION_QUALIFIED = gql`
+  mutation SetSubmissionQualified($input: SetQualifiedInput!) {
+    SetSubmissionQualified(input: $input) {
+      id
+      qualified
+    }
+  }
 `;

@@ -1,4 +1,4 @@
-export const isProduction =true
+export const isProduction =false
 
 export const BASE_API_URL = isProduction?"https://api.masterafrica.com":"http://localhost:8000";
 // export const BASE_API_URL = isProduction?"https://master-api-mun0.onrender.com":"http://localhost:8000";

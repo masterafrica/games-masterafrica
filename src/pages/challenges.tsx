@@ -15,7 +15,7 @@ const ChallengesPage = () => {
   };
 
   const handleMagChallengeClick = () => {
-    navigate("/mag-challenge");
+    navigate("/mag-daily-challenge-hub");
   };
 
   return (

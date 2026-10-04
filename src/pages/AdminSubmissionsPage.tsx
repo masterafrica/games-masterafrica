@@ -472,7 +472,7 @@
 
 // export default AdminSubmissionsPage;
 
-
+// admin side
 
 import {
   GetSocialPost,
