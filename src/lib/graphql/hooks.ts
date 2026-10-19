@@ -137,7 +137,7 @@ import type {
 
 
 
-GetChallengesInput,
+// GetChallengesInput,
  
   GetChallengeSubmissionsResponse,
   CreateChallengeInput,
@@ -185,7 +185,7 @@ import {
   GET_USER_SUBMISSIONS,
   GET_VOTERS,
   GET_MY_CHALLENGE_STATUS,
-  GET_CHALLENGE_STATS,
+  // GET_CHALLENGE_STATS,
   // GET_SUBMISSION,
   GET_PUBLIC_SUBMISSION,
   GET_SUBMISSION_VOTE_STATUS,
