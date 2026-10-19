@@ -1,47 +1,35 @@
-// (1) USER SIDE — vote for entries.  Route: /user/mag-challenge/vote
+
+
+// USER — vote for entries of ONE challenge.  Route: /mag-challenge/:slug/vote  (inside ProtectedRoute / MainLayout)
 import { useState } from "react";
 import { Button } from "@heroui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ArrowLeft, ExternalLink, Heart, Share2, Trophy } from "lucide-react";
-// import ShareModal from "@/components/dailychalanges/ShareModal";
-import {
-  useGetVotingSubmissions,
-  useToggleVote,
-  type VotingSubmission,
-} from "@/lib/graphql";
-import {
-  Avatar,
-  CategoryBadge,
-  CategoryFilter,
-  Spinner,
-  WeekSwitcher,
-  errMsg,
-  mondayOf,
-  usePaginated,
-} from "@/components/dailychalanges/magshared";
+import { useGetVotingSubmissions, useToggleVote, type Challenge, type VotingSubmission } from "@/lib/graphql";
+import { Avatar, CategoryBadge, Spinner, errMsg, usePaginated } from "@/components/dailychalanges/magshared";
 import ShareModal from "@/components/dailychalanges/sharemodal";
 
 const MagVotePage = () => {
+  const { slug = "" } = useParams();
   const navigate = useNavigate();
-  const [week, setWeek] = useState(mondayOf());
-  const [category, setCategory] = useState("");
   const [pending, setPending] = useState<string | null>(null);
   const [share, setShare] = useState<{ id: string; title?: string } | null>(null);
 
   const [getList] = useGetVotingSubmissions();
   const { toggleVote } = useToggleVote();
 
-  const list = usePaginated<VotingSubmission>(
+  const list = usePaginated<VotingSubmission, { challenge: Challenge }>(
     async (page) => {
-      const res = await getList({
-        variables: { input: { page, weekStart: week, category: category || undefined } },
-      });
+      const res = await getList({ variables: { input: { page, slug } } });
       return res.data?.GetVotingSubmissions;
     },
-    [week, category],
+    [slug],
   );
+
+  const challenge = list.meta?.challenge;
+  const closed = !!challenge && !challenge.isOpen;
 
   const handleVote = async (id: string) => {
     setPending(id);
@@ -70,9 +58,9 @@ const MagVotePage = () => {
       <div className="container mx-auto px-4 py-6">
         <button
           className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary mb-6"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/mag-challenge/${slug}`)}
         >
-          <ArrowLeft className="w-4 h-4" /> Back
+          <ArrowLeft className="w-4 h-4" /> {challenge?.title ?? "Back"}
         </button>
 
         <div className="text-center max-w-2xl mx-auto mb-8">
@@ -80,23 +68,27 @@ const MagVotePage = () => {
             Vote for your <span className="text-primary">favourite</span>
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            One vote per entry. The entry with the highest votes wins ₦10,000.
+            {challenge ? <b>{challenge.title}</b> : "Loading..."}
+            {challenge?.prize ? <> · {challenge.prize}</> : null}
           </p>
-          <Button
-            className="mt-4"
-            variant="flat"
-            color="primary"
-            radius="full"
-            startContent={<Trophy className="w-4 h-4" />}
-            onPress={() => navigate("/user/mag-challenge/leaderboard")}
-          >
-            View leaderboard
-          </Button>
-        </div>
-
-        <div className="max-w-5xl mx-auto mb-6 flex flex-col items-center gap-4">
-          <WeekSwitcher value={week} onChange={setWeek} />
-          <CategoryFilter value={category} onChange={setCategory} />
+          <p className="text-sm text-gray-500 mt-1">One vote per entry.</p>
+          {closed && (
+            <p className="mt-3 inline-block rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400 text-sm px-4 py-2">
+              Voting has closed for this challenge.
+            </p>
+          )}
+          <div>
+            <Button
+              className="mt-4"
+              variant="flat"
+              color="primary"
+              radius="full"
+              startContent={<Trophy className="w-4 h-4" />}
+              onPress={() => navigate(`/mag-challenge/${slug}/leaderboard`)}
+            >
+              View leaderboard
+            </Button>
+          </div>
         </div>
 
         <div className="max-w-5xl mx-auto">
@@ -108,7 +100,7 @@ const MagVotePage = () => {
             endMessage={
               !list.loading && (
                 <p className="text-center text-sm text-gray-400 py-8">
-                  {list.items.length === 0 ? "No entries open for voting this week yet." : "That's everyone!"}
+                  {list.items.length === 0 ? "No entries to vote on yet." : "That's everyone!"}
                 </p>
               )
             }
@@ -129,7 +121,7 @@ const MagVotePage = () => {
                       <div>
                         <button
                           className="text-left font-semibold text-gray-900 dark:text-white leading-snug mb-1 hover:text-primary"
-                          onClick={() => navigate(`/user/mag-challenge/submission/${s.id}`)}
+                          onClick={() => navigate(`/mag-challenge/submission/${s.id}`)}
                         >
                           {s.title}
                         </button>
@@ -165,6 +157,7 @@ const MagVotePage = () => {
                         radius="full"
                         color="primary"
                         variant={hasVoted ? "flat" : "solid"}
+                        isDisabled={closed}
                         isLoading={pending === s.id}
                         startContent={<Heart className="w-4 h-4" fill={hasVoted ? "currentColor" : "none"} />}
                         onPress={() => handleVote(s.id)}
