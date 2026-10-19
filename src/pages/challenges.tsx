@@ -15,7 +15,8 @@ const ChallengesPage = () => {
   };
 
   const handleMagChallengeClick = () => {
-    navigate("/mag-daily-challenge-hub");
+    // navigate("/mag-daily-challenge-hub");
+    navigate("/mag-challenge");
   };
 
   return (
@@ -56,17 +57,17 @@ const ChallengesPage = () => {
             />
 
             <ChallengeCard
-              description="Show your talent & win ₦10,000 cash"
+              description="Show your talent & win  cash prize" 
               points="Join now"
               progress={0}
               theme="#18F172"
-              title="MAG Challenge"
+              title="MAG Challenges"
               type="challenge"
               badge="Weekly"
               onClick={handleMagChallengeClick}
             />
 
-            <ChallengeCard
+            {/* <ChallengeCard
               description="Tell an African story in one photo & win ₦10,000 + a Power Bank"
               points="Join now"
               progress={0}
@@ -75,9 +76,9 @@ const ChallengesPage = () => {
               type="challenge"
               badge="New"
               onClick={() => navigate("/photo-challenge")}
-            />
+            /> */}
 
-            <ChallengeCard
+            {/* <ChallengeCard
               // buttonText="Check out"
               description="Check out reward achieved from last wek"
               currentValue="0"
@@ -87,7 +88,7 @@ const ChallengesPage = () => {
               theme="#FFD06A"
               title="Reward"
               type="reward"
-            />
+            /> */}
           </div>
 
           <WeeklyChallengerBanner />

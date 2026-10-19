@@ -187,7 +187,32 @@ query sendVerificationCode($identifier:String!) {
 
 
 
-// ➜ APPEND to ./mutations.ts  (gql is already imported there)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ➜ In ./mutations.ts: DELETE the old TOGGLE_VOTE / SET_SUBMISSION_QUALIFIED block I gave you before
+//   and PASTE this whole file instead.  (gql is already imported there.)
+
+export const SUBMIT_CHALLENGE_ENTRY = gql`
+  mutation SubmitChallengeEntry($input: SubmitChallengeEntryInput!) {
+    SubmitChallengeEntry(input: $input) {
+      id
+    }
+  }
+`;
 
 export const TOGGLE_VOTE = gql`
   mutation ToggleVote($input: ToggleVoteInput!) {
@@ -198,11 +223,42 @@ export const TOGGLE_VOTE = gql`
   }
 `;
 
+// admin: mark an entry qualified / not (only used when the backend qualified rule is ON)
 export const SET_SUBMISSION_QUALIFIED = gql`
   mutation SetSubmissionQualified($input: SetQualifiedInput!) {
     SetSubmissionQualified(input: $input) {
       id
       qualified
+    }
+  }
+`;
+
+/* ───────── admin: challenges ───────── */
+export const CREATE_CHALLENGE = gql`
+  mutation CreateChallenge($input: CreateChallengeInput!) {
+    CreateChallenge(input: $input) {
+      id
+      slug
+    }
+  }
+`;
+
+export const UPDATE_CHALLENGE = gql`
+  mutation UpdateChallenge($input: UpdateChallengeInput!) {
+    UpdateChallenge(input: $input) {
+      id
+      slug
+    }
+  }
+`;
+
+export const SET_CHALLENGE_FINISHED = gql`
+  mutation SetChallengeFinished($input: SetChallengeFinishedInput!) {
+    SetChallengeFinished(input: $input) {
+      id
+      isFinished
+      isOpen
+      endsAt
     }
   }
 `;

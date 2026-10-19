@@ -344,7 +344,79 @@ query GetSkills($input:GetSkillsInput!) {
 
 
 
-// ➜ APPEND to ./queries.ts  (gql is already imported there)
+
+
+
+
+export const GET_CHALLENGE_STATS = gql`
+  query GetChallengeStats {
+    GetChallengeStats {
+      weekStart
+      weekEnd
+      entriesThisWeek
+      qualifiedThisWeek
+      participantsThisWeek
+      votesThisWeek
+      totalEntries
+    }
+  }
+`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ➜ In ./queries.ts: DELETE the old block I gave you before (from `const SUBMISSION_FIELDS` to the end)
+//   and PASTE this whole file instead.  (gql is already imported there.)
+
+const CHALLENGE_FIELDS = `
+  id
+  slug
+  title
+  tagline
+  description
+  image
+  prize
+  steps
+  entryFeeNote
+  showBankDetails
+  titleLabel
+  linkLabel
+  descriptionLabel
+  descriptionRequired
+  maxDescriptionWords
+  category
+  endsAt
+  isFinished
+  isOpen
+  createdAt
+`;
 
 const SUBMISSION_FIELDS = `
   id
@@ -356,29 +428,109 @@ const SUBMISSION_FIELDS = `
   voteCount
   createdAt
   user { id firstName lastName email }
+  challenge { id slug title }
 `;
 
-
-
-export const GET_SUBMISSION = gql`
-  query GetSubmission($input: GetSubmissionInput!) {
-    GetSubmission(input: $input) {
-      hasVoted
-      isOwner
-      canVote
-      voteBlockedReason
-      submission { ${SUBMISSION_FIELDS} }
+/* ───────── challenges: public ───────── */
+export const GET_CHALLENGES = gql`
+  query GetChallenges($input: GetChallengesInput!) {
+    GetChallenges(input: $input) {
+      hasMore
+      nextPage
+      data { ${CHALLENGE_FIELDS} }
     }
   }
 `;
 
+export const GET_CHALLENGE_BY_SLUG = gql`
+  query GetChallengeBySlug($input: GetChallengeBySlugInput!) {
+    GetChallengeBySlug(input: $input) { ${CHALLENGE_FIELDS} }
+  }
+`;
 
+/* ───────── challenges: admin ───────── */
+export const GET_ADMIN_CHALLENGES = gql`
+  query GetAdminChallenges($input: GetChallengesInput!) {
+    GetAdminChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        entriesCount
+        votesCount
+        participantsCount
+        challenge { ${CHALLENGE_FIELDS} }
+      }
+    }
+  }
+`;
 
+export const GET_ADMIN_CHALLENGE = gql`
+  query GetAdminChallenge($input: GetAdminChallengeInput!) {
+    GetAdminChallenge(input: $input) {
+      entriesCount
+      votesCount
+      participantsCount
+      qualifiedCount
+      qualificationEnabled
+      challenge { ${CHALLENGE_FIELDS} }
+    }
+  }
+`;
+
+export const GET_CHALLENGE_OVERVIEW = gql`
+  query GetChallengeOverview {
+    GetChallengeOverview {
+      openChallenges
+      totalChallenges
+      totalEntries
+      totalVotes
+    }
+  }
+`;
+
+export const GET_CHALLENGE_SUBMISSIONS = gql`
+  query GetChallengeSubmissions($input: GetChallengeSubmissionsInput!) {
+    GetChallengeSubmissions(input: $input) {
+      hasMore
+      nextPage
+      data {
+        id
+        title
+        url
+        description
+        category
+        createdAt
+        updatedAt
+        user { id firstName lastName email }
+      }
+    }
+  }
+`;
+
+/* ───────── my status in a challenge ───────── */
+export const GET_MY_CHALLENGE_STATUS = gql`
+  query GetMyChallengeStatus($input: GetMyChallengeStatusInput!) {
+    GetMyChallengeStatus(input: $input) {
+      challengeOpen
+      hasSubmitted
+      canSubmit
+      reason
+      oneSubmissionPerChallenge
+      qualificationEnabled
+      entriesCount
+      votesCount
+      entry { ${SUBMISSION_FIELDS} }
+    }
+  }
+`;
+
+/* ───────── voting + leaderboard (per challenge) ───────── */
 export const GET_VOTING_SUBMISSIONS = gql`
   query GetVotingSubmissions($input: GetVotingSubmissionsInput!) {
     GetVotingSubmissions(input: $input) {
       hasMore
       nextPage
+      challenge { ${CHALLENGE_FIELDS} }
       data {
         hasVoted
         submission { ${SUBMISSION_FIELDS} }
@@ -392,8 +544,7 @@ export const GET_LEADERBOARD = gql`
     GetLeaderboard(input: $input) {
       hasMore
       nextPage
-      weekStart
-      weekEnd
+      challenge { ${CHALLENGE_FIELDS} }
       data {
         rank
         voteCount
@@ -406,6 +557,7 @@ export const GET_LEADERBOARD = gql`
   }
 `;
 
+/* ───────── submissions per user ───────── */
 export const GET_MY_SUBMISSIONS = gql`
   query GetMySubmissions($input: GetMySubmissionsInput!) {
     GetMySubmissions(input: $input) {
@@ -413,6 +565,7 @@ export const GET_MY_SUBMISSIONS = gql`
       nextPage
       totalSubmissions
       totalVotes
+ 
       categories
       user { id firstName lastName email }
       data { ${SUBMISSION_FIELDS} }
@@ -427,6 +580,7 @@ export const GET_USER_SUBMISSIONS = gql`
       nextPage
       totalSubmissions
       totalVotes
+      qualificationEnabled
       categories
       user { id firstName lastName email }
       data { ${SUBMISSION_FIELDS} }
@@ -448,35 +602,7 @@ export const GET_VOTERS = gql`
   }
 `;
 
-export const GET_MY_CHALLENGE_STATUS = gql`
-  query GetMyChallengeStatus {
-    GetMyChallengeStatus {
-      weekStart
-      weekEnd
-      oneSubmissionPerWeek
-      hasSubmittedThisWeek
-      canSubmit
-      entriesThisWeek
-      votesThisWeek
-      entry { ${SUBMISSION_FIELDS} }
-    }
-  }
-`;
-
-export const GET_CHALLENGE_STATS = gql`
-  query GetChallengeStats {
-    GetChallengeStats {
-      weekStart
-      weekEnd
-      entriesThisWeek
-      qualifiedThisWeek
-      participantsThisWeek
-      votesThisWeek
-      totalEntries
-    }
-  }
-`;
-
+/* ───────── single submission page ───────── */
 // public: no login needed
 export const GET_PUBLIC_SUBMISSION = gql`
   query GetPublicSubmission($input: GetSubmissionInput!) {
@@ -488,6 +614,10 @@ export const GET_PUBLIC_SUBMISSION = gql`
       category
       qualified
       votingOpen
+      qualificationEnabled
+      challengeTitle
+      challengeSlug
+      challengeOpen
       voteCount
       createdAt
       ownerName
@@ -503,6 +633,20 @@ export const GET_SUBMISSION_VOTE_STATUS = gql`
       isOwner
       canVote
       voteBlockedReason
+    }
+  }
+`;
+
+
+
+export const GET_SUBMISSION = gql`
+  query GetSubmission($input: GetSubmissionInput!) {
+    GetSubmission(input: $input) {
+      hasVoted
+      isOwner
+      canVote
+      voteBlockedReason
+      submission { ${SUBMISSION_FIELDS} }
     }
   }
 `;
