@@ -148,6 +148,10 @@ import type {
   SetChallengeFinishedResponse,
   SubmitChallengeEntryInput,
   SubmitChallengeEntryResponse,
+  SetChallengeVotingInput,
+  DeleteChallengeInput,
+  DeleteChallengeResponse,
+  SetChallengeVotingResponse,
   
 } from "./types";
 
@@ -229,6 +233,8 @@ import {
   CREATE_CHALLENGE,
   UPDATE_CHALLENGE,
   SET_CHALLENGE_FINISHED,
+  SET_CHALLENGE_VOTING,
+  DELETE_CHALLENGE,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -694,6 +700,19 @@ export type { ChallengeData, GameType } from "./hooks/use-challenges";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ───── challenges: public
 export const useGetChallenges = () =>
   useLazyQuery<GetChallengesResponse>(GET_CHALLENGES, { fetchPolicy: "network-only" });
@@ -731,6 +750,18 @@ export const useSetChallengeFinished = () => {
     useMutation<SetChallengeFinishedResponse>(SET_CHALLENGE_FINISHED);
   const setChallengeFinished = (input: SetChallengeFinishedInput) => mutation({ variables: { input } });
   return { setChallengeFinished, data, loading, error };
+};
+
+export const useSetChallengeVoting = () => {
+  const [mutation, { data, loading, error }] = useMutation<SetChallengeVotingResponse>(SET_CHALLENGE_VOTING);
+  const setChallengeVoting = (input: SetChallengeVotingInput) => mutation({ variables: { input } });
+  return { setChallengeVoting, data, loading, error };
+};
+
+export const useDeleteChallenge = () => {
+  const [mutation, { data, loading, error }] = useMutation<DeleteChallengeResponse>(DELETE_CHALLENGE);
+  const deleteChallenge = (input: DeleteChallengeInput) => mutation({ variables: { input } });
+  return { deleteChallenge, data, loading, error };
 };
 
 // ───── user: enter a challenge, status, vote, leaderboard
@@ -799,12 +830,6 @@ export type {
   PublicSubmission,
   SubmissionVoteStatus,
 } from "./types";
-
-
-
-
-
-
 
 
 

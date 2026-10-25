@@ -11,13 +11,16 @@ import {
   FileText,
   Heart,
   Pencil,
+  Trash2,
   Users,
 } from "lucide-react";
 import {
   useGetAdminChallenge,
   useGetChallengeSubmissions,
+  useDeleteChallenge,
   useGetLeaderboard,
   useSetChallengeFinished,
+  useSetChallengeVoting,
   type AdminChallengeDetail,
   type GetSocialPost,
   type LeaderboardEntry,
@@ -27,9 +30,11 @@ import {
   CategoryBadge,
   ChallengeStateBadge,
   Spinner,
+  VotingStateBadge,
   endsLabel,
   errMsg,
   usePaginated,
+  votingText,
 } from "@/components/dailychalanges/magshared";
 import { getreadabledate } from "@/utils";
 
@@ -62,6 +67,9 @@ const AdminChallengeDetailPage = () => {
   const [getBoard] = useGetLeaderboard();
   const [getEntries] = useGetChallengeSubmissions();
   const { setChallengeFinished, loading: saving } = useSetChallengeFinished();
+  const { deleteChallenge, loading: deleting } = useDeleteChallenge();
+  const { setChallengeVoting, loading: votingSaving } = useSetChallengeVoting();
+  const [voteAt, setVoteAt] = useState("");
 
   const [detail, setDetail] = useState<AdminChallengeDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -111,6 +119,36 @@ const AdminChallengeDetailPage = () => {
       await setChallengeFinished({ challengeId: c.id, finished: finishing });
       toast.success(finishing ? "Challenge finished" : "Challenge re-opened");
       load();
+    } catch (e) {
+      toast.error(errMsg(e));
+    }
+  };
+
+  const runVoting = async (input: { enabled: boolean; startsAt?: string }, okMsg: string) => {
+    if (!c) return;
+    try {
+      await setChallengeVoting({ challengeId: c.id, ...input });
+      toast.success(okMsg);
+      setVoteAt("");
+      load();
+    } catch (e) {
+      toast.error(errMsg(e));
+    }
+  };
+
+  const scheduleVoting = () => {
+    if (!voteAt) return toast.error("Pick a date and time first");
+    if (new Date(voteAt).getTime() <= Date.now()) return toast.error("That time has already passed");
+    runVoting({ enabled: true, startsAt: new Date(voteAt).toISOString() }, "Voting scheduled");
+  };
+
+  const handleDelete = async () => {
+    if (!c) return;
+    if (!window.confirm(`Delete "${c.title}" permanently? This can't be undone.`)) return;
+    try {
+      await deleteChallenge({ challengeId: c.id });
+      toast.success("Challenge deleted");
+      navigate("/admin/mag-challenges");
     } catch (e) {
       toast.error(errMsg(e));
     }
@@ -190,9 +228,74 @@ const AdminChallengeDetailPage = () => {
             >
               {c.isOpen ? "Finish challenge" : "Re-open challenge"}
             </button>
+            <button
+              disabled={deleting || detail.entriesCount > 0}
+              onClick={handleDelete}
+              title={detail.entriesCount > 0 ? "It already has entries. Finish it instead." : "Delete this challenge"}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Trash2 size={13} /> Delete
+            </button>
           </div>
         </div>
       </div>
+
+      {/* voting control */}
+      <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 space-y-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="font-semibold text-gray-800">Voting</h2>
+          <VotingStateBadge state={c.votingState} />
+          <span className="text-sm text-gray-500">{votingText(c)}</span>
+        </div>
+
+        {!c.isOpen ? (
+          <p className="text-xs text-gray-500">
+            Voting is closed because the challenge is over. Re-open the challenge to allow voting again.
+          </p>
+        ) : (
+          <>
+            <p className="text-xs text-gray-500">
+              People can enter while voting is off or scheduled. These controls only affect voting.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              {c.votingState !== "open" && (
+                <button
+                  disabled={votingSaving}
+                  onClick={() => runVoting({ enabled: true }, "Voting started")}
+                  className="rounded-lg bg-emerald-500 text-white px-3 py-1.5 text-xs font-semibold hover:opacity-90 disabled:opacity-50"
+                >
+                  Start voting now
+                </button>
+              )}
+              {c.votingState !== "off" && (
+                <button
+                  disabled={votingSaving}
+                  onClick={() => runVoting({ enabled: false }, "Voting turned off")}
+                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Turn voting off
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <input
+                type="datetime-local"
+                value={voteAt}
+                onChange={(e) => setVoteAt(e.target.value)}
+                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+              />
+              <button
+                disabled={votingSaving || !voteAt}
+                onClick={scheduleVoting}
+                className="rounded-lg border border-[#9747FF] text-[#9747FF] px-3 py-1.5 text-xs font-semibold hover:bg-[#9747FF]/5 disabled:opacity-40"
+              >
+                {c.votingState === "scheduled" ? "Change start date" : "Start voting on this date"}
+              </button>
+            </div>
+          </>
+        )}
+      </section>
 
       {/* stats so far */}
       <div className={`grid grid-cols-2 ${detail.qualificationEnabled ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-4`}>

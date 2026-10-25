@@ -392,6 +392,49 @@ export const GET_CHALLENGE_STATS = gql`
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ➜ In ./queries.ts: DELETE the old block I gave you before (from `const SUBMISSION_FIELDS` to the end)
 //   and PASTE this whole file instead.  (gql is already imported there.)
 
@@ -415,6 +458,10 @@ const CHALLENGE_FIELDS = `
   endsAt
   isFinished
   isOpen
+  votingEnabled
+  votingStartsAt
+  isVotingOpen
+  votingState
   createdAt
 `;
 
@@ -565,7 +612,7 @@ export const GET_MY_SUBMISSIONS = gql`
       nextPage
       totalSubmissions
       totalVotes
- 
+      qualificationEnabled
       categories
       user { id firstName lastName email }
       data { ${SUBMISSION_FIELDS} }
@@ -615,6 +662,8 @@ export const GET_PUBLIC_SUBMISSION = gql`
       qualified
       votingOpen
       qualificationEnabled
+      votingState
+      votingStartsAt
       challengeTitle
       challengeSlug
       challengeOpen
@@ -636,6 +685,7 @@ export const GET_SUBMISSION_VOTE_STATUS = gql`
     }
   }
 `;
+
 
 
 

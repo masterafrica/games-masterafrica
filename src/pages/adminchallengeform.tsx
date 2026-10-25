@@ -75,6 +75,7 @@ const AdminChallengeFormPage = () => {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [origSlug, setOrigSlug] = useState("");
   const [tagline, setTagline] = useState("");
   const [description, setDescription] = useState("");
   const [prize, setPrize] = useState("");
@@ -88,6 +89,9 @@ const AdminChallengeFormPage = () => {
   const [maxWords, setMaxWords] = useState("");
   const [category, setCategory] = useState("");
   const [endsAt, setEndsAt] = useState("");
+  // voting (set at creation; later changes are made on the challenge page)
+  const [votingMode, setVotingMode] = useState<"now" | "date" | "off">("now");
+  const [votingAt, setVotingAt] = useState("");
   const [hadEnd, setHadEnd] = useState(false);
   const [existingImage, setExistingImage] = useState<string | null>(null);
   const [picked, setPicked] = useState<Picked | null>(null);
@@ -102,6 +106,7 @@ const AdminChallengeFormPage = () => {
         if (!c) return;
         setTitle(c.title);
         setSlug(c.slug);
+        setOrigSlug(c.slug);
         setTagline(c.tagline ?? "");
         setDescription(c.description ?? "");
         setPrize(c.prize ?? "");
@@ -141,10 +146,17 @@ const AdminChallengeFormPage = () => {
 
   const handleSave = async () => {
     if (!title.trim()) return toast.error("Give the challenge a title");
-    if (!editing && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
       return toast.error("Link name: lowercase letters, numbers and dashes only, no spaces");
     }
     if (endsAt && new Date(endsAt).getTime() <= Date.now()) return toast.error("End time must be in the future");
+    if (!editing && votingMode === "date") {
+      if (!votingAt) return toast.error("Pick the date and time voting should start");
+      if (new Date(votingAt).getTime() <= Date.now()) return toast.error("Voting start time must be in the future");
+      if (endsAt && new Date(votingAt).getTime() >= new Date(endsAt).getTime()) {
+        return toast.error("Voting must start before the challenge ends");
+      }
+    }
 
     const common = {
       tagline: tagline.trim(),
@@ -167,6 +179,7 @@ const AdminChallengeFormPage = () => {
         await updateChallenge({
           challengeId: id!,
           title: title.trim(),
+          ...(slug !== origSlug ? { slug } : {}),
           ...common,
           // 0 clears the limit
           maxDescriptionWords: maxWords ? Number(maxWords) : 0,
@@ -181,6 +194,8 @@ const AdminChallengeFormPage = () => {
           title: title.trim(),
           ...common,
           ...(endsAt ? { endsAt: new Date(endsAt).toISOString() } : {}),
+          votingEnabled: votingMode !== "off",
+          ...(votingMode === "date" ? { votingStartsAt: new Date(votingAt).toISOString() } : {}),
         };
         const res = await createChallenge(input);
         toast.success("Challenge created");
@@ -232,14 +247,13 @@ const AdminChallengeFormPage = () => {
           </div>
 
           <div>
-            <label className={label}>Link name * {editing && <span className="text-gray-400">(can&apos;t be changed)</span>}</label>
+            <label className={label}>Link name *</label>
             <div className="flex items-center rounded-xl border border-gray-200 bg-white overflow-hidden">
               <span className="px-3 text-sm text-gray-400 bg-gray-50 border-r border-gray-200 py-2.5 whitespace-nowrap">
                 /mag-challenge/
               </span>
               <input
                 className="flex-1 px-3 py-2.5 text-sm outline-none disabled:bg-gray-50"
-                disabled={editing}
                 value={slug}
                 onChange={(e) => {
                   setSlugTouched(true);
@@ -249,6 +263,11 @@ const AdminChallengeFormPage = () => {
               />
             </div>
             <p className="text-[11px] text-gray-400 mt-1">Lowercase, no spaces. This is the link you share.</p>
+            {editing && slug !== origSlug && (
+              <p className="text-[11px] text-amber-700 bg-amber-500/10 rounded-lg px-2 py-1.5 mt-2">
+                Heads up: links you already shared with the old name (/mag-challenge/{origSlug}) will stop working.
+              </p>
+            )}
           </div>
 
           <div>
@@ -335,6 +354,55 @@ const AdminChallengeFormPage = () => {
             <label className={label}>Category (saved on each entry; defaults to the title)</label>
             <input className={field} value={category} onChange={(e) => setCategory(e.target.value)} placeholder="African Story Photography" />
           </div>
+        </section>
+
+        {/* voting */}
+        <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 space-y-3">
+          <p className="text-sm font-semibold text-gray-800">Voting</p>
+          {editing ? (
+            <p className="text-xs text-gray-500">
+              Start, stop or schedule voting from the challenge page (the &quot;Voting&quot; box). People can enter while
+              voting is off.
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-gray-500">People can submit entries straight away. When should voting start?</p>
+              {(
+                [
+                  ["now", "Immediately (default)", "Voting opens as soon as the challenge is created."],
+                  ["date", "At a date and time", "Voting opens automatically at the time you pick."],
+                  ["off", "Keep voting off for now", "No date. You switch it on from the challenge page when you're ready."],
+                ] as const
+              ).map(([val, title, hint]) => (
+                <label
+                  key={val}
+                  className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer ${
+                    votingMode === val ? "border-[#9747FF] bg-[#9747FF]/5" : "border-gray-200"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="votingMode"
+                    className="mt-1"
+                    checked={votingMode === val}
+                    onChange={() => setVotingMode(val)}
+                  />
+                  <span>
+                    <span className="block text-sm font-semibold text-gray-800">{title}</span>
+                    <span className="block text-xs text-gray-500">{hint}</span>
+                  </span>
+                </label>
+              ))}
+              {votingMode === "date" && (
+                <input
+                  type="datetime-local"
+                  className={`${field} max-w-xs`}
+                  value={votingAt}
+                  onChange={(e) => setVotingAt(e.target.value)}
+                />
+              )}
+            </>
+          )}
         </section>
 
         {/* duration */}

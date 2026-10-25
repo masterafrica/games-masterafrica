@@ -24,7 +24,7 @@ import {
   type Challenge,
   type ChallengeStatus,
 } from "@/lib/graphql";
-import { ChallengeStateBadge, Spinner, StatusPill, endsLabel, errMsg } from "@/components/dailychalanges/magshared";
+import { ChallengeStateBadge, Spinner, StatusPill, endsLabel, errMsg, votingText } from "@/components/dailychalanges/magshared";
 import ShareModal from "@/components/dailychalanges/sharemodal";
 import { BankDetails } from "@/components/modules/bank-details";
 
@@ -175,7 +175,8 @@ const ChallengePage = () => {
                   <Trophy className="w-4 h-4" /> {challenge.prize}
                 </p>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
+              <p className="mt-3 text-xs text-gray-500">{votingText(challenge)}</p>
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
                 <Button
                   variant="flat"
                   color="primary"

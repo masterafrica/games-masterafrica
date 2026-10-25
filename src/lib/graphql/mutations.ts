@@ -203,6 +203,9 @@ query sendVerificationCode($identifier:String!) {
 
 
 
+
+
+
 // ➜ In ./mutations.ts: DELETE the old TOGGLE_VOTE / SET_SUBMISSION_QUALIFIED block I gave you before
 //   and PASTE this whole file instead.  (gql is already imported there.)
 
@@ -259,6 +262,25 @@ export const SET_CHALLENGE_FINISHED = gql`
       isFinished
       isOpen
       endsAt
+    }
+  }
+`;
+
+export const DELETE_CHALLENGE = gql`
+  mutation DeleteChallenge($input: DeleteChallengeInput!) {
+    DeleteChallenge(input: $input)
+  }
+`;
+
+// admin: start / stop / schedule voting (entries are not affected)
+export const SET_CHALLENGE_VOTING = gql`
+  mutation SetChallengeVoting($input: SetChallengeVotingInput!) {
+    SetChallengeVoting(input: $input) {
+      id
+      votingEnabled
+      votingStartsAt
+      isVotingOpen
+      votingState
     }
   }
 `;
