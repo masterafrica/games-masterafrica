@@ -152,6 +152,8 @@ import type {
   DeleteChallengeInput,
   DeleteChallengeResponse,
   SetChallengeVotingResponse,
+  DeleteSubmissionResponse,
+  DeleteSubmissionInput,
   
 } from "./types";
 
@@ -235,6 +237,7 @@ import {
   SET_CHALLENGE_FINISHED,
   SET_CHALLENGE_VOTING,
   DELETE_CHALLENGE,
+  DELETE_SUBMISSION,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -810,6 +813,14 @@ export const useGetPublicSubmission = () =>
 export const useGetSubmissionVoteStatus = () =>
   useLazyQuery<GetSubmissionVoteStatusResponse>(GET_SUBMISSION_VOTE_STATUS, { fetchPolicy: "network-only" });
 
+
+
+ 
+export const useDeleteSubmission = () => {
+  const [mutation, { data, loading, error }] = useMutation<DeleteSubmissionResponse>(DELETE_SUBMISSION);
+  const deleteSubmission = (input: DeleteSubmissionInput) => mutation({ variables: { input } });
+  return { deleteSubmission, data, loading, error };
+};
 /* 5) your pages import types from "@/lib/graphql". If that file has `export * from "./types"` you're done.
       If it lists them one by one, add:  Challenge, ChallengeStatus, ChallengeWithStats, AdminChallengeDetail,
       ChallengeOverview, ChallengeLite, FileInput, Submission, SubUser, VotingSubmission, LeaderboardEntry,

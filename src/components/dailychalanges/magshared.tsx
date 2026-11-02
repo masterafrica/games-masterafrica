@@ -161,5 +161,5 @@ export function usePaginated<T, M = PageResult<T>>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
-  return { items, setItems, hasMore, loading, meta, loadMore: () => load(false) };
+  return { items, setItems, hasMore, loading, meta, loadMore: () => load(false), reload: () => load(true) };
 }

@@ -18,6 +18,7 @@ import {
   useGetAdminChallenge,
   useGetChallengeSubmissions,
   useDeleteChallenge,
+  useDeleteSubmission,
   useGetLeaderboard,
   useSetChallengeFinished,
   useSetChallengeVoting,
@@ -68,6 +69,7 @@ const AdminChallengeDetailPage = () => {
   const [getEntries] = useGetChallengeSubmissions();
   const { setChallengeFinished, loading: saving } = useSetChallengeFinished();
   const { deleteChallenge, loading: deleting } = useDeleteChallenge();
+  const { deleteSubmission, loading: deletingEntry } = useDeleteSubmission();
   const { setChallengeVoting, loading: votingSaving } = useSetChallengeVoting();
   const [voteAt, setVoteAt] = useState("");
 
@@ -149,6 +151,21 @@ const AdminChallengeDetailPage = () => {
       await deleteChallenge({ challengeId: c.id });
       toast.success("Challenge deleted");
       navigate("/admin/mag-challenges");
+    } catch (e) {
+      toast.error(errMsg(e));
+    }
+  };
+
+  const handleDeleteEntry = async (s: GetSocialPost) => {
+    if (!window.confirm(`Delete "${s.title}"?\n\nIts votes will be removed too, and the player can enter again. This can't be undone.`)) return;
+    try {
+      const res = await deleteSubmission({ submissionId: s.id });
+      const n = res.data?.DeleteSubmission.votesRemoved ?? 0;
+      toast.success(`Entry deleted${n ? ` (${n} vote${n === 1 ? "" : "s"} removed)` : ""}`);
+      // refresh everything that depends on the entry: counts, leaderboard, entries list
+      load();
+      board.reload();
+      entries.reload();
     } catch (e) {
       toast.error(errMsg(e));
     }
@@ -365,6 +382,15 @@ const AdminChallengeDetailPage = () => {
                     <ExternalLink size={14} />
                   </a>
                 )}
+                <button
+                  disabled={deletingEntry}
+                  onClick={() => handleDeleteEntry(s)}
+                  className="text-rose-500 hover:text-rose-700 disabled:opacity-40"
+                  aria-label="Delete entry"
+                  title="Delete entry"
+                >
+                  <Trash2 size={14} />
+                </button>
               </li>
             ))}
           </ul>

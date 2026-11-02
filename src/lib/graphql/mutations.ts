@@ -184,6 +184,16 @@ query sendVerificationCode($identifier:String!) {
 }
 `;
 
+// admin: delete an entry together with its votes
+export const DELETE_SUBMISSION = gql`
+  mutation DeleteSubmission($input: DeleteSubmissionInput!) {
+    DeleteSubmission(input: $input) {
+      deleted
+      votesRemoved
+    }
+  }
+`;
+
 
 
 

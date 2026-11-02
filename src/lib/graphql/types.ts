@@ -2279,3 +2279,13 @@ export interface GetSubmissionVoteStatusResponse {
 export interface GetSubmissionInput {
   submissionId: string;
 }
+
+
+
+/* ---- delete an entry (admin) ---- */
+export interface DeleteSubmissionInput {
+  submissionId: string;
+}
+export interface DeleteSubmissionResponse {
+  DeleteSubmission: { deleted: boolean; votesRemoved: number };
+}
