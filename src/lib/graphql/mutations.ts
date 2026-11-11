@@ -184,15 +184,32 @@ query sendVerificationCode($identifier:String!) {
 }
 `;
 
-// admin: delete an entry together with its votes
-export const DELETE_SUBMISSION = gql`
-  mutation DeleteSubmission($input: DeleteSubmissionInput!) {
-    DeleteSubmission(input: $input) {
-      deleted
-      votesRemoved
-    }
-  }
-`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -292,5 +309,58 @@ export const SET_CHALLENGE_VOTING = gql`
       isVotingOpen
       votingState
     }
+  }
+`;
+
+// admin: delete an entry together with its votes
+export const DELETE_SUBMISSION = gql`
+  mutation DeleteSubmission($input: DeleteSubmissionInput!) {
+    DeleteSubmission(input: $input) {
+      deleted
+      votesRemoved
+    }
+  }
+`;
+
+/* ───────── clubs ───────── */
+const CLUB_RESULT = `
+  id
+  slug
+  name
+  description
+  instructions
+  isActive
+  createdAt
+  memberCount
+  owner { id firstName lastName username email avatar }
+`;
+
+export const CREATE_CLUB = gql`
+  mutation CreateClub($input: CreateClubInput!) {
+    CreateClub(input: $input) { ${CLUB_RESULT} }
+  }
+`;
+
+export const UPDATE_CLUB = gql`
+  mutation UpdateClub($input: UpdateClubInput!) {
+    UpdateClub(input: $input) { ${CLUB_RESULT} }
+  }
+`;
+
+export const DELETE_CLUB = gql`
+  mutation DeleteClub($input: DeleteClubInput!) {
+    DeleteClub(input: $input)
+  }
+`;
+
+export const JOIN_CLUB = gql`
+  mutation JoinClub($input: JoinClubInput!) {
+    JoinClub(input: $input)
+  }
+`;
+
+export const REMOVE_CLUB_MEMBER = gql`
+  mutation RemoveClubMember($input: RemoveClubMemberInput!) {
+    RemoveClubMember(input: $input)
   }
 `;

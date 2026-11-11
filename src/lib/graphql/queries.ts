@@ -435,6 +435,46 @@ export const GET_CHALLENGE_STATS = gql`
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ➜ In ./queries.ts: DELETE the old block I gave you before (from `const SUBMISSION_FIELDS` to the end)
 //   and PASTE this whole file instead.  (gql is already imported there.)
 
@@ -474,7 +514,7 @@ const SUBMISSION_FIELDS = `
   qualified
   voteCount
   createdAt
-  user { id firstName lastName email }
+  user { id firstName lastName email avatar }
   challenge { id slug title }
 `;
 
@@ -548,7 +588,7 @@ export const GET_CHALLENGE_SUBMISSIONS = gql`
         category
         createdAt
         updatedAt
-        user { id firstName lastName email }
+        user { id firstName lastName email avatar }
       }
     }
   }
@@ -597,7 +637,7 @@ export const GET_LEADERBOARD = gql`
         voteCount
         submissionsCount
         categories
-        user { id firstName lastName email }
+        user { id firstName lastName email avatar }
         topSubmission { ${SUBMISSION_FIELDS} }
       }
     }
@@ -614,7 +654,7 @@ export const GET_MY_SUBMISSIONS = gql`
       totalVotes
       qualificationEnabled
       categories
-      user { id firstName lastName email }
+      user { id firstName lastName email avatar }
       data { ${SUBMISSION_FIELDS} }
     }
   }
@@ -629,7 +669,7 @@ export const GET_USER_SUBMISSIONS = gql`
       totalVotes
       qualificationEnabled
       categories
-      user { id firstName lastName email }
+      user { id firstName lastName email avatar }
       data { ${SUBMISSION_FIELDS} }
     }
   }
@@ -642,7 +682,7 @@ export const GET_VOTERS = gql`
       nextPage
       data {
         votedAt
-        voter { id firstName lastName email }
+        voter { id firstName lastName email avatar }
         submission { id title url category }
       }
     }
@@ -670,6 +710,8 @@ export const GET_PUBLIC_SUBMISSION = gql`
       voteCount
       createdAt
       ownerName
+      ownerId
+      ownerAvatar
     }
   }
 `;
@@ -686,6 +728,127 @@ export const GET_SUBMISSION_VOTE_STATUS = gql`
   }
 `;
 
+/* ───────── clubs ───────── */
+const CLUB_USER = `id firstName lastName username email avatar`;
+const CLUB_INFO = `
+  id
+  slug
+  name
+  description
+  instructions
+  isActive
+  createdAt
+  memberCount
+  owner { ${CLUB_USER} }
+`;
+
+// public: no login needed
+export const GET_PUBLIC_CLUB = gql`
+  query GetClubBySlug($input: GetClubBySlugInput!) {
+    GetClubBySlug(input: $input) {
+      id
+      slug
+      name
+      description
+      isActive
+      memberCount
+      ownerName
+      ownerId
+      ownerAvatar
+    }
+  }
+`;
+
+export const GET_CLUB_VIEWER_STATUS = gql`
+  query GetClubViewerStatus($input: GetClubBySlugInput!) {
+    GetClubViewerStatus(input: $input) {
+      role
+      inAnotherClub
+      anotherClubName
+      canJoin
+      reason
+      instructions
+    }
+  }
+`;
+
+export const GET_MY_CLUB = gql`
+  query GetMyClub {
+    GetMyClub {
+      role
+      joinedAt
+      club { ${CLUB_INFO} }
+    }
+  }
+`;
+
+export const GET_MY_CLUB_MEMBERS = gql`
+  query GetMyClubMembers($input: GetMyClubMembersInput!) {
+    GetMyClubMembers(input: $input) {
+      hasMore
+      nextPage
+      data { joinedAt user { ${CLUB_USER} } }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUBS = gql`
+  query GetAdminClubs($input: GetAdminClubsInput!) {
+    GetAdminClubs(input: $input) {
+      hasMore
+      nextPage
+      data { ${CLUB_INFO} }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB = gql`
+  query GetAdminClub($input: GetAdminClubInput!) {
+    GetAdminClub(input: $input) { ${CLUB_INFO} }
+  }
+`;
+
+export const GET_ADMIN_CLUB_MEMBERS = gql`
+  query GetAdminClubMembers($input: GetAdminClubMembersInput!) {
+    GetAdminClubMembers(input: $input) {
+      hasMore
+      nextPage
+      data { joinedAt user { ${CLUB_USER} } }
+    }
+  }
+`;
+
+export const SEARCH_USERS = gql`
+  query SearchUsers($input: SearchUsersInput!) {
+    SearchUsers(input: $input) {
+      hasMore
+      nextPage
+      data { ${CLUB_USER} }
+    }
+  }
+`;
+
+/* ───────── profile page ───────── */
+export const GET_USER_PROFILE = gql`
+  query GetUserProfile($input: GetUserProfileInput!) {
+    GetUserProfile(input: $input) {
+      id
+      username
+      firstName
+      lastName
+      avatar
+      bio
+      joinedAt
+      clubName
+      clubSlug
+      clubRole
+      entriesCount
+      totalVotes
+    }
+  }
+`;
+
+
 
 
 
@@ -700,3 +863,5 @@ export const GET_SUBMISSION = gql`
     }
   }
 `;
+
+

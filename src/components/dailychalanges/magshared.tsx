@@ -1,5 +1,6 @@
 // Put in: src/components/dailychalanges/magshared.tsx  (REPLACES the previous version)
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   "Tech Skills": { bg: "#F3EDFF", text: "#6B21C8", border: "#C4A8F0" },
@@ -12,9 +13,31 @@ const FALLBACK = { bg: "#F3EDFF", text: "#6B21C8", border: "#C4A8F0" };
 export const errMsg = (e: unknown) =>
   (e as { message?: string })?.message?.replace(/^.*?:\s*/, "") || "Something went wrong";
 
-export const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => {
+/**
+ * Round avatar: shows the photo when there is one, otherwise the initials.
+ * Pass `userId` and the avatar becomes a link to that user's profile (/profile/:userId).
+ * (Don't put a linked avatar inside a <button>.)
+ */
+export const Avatar = ({
+  name,
+  size = 36,
+  src,
+  userId,
+}: {
+  name: string;
+  size?: number;
+  src?: string | null;
+  userId?: string | null;
+}) => {
   const initials = name.split(" ").map((p) => p[0]).join("").toUpperCase().slice(0, 2);
-  return (
+  const face = src ? (
+    <img
+      alt={name}
+      src={src}
+      className="rounded-full object-cover shrink-0"
+      style={{ width: size, height: size }}
+    />
+  ) : (
     <div
       className="rounded-full flex items-center justify-center font-semibold shrink-0"
       style={{ width: size, height: size, background: "#F3EDFF", color: "#6B21C8", fontSize: size * 0.38 }}
@@ -22,6 +45,27 @@ export const Avatar = ({ name, size = 36 }: { name: string; size?: number }) => 
       {initials}
     </div>
   );
+  if (!userId) return face;
+  return (
+    <Link
+      to={`/profile/${userId}`}
+      aria-label={`${name}'s profile`}
+      className="shrink-0 rounded-full hover:opacity-80 transition-opacity"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {face}
+    </Link>
+  );
+};
+
+/** debounced copy of a value (for search boxes) */
+export const useDebounced = <T,>(value: T, ms = 400) => {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), ms);
+    return () => clearTimeout(t);
+  }, [value, ms]);
+  return v;
 };
 
 export const CategoryBadge = ({ category }: { category?: string | null }) => {

@@ -1,21 +1,31 @@
-// Put in: src/components/dailychalanges/ShareModal.tsx
+// Put in: src/components/dailychalanges/sharemodal.tsx   (REPLACES the previous version)
+// Works for an entry (pass submissionId) or for ANY link (pass url, e.g. a club link).
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Copy, Facebook, MessageCircle, Share2, Twitter, X } from "lucide-react";
 
 /** public link of a submission (the single-submission page) */
 export const getSubmissionUrl = (id: string) => `${window.location.origin}/mag-challenge/submission/${id}`;
+/** public link of a club */
+export const getClubUrl = (slug: string) => `${window.location.origin}/club/${slug}`;
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  submissionId: string | null;
+  /** share an entry... */
+  submissionId?: string | null;
+  /** ...or any other link */
+  url?: string | null;
+  /** entry title (used in the default message) */
   title?: string;
-  /** e.g. "Entry submitted!" after an upload; leave empty for a plain share */
   heading?: string;
+  /** small text under the heading */
+  subtitle?: string;
+  /** message that goes with the link (WhatsApp / X text) */
+  message?: string;
 };
 
-const ShareModal = ({ open, onClose, submissionId, title, heading }: Props) => {
+const ShareModal = ({ open, onClose, submissionId, url: urlProp, title, heading, subtitle, message }: Props) => {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -23,10 +33,11 @@ const ShareModal = ({ open, onClose, submissionId, title, heading }: Props) => {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  if (!open || !submissionId) return null;
+  const url = urlProp || (submissionId ? getSubmissionUrl(submissionId) : "");
+  if (!open || !url) return null;
 
-  const url = getSubmissionUrl(submissionId);
-  const text = `${title ? `Vote for my entry "${title}"` : "Vote for my entry"} on the MAG Challenge!`;
+  const text =
+    message ?? `${title ? `Vote for my entry "${title}"` : "Vote for my entry"} on the MAG Challenge!`;
   const enc = encodeURIComponent;
 
   const copy = () =>
@@ -35,7 +46,7 @@ const ShareModal = ({ open, onClose, submissionId, title, heading }: Props) => {
       .then(() => toast.success("Link copied!"))
       .catch(() => toast.error("Couldn't copy, select the link and copy it manually"));
 
-  const nativeShare = () => navigator.share?.({ title: "MAG Challenge", text, url }).catch(() => undefined);
+  const nativeShare = () => navigator.share?.({ title: "MAG", text, url }).catch(() => undefined);
 
   const targets = [
     { label: "WhatsApp", icon: MessageCircle, href: `https://wa.me/?text=${enc(`${text} ${url}`)}`, color: "#25D366" },
@@ -51,9 +62,9 @@ const ShareModal = ({ open, onClose, submissionId, title, heading }: Props) => {
       >
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{heading || "Share your entry"}</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{heading || "Share"}</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Send this link to friends. They can watch your entry and vote for it.
+              {subtitle ?? "Send this link to friends. They can open it and vote for your entry."}
             </p>
           </div>
           <button
@@ -72,10 +83,7 @@ const ShareModal = ({ open, onClose, submissionId, title, heading }: Props) => {
             onFocus={(e) => e.currentTarget.select()}
             className="flex-1 min-w-0 bg-transparent text-sm text-gray-700 dark:text-gray-200 outline-none"
           />
-          <button
-            onClick={copy}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:opacity-80"
-          >
+          <button onClick={copy} className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:opacity-80">
             <Copy size={14} /> Copy
           </button>
         </div>

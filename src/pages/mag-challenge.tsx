@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { useNavigate } from "react-router-dom";
-import { History, Trophy, Vote } from "lucide-react";
+import { History, Trophy, Users, Vote } from "lucide-react";
 import { useGetChallenges, type Challenge } from "@/lib/graphql";
 import { ChallengeStateBadge, Spinner, endsLabel, usePaginated, votingText } from "@/components/dailychalanges/magshared";
 
@@ -114,6 +114,15 @@ const MagChallengesPage = () => {
             onPress={() => navigate("/user/mag-challenge/my-submissions")}
           >
             My submissions
+          </Button>
+          <Button
+            className="mt-4 ml-3"
+            variant="flat"
+            radius="full"
+            startContent={<Users className="w-4 h-4" />}
+            onPress={() => navigate("/my-club")}
+          >
+            My club
           </Button>
         </div>
 

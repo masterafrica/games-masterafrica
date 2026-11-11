@@ -154,6 +154,24 @@ import type {
   SetChallengeVotingResponse,
   DeleteSubmissionResponse,
   DeleteSubmissionInput,
+  GetClubViewerStatusResponse,
+  CreateClubInput,
+  CreateClubResponse,
+  DeleteClubResponse,
+  GetAdminClubMembersResponse,
+  GetAdminClubResponse,
+  GetAdminClubsResponse,
+  GetMyClubMembersResponse,
+  GetMyClubResponse,
+  GetPublicClubResponse,
+  GetUserProfileResponse,
+  JoinClubInput,
+  JoinClubResponse,
+  RemoveClubMemberInput,
+  RemoveClubMemberResponse,
+  SearchUsersResponse,
+  UpdateClubInput,
+  UpdateClubResponse,
   
 } from "./types";
 
@@ -209,6 +227,15 @@ import {
 
 
   GET_CHALLENGE_SUBMISSIONS,
+  GET_ADMIN_CLUB,
+  GET_ADMIN_CLUBS,
+  GET_ADMIN_CLUB_MEMBERS,
+  GET_CLUB_VIEWER_STATUS,
+  GET_MY_CLUB,
+  GET_MY_CLUB_MEMBERS,
+  GET_PUBLIC_CLUB,
+  GET_USER_PROFILE,
+  SEARCH_USERS,
 
 } from "./queries";
 import {
@@ -238,6 +265,11 @@ import {
   SET_CHALLENGE_VOTING,
   DELETE_CHALLENGE,
   DELETE_SUBMISSION,
+  CREATE_CLUB,
+  DELETE_CLUB,
+  JOIN_CLUB,
+  REMOVE_CLUB_MEMBER,
+  UPDATE_CLUB,
 } from "./mutations";
 
 export const useGetUser = (id: string) => {
@@ -716,6 +748,38 @@ export type { ChallengeData, GameType } from "./hooks/use-challenges";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ───── challenges: public
 export const useGetChallenges = () =>
   useLazyQuery<GetChallengesResponse>(GET_CHALLENGES, { fetchPolicy: "network-only" });
@@ -806,6 +870,12 @@ export const useSetSubmissionQualified = () => {
   return { setQualified, data, loading, error };
 };
 
+export const useDeleteSubmission = () => {
+  const [mutation, { data, loading, error }] = useMutation<DeleteSubmissionResponse>(DELETE_SUBMISSION);
+  const deleteSubmission = (input: DeleteSubmissionInput) => mutation({ variables: { input } });
+  return { deleteSubmission, data, loading, error };
+};
+
 // ───── single submission page (public link)
 export const useGetPublicSubmission = () =>
   useLazyQuery<GetPublicSubmissionResponse>(GET_PUBLIC_SUBMISSION, { fetchPolicy: "network-only" });
@@ -813,14 +883,66 @@ export const useGetPublicSubmission = () =>
 export const useGetSubmissionVoteStatus = () =>
   useLazyQuery<GetSubmissionVoteStatusResponse>(GET_SUBMISSION_VOTE_STATUS, { fetchPolicy: "network-only" });
 
+// ───── clubs: public + user
+export const useGetPublicClub = () =>
+  useLazyQuery<GetPublicClubResponse>(GET_PUBLIC_CLUB, { fetchPolicy: "network-only" });
 
+export const useGetClubViewerStatus = () =>
+  useLazyQuery<GetClubViewerStatusResponse>(GET_CLUB_VIEWER_STATUS, { fetchPolicy: "network-only" });
 
- 
-export const useDeleteSubmission = () => {
-  const [mutation, { data, loading, error }] = useMutation<DeleteSubmissionResponse>(DELETE_SUBMISSION);
-  const deleteSubmission = (input: DeleteSubmissionInput) => mutation({ variables: { input } });
-  return { deleteSubmission, data, loading, error };
+export const useGetMyClub = () =>
+  useLazyQuery<GetMyClubResponse>(GET_MY_CLUB, { fetchPolicy: "network-only" });
+
+export const useGetMyClubMembers = () =>
+  useLazyQuery<GetMyClubMembersResponse>(GET_MY_CLUB_MEMBERS, { fetchPolicy: "network-only" });
+
+export const useJoinClub = () => {
+  const [mutation, { data, loading, error }] = useMutation<JoinClubResponse>(JOIN_CLUB);
+  const joinClub = (input: JoinClubInput) => mutation({ variables: { input } });
+  return { joinClub, data, loading, error };
 };
+
+// ───── clubs: admin
+export const useGetAdminClubs = () =>
+  useLazyQuery<GetAdminClubsResponse>(GET_ADMIN_CLUBS, { fetchPolicy: "network-only" });
+
+export const useGetAdminClub = () =>
+  useLazyQuery<GetAdminClubResponse>(GET_ADMIN_CLUB, { fetchPolicy: "network-only" });
+
+export const useGetAdminClubMembers = () =>
+  useLazyQuery<GetAdminClubMembersResponse>(GET_ADMIN_CLUB_MEMBERS, { fetchPolicy: "network-only" });
+
+export const useSearchUsers = () =>
+  useLazyQuery<SearchUsersResponse>(SEARCH_USERS, { fetchPolicy: "network-only" });
+
+export const useCreateClub = () => {
+  const [mutation, { data, loading, error }] = useMutation<CreateClubResponse>(CREATE_CLUB);
+  const createClub = (input: CreateClubInput) => mutation({ variables: { input } });
+  return { createClub, data, loading, error };
+};
+
+export const useUpdateClub = () => {
+  const [mutation, { data, loading, error }] = useMutation<UpdateClubResponse>(UPDATE_CLUB);
+  const updateClub = (input: UpdateClubInput) => mutation({ variables: { input } });
+  return { updateClub, data, loading, error };
+};
+
+export const useDeleteClub = () => {
+  const [mutation, { data, loading, error }] = useMutation<DeleteClubResponse>(DELETE_CLUB);
+  const deleteClub = (clubId: string) => mutation({ variables: { input: { clubId } } });
+  return { deleteClub, data, loading, error };
+};
+
+export const useRemoveClubMember = () => {
+  const [mutation, { data, loading, error }] = useMutation<RemoveClubMemberResponse>(REMOVE_CLUB_MEMBER);
+  const removeClubMember = (input: RemoveClubMemberInput) => mutation({ variables: { input } });
+  return { removeClubMember, data, loading, error };
+};
+
+// ───── public profile page
+export const useGetUserProfile = () =>
+  useLazyQuery<GetUserProfileResponse>(GET_USER_PROFILE, { fetchPolicy: "network-only" });
+
 /* 5) your pages import types from "@/lib/graphql". If that file has `export * from "./types"` you're done.
       If it lists them one by one, add:  Challenge, ChallengeStatus, ChallengeWithStats, AdminChallengeDetail,
       ChallengeOverview, ChallengeLite, FileInput, Submission, SubUser, VotingSubmission, LeaderboardEntry,
@@ -840,57 +962,11 @@ export type {
   VoterEntry,
   PublicSubmission,
   SubmissionVoteStatus,
+  ClubUser,
+  ClubInfo,
+  PublicClub,
+  ClubViewerStatus,
+  MyClub,
+  ClubMemberEntry,
+  PublicProfile,
 } from "./types";
-
-
-
-
-
-
-// /* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
-//       Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
-//       probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
-// export type {
-//   VotingSubmission,
-//   LeaderboardEntry,
-//   VoterEntry,
-//   Submission,
-//   SubUser,
-//   ChallengeStatus,
-//   ChallengeStats,
-//   PublicSubmission,
-//   SubmissionVoteStatus,
-// } from "./types";
-
-
-// /* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
-//       Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
-//       probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
-// export type {
-//   VotingSubmission,
-//   LeaderboardEntry,
-//   VoterEntry,
-//   Submission,
-//   SubUser,
-//   ChallengeStatus,
-//   ChallengeStats,
-//   SubmissionDetail,
-// } from "./types";
-
-
-
-
-
-/* 5) so `import { type VotingSubmission, ... } from "@/lib/graphql"` works.
-      Your admin page already imports GetSocialPost types from "@/lib/graphql", so you
-      probably have `export * from "./types"` somewhere. If so, skip this. If not, add: */
-// export type {
-//   VotingSubmission,
-//   LeaderboardEntry,
-//   VoterEntry,
-//   Submission,
-//   SubUser,
-// } from "./types";
-
-
-
