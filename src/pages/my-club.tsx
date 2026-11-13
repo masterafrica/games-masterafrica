@@ -1,33 +1,105 @@
 // CLUB — my club.  Route: /my-club   (inside ProtectedRoute / MainLayout)
-// Owner  → dashboard: member count, name, description, instructions, share link, searchable member list.
+// Owner  → dashboard: members, challenges joined, entries, total earnings, challenge list, member list, share link.
 // Member → club details + instructions.   No club → short explanation.
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
 import { useNavigate } from "react-router-dom";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { Copy, Search, Share2, Users, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useGetMyClub, useGetMyClubMembers, type ClubMemberEntry, type MyClub } from "@/lib/graphql";
-import { Avatar, Spinner, useDebounced, usePaginated } from "@/components/dailychalanges/magshared";
+import { Copy, Search, Share2, Trophy, Users, Wallet, FileText, X } from "lucide-react";
+import {
+  useGetMyClub,
+  useGetMyClubChallenges,
+  useGetMyClubMembers,
+  useGetMyClubStats,
+  type ClubChallengeRow,
+  type ClubMemberEntry,
+  type ClubStats,
+  type MyClub,
+} from "@/lib/graphql";
+import {
+  Avatar,
+  ChallengeStateBadge,
+  Spinner,
+  naira,
+  useDebounced,
+  usePaginated,
+} from "@/components/dailychalanges/magshared";
 import ShareModal, { getClubUrl } from "@/components/dailychalanges/sharemodal";
 import { getreadabledate } from "@/utils";
+
+const Stat = ({
+  icon,
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  sub?: string;
+  accent: string;
+}) => (
+  <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
+    <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white mb-3 ${accent}`}>{icon}</div>
+    <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+    <p className="text-sm text-gray-500">{label}</p>
+    {sub && <p className="text-[11px] text-gray-400 mt-0.5">{sub}</p>}
+  </div>
+);
+
+const SearchBox = ({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) => (
+  <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-3 py-1.5">
+    <Search size={14} className="text-gray-400" />
+    <input
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="text-sm outline-none bg-transparent w-44"
+    />
+    {value && (
+      <button onClick={() => onChange("")} className="text-gray-400">
+        <X size={14} />
+      </button>
+    )}
+  </div>
+);
+
+const LoadMore = ({ show, onClick }: { show: boolean; onClick: () => void }) =>
+  show ? (
+    <div className="text-center pt-3">
+      <Button size="sm" variant="flat" radius="full" onPress={onClick}>
+        Load more
+      </Button>
+    </div>
+  ) : null;
 
 const MyClubPage = () => {
   const navigate = useNavigate();
   const [getMyClub] = useGetMyClub();
+  const [getStats] = useGetMyClubStats();
+  const [getChallenges] = useGetMyClubChallenges();
   const [getMembers] = useGetMyClubMembers();
 
   const [mine, setMine] = useState<MyClub | null>(null);
+  const [stats, setStats] = useState<ClubStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const debounced = useDebounced(query);
+  const [cQuery, setCQuery] = useState("");
+  const [mQuery, setMQuery] = useState("");
+  const cDebounced = useDebounced(cQuery);
+  const mDebounced = useDebounced(mQuery);
 
   useEffect(() => {
     (async () => {
       try {
         const r = await getMyClub();
-        setMine(r.data?.GetMyClub ?? null);
+        const m = r.data?.GetMyClub ?? null;
+        setMine(m);
+        if (m?.role === "owner") {
+          const s = await getStats();
+          setStats(s.data?.GetMyClubStats ?? null);
+        }
       } finally {
         setLoading(false);
       }
@@ -37,13 +109,22 @@ const MyClubPage = () => {
 
   const isOwner = mine?.role === "owner";
 
+  const challenges = usePaginated<ClubChallengeRow>(
+    async (page) => {
+      if (!isOwner) return null;
+      const r = await getChallenges({ variables: { input: { page, query: cDebounced || undefined } } });
+      return r.data?.GetMyClubChallenges;
+    },
+    [isOwner, cDebounced],
+  );
+
   const members = usePaginated<ClubMemberEntry>(
     async (page) => {
       if (!isOwner) return null;
-      const r = await getMembers({ variables: { input: { page, query: debounced || undefined } } });
+      const r = await getMembers({ variables: { input: { page, query: mDebounced || undefined } } });
       return r.data?.GetMyClubMembers;
     },
-    [isOwner, debounced],
+    [isOwner, mDebounced],
   );
 
   if (loading) return <Spinner />;
@@ -71,6 +152,8 @@ const MyClubPage = () => {
       .then(() => toast.success("Link copied!"))
       .catch(() => toast.error("Couldn't copy"));
 
+  const ownerName = `${club.owner.firstName ?? ""} ${club.owner.lastName ?? ""}`.trim() || club.owner.username || "Owner";
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
       {/* header */}
@@ -83,28 +166,32 @@ const MyClubPage = () => {
         )}
       </div>
 
-      {/* stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
-          <Users className="w-5 h-5 text-primary mb-2" />
-          <p className="text-3xl font-bold text-gray-900 dark:text-white">{club.memberCount}</p>
-          <p className="text-sm text-gray-500">Member{club.memberCount !== 1 && "s"}</p>
+      {/* owner: headline numbers */}
+      {isOwner ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Stat icon={<Users size={18} />} label="Members" value={stats?.totalMembers ?? club.memberCount} accent="bg-[#9747FF]" />
+          <Stat icon={<Trophy size={18} />} label="Challenges joined" value={stats?.totalChallenges ?? 0} sub="by your members" accent="bg-amber-500" />
+          <Stat icon={<FileText size={18} />} label="Entries" value={stats?.totalEntries ?? 0} sub="by your members" accent="bg-sky-500" />
+          <Stat
+            icon={<Wallet size={18} />}
+            label="Total earnings"
+            value={naira(stats?.totalEarnings)}
+            sub={stats ? `${naira(stats.earningPerEntry)} per entry` : undefined}
+            accent="bg-emerald-500"
+          />
         </div>
-        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
-          <p className="text-xs text-gray-400 mb-1">Club owner</p>
-          <div className="flex items-center gap-3">
-            <Avatar
-              name={`${club.owner.firstName ?? ""} ${club.owner.lastName ?? ""}`.trim() || "Owner"}
-              size={40}
-              src={club.owner.avatar}
-              userId={club.owner.id}
-            />
-            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-              {`${club.owner.firstName ?? ""} ${club.owner.lastName ?? ""}`.trim() || club.owner.username}
-            </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          <Stat icon={<Users size={18} />} label="Members" value={club.memberCount} accent="bg-[#9747FF]" />
+          <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
+            <p className="text-xs text-gray-400 mb-1">Club owner</p>
+            <div className="flex items-center gap-3">
+              <Avatar name={ownerName} size={40} src={club.owner.avatar} userId={club.owner.id} />
+              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{ownerName}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* share */}
       <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-3">
@@ -131,58 +218,94 @@ const MyClubPage = () => {
         )}
       </div>
 
-      {/* owner: members list */}
+      {/* owner: challenges my members joined */}
       {isOwner && (
-        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-4">
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-semibold text-gray-900 dark:text-white">Members</p>
-            <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-3 py-1.5">
-              <Search size={14} className="text-gray-400" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search members…"
-                className="text-sm outline-none bg-transparent w-44"
-              />
-              {query && (
-                <button onClick={() => setQuery("")} className="text-gray-400">
-                  <X size={14} />
-                </button>
-              )}
-            </div>
+            <p className="font-semibold text-gray-900 dark:text-white">Challenges your members joined</p>
+            <SearchBox value={cQuery} onChange={setCQuery} placeholder="Search challenges…" />
           </div>
 
-          <InfiniteScroll
-            dataLength={members.items.length}
-            next={members.loadMore}
-            hasMore={members.hasMore}
-            loader={<Spinner />}
-            endMessage={
-              !members.loading && (
-                <p className="text-center text-sm text-gray-400 py-4">
-                  {members.items.length === 0
-                    ? query
-                      ? "No members match your search."
-                      : "No one has joined yet. Share your link!"
-                    : "All members loaded."}
-                </p>
-              )
-            }
-          >
+          {challenges.loading && challenges.items.length === 0 && <Spinner />}
+          {!challenges.loading && challenges.items.length === 0 && (
+            <p className="text-sm text-gray-400 py-4 text-center">
+              {cQuery ? "No challenges match your search." : "Your members haven't joined a challenge yet."}
+            </p>
+          )}
+
+          <div className="space-y-2">
+            {challenges.items.map((r) => (
+              <button
+                key={r.challenge.id}
+                onClick={() => navigate(`/my-club/challenges/${r.challenge.id}`)}
+                className="w-full text-left flex items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 hover:border-primary/40 hover:shadow-sm transition-all"
+              >
+                {r.challenge.image ? (
+                  <img alt="" src={r.challenge.image} className="w-14 h-14 rounded-lg object-cover shrink-0" />
+                ) : (
+                  <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shrink-0">
+                    <Trophy className="w-6 h-6 text-amber-300" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-gray-900 dark:text-white truncate">{r.challenge.title}</p>
+                    <ChallengeStateBadge open={r.challenge.isOpen} />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {r.players} player{r.players !== 1 && "s"} · {r.entries} entr{r.entries === 1 ? "y" : "ies"} · {r.votes} vote
+                    {r.votes !== 1 && "s"}
+                  </p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="font-bold text-emerald-600">{naira(r.earnings)}</p>
+                  <p className="text-[11px] text-gray-400">earned</p>
+                </div>
+              </button>
+            ))}
+          </div>
+          <LoadMore show={challenges.hasMore && !challenges.loading && challenges.items.length > 0} onClick={challenges.loadMore} />
+        </div>
+      )}
+
+      {/* owner: members */}
+      {isOwner && (
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-semibold text-gray-900 dark:text-white">Members</p>
+            <SearchBox value={mQuery} onChange={setMQuery} placeholder="Search members…" />
+          </div>
+
+          {members.loading && members.items.length === 0 && <Spinner />}
+          {!members.loading && members.items.length === 0 && (
+            <p className="text-sm text-gray-400 py-4 text-center">
+              {mQuery ? "No members match your search." : "No one has joined yet. Share your link!"}
+            </p>
+          )}
+
+          <div>
             {members.items.map((m) => {
               const name = `${m.user.firstName ?? ""} ${m.user.lastName ?? ""}`.trim() || m.user.username || "Member";
               return (
-                <div key={m.user.id} className="flex items-center gap-3 py-2.5 border-b border-gray-50 dark:border-gray-800 last:border-0">
+                <div
+                  key={m.user.id}
+                  onClick={() => navigate(`/my-club/members/${m.user.id}`)}
+                  className="cursor-pointer flex items-center gap-3 py-2.5 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-primary/5 rounded-lg px-1"
+                >
                   <Avatar name={name} size={38} src={m.user.avatar} userId={m.user.id} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{name}</p>
-                    {m.user.username && <p className="text-xs text-gray-400 truncate">@{m.user.username}</p>}
+                    <p className="text-xs text-gray-400 truncate">
+                      {m.challengesCount} challenge{m.challengesCount !== 1 && "s"} · {m.entriesCount} entr
+                      {m.entriesCount === 1 ? "y" : "ies"} · joined {getreadabledate(m.joinedAt)}
+                    </p>
                   </div>
-                  <span className="text-[11px] text-gray-400 whitespace-nowrap">Joined {getreadabledate(m.joinedAt)}</span>
+                  <span className="text-sm font-bold text-emerald-600 shrink-0">{naira(m.earnings)}</span>
                 </div>
               );
             })}
-          </InfiniteScroll>
+          </div>
+          <LoadMore show={members.hasMore && !members.loading && members.items.length > 0} onClick={members.loadMore} />
         </div>
       )}
 

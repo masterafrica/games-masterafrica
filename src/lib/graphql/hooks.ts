@@ -172,6 +172,13 @@ import type {
   SearchUsersResponse,
   UpdateClubInput,
   UpdateClubResponse,
+  GetClubChallengeLeaderboardResponse,
+  GetMyClubChallengePlayersResponse,
+  GetMyClubChallengeResponse,
+  GetMyClubChallengesResponse,
+  GetMyClubMemberChallengesResponse,
+  GetMyClubMemberResponse,
+  GetMyClubStatsResponse,
   
 } from "./types";
 
@@ -236,6 +243,13 @@ import {
   GET_PUBLIC_CLUB,
   GET_USER_PROFILE,
   SEARCH_USERS,
+  GET_CLUB_CHALLENGE_LEADERBOARD,
+  GET_MY_CLUB_CHALLENGE,
+  GET_MY_CLUB_CHALLENGES,
+  GET_MY_CLUB_CHALLENGE_PLAYERS,
+  GET_MY_CLUB_MEMBER,
+  GET_MY_CLUB_MEMBER_CHALLENGES,
+  GET_MY_CLUB_STATS,
 
 } from "./queries";
 import {
@@ -780,6 +794,73 @@ export type { ChallengeData, GameType } from "./hooks/use-challenges";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ───── challenges: public
 export const useGetChallenges = () =>
   useLazyQuery<GetChallengesResponse>(GET_CHALLENGES, { fetchPolicy: "network-only" });
@@ -939,6 +1020,29 @@ export const useRemoveClubMember = () => {
   return { removeClubMember, data, loading, error };
 };
 
+// ───── club owner dashboard
+export const useGetMyClubStats = () =>
+  useLazyQuery<GetMyClubStatsResponse>(GET_MY_CLUB_STATS, { fetchPolicy: "network-only" });
+
+export const useGetMyClubChallenges = () =>
+  useLazyQuery<GetMyClubChallengesResponse>(GET_MY_CLUB_CHALLENGES, { fetchPolicy: "network-only" });
+
+export const useGetMyClubChallenge = () =>
+  useLazyQuery<GetMyClubChallengeResponse>(GET_MY_CLUB_CHALLENGE, { fetchPolicy: "network-only" });
+
+export const useGetMyClubChallengePlayers = () =>
+  useLazyQuery<GetMyClubChallengePlayersResponse>(GET_MY_CLUB_CHALLENGE_PLAYERS, { fetchPolicy: "network-only" });
+
+export const useGetMyClubMember = () =>
+  useLazyQuery<GetMyClubMemberResponse>(GET_MY_CLUB_MEMBER, { fetchPolicy: "network-only" });
+
+export const useGetMyClubMemberChallenges = () =>
+  useLazyQuery<GetMyClubMemberChallengesResponse>(GET_MY_CLUB_MEMBER_CHALLENGES, { fetchPolicy: "network-only" });
+
+// ───── public club leaderboard (shareable)
+export const useGetClubChallengeLeaderboard = () =>
+  useLazyQuery<GetClubChallengeLeaderboardResponse>(GET_CLUB_CHALLENGE_LEADERBOARD, { fetchPolicy: "network-only" });
+
 // ───── public profile page
 export const useGetUserProfile = () =>
   useLazyQuery<GetUserProfileResponse>(GET_USER_PROFILE, { fetchPolicy: "network-only" });
@@ -969,4 +1073,11 @@ export type {
   MyClub,
   ClubMemberEntry,
   PublicProfile,
+  ClubStats,
+  ClubChallengeRow,
+  ClubChallengeStats,
+  ClubPlayer,
+  ClubMemberDetail,
+  MemberChallengeRow,
+  ClubChallengeLeaderboard,
 } from "./types";

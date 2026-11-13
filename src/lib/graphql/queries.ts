@@ -475,6 +475,73 @@ export const GET_CHALLENGE_STATS = gql`
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ➜ In ./queries.ts: DELETE the old block I gave you before (from `const SUBMISSION_FIELDS` to the end)
 //   and PASTE this whole file instead.  (gql is already imported there.)
 
@@ -787,7 +854,7 @@ export const GET_MY_CLUB_MEMBERS = gql`
     GetMyClubMembers(input: $input) {
       hasMore
       nextPage
-      data { joinedAt user { ${CLUB_USER} } }
+      data { joinedAt entriesCount challengesCount earnings user { ${CLUB_USER} } }
     }
   }
 `;
@@ -813,7 +880,7 @@ export const GET_ADMIN_CLUB_MEMBERS = gql`
     GetAdminClubMembers(input: $input) {
       hasMore
       nextPage
-      data { joinedAt user { ${CLUB_USER} } }
+      data { joinedAt entriesCount challengesCount earnings user { ${CLUB_USER} } }
     }
   }
 `;
@@ -848,7 +915,120 @@ export const GET_USER_PROFILE = gql`
   }
 `;
 
+/* ───────── club owner dashboard ───────── */
+const CH_LITE = `id slug title image isOpen votingState votingStartsAt`;
 
+export const GET_MY_CLUB_STATS = gql`
+  query GetMyClubStats {
+    GetMyClubStats {
+      totalMembers
+      totalChallenges
+      totalEntries
+      totalEarnings
+      earningPerEntry
+    }
+  }
+`;
+
+export const GET_MY_CLUB_CHALLENGES = gql`
+  query GetMyClubChallenges($input: GetMyClubChallengesInput!) {
+    GetMyClubChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        players
+        entries
+        votes
+        earnings
+        challenge { ${CH_LITE} }
+      }
+    }
+  }
+`;
+
+export const GET_MY_CLUB_CHALLENGE = gql`
+  query GetMyClubChallenge($input: GetMyClubChallengeInput!) {
+    GetMyClubChallenge(input: $input) {
+      players
+      entries
+      votes
+      earnings
+      clubSlug
+      challenge { ${CH_LITE} }
+    }
+  }
+`;
+
+export const GET_MY_CLUB_CHALLENGE_PLAYERS = gql`
+  query GetMyClubChallengePlayers($input: GetMyClubChallengePlayersInput!) {
+    GetMyClubChallengePlayers(input: $input) {
+      hasMore
+      nextPage
+      data {
+        rank
+        votes
+        entries
+        earnings
+        entryId
+        entryTitle
+        entryUrl
+        user { ${CLUB_USER} }
+      }
+    }
+  }
+`;
+
+export const GET_MY_CLUB_MEMBER = gql`
+  query GetMyClubMember($input: GetMyClubMemberInput!) {
+    GetMyClubMember(input: $input) {
+      joinedAt
+      entriesCount
+      challengesCount
+      totalEarnings
+      user { ${CLUB_USER} }
+    }
+  }
+`;
+
+export const GET_MY_CLUB_MEMBER_CHALLENGES = gql`
+  query GetMyClubMemberChallenges($input: GetMyClubMemberChallengesInput!) {
+    GetMyClubMemberChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        entries
+        votes
+        earnings
+        entryTitle
+        challenge { ${CH_LITE} }
+      }
+    }
+  }
+`;
+
+// public: no login needed
+export const GET_CLUB_CHALLENGE_LEADERBOARD = gql`
+  query GetClubChallengeLeaderboard($input: GetClubChallengeLeaderboardInput!) {
+    GetClubChallengeLeaderboard(input: $input) {
+      hasMore
+      nextPage
+      clubName
+      clubSlug
+      challengeTitle
+      challengeSlug
+      challengeOpen
+      data {
+        rank
+        userId
+        name
+        avatar
+        votes
+        entryId
+        entryTitle
+      }
+    }
+  }
+`;
 
 
 
@@ -863,5 +1043,3 @@ export const GET_SUBMISSION = gql`
     }
   }
 `;
-
-

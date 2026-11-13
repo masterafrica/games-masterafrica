@@ -58,6 +58,9 @@ export const Avatar = ({
   );
 };
 
+/** 12500 → ₦12,500 */
+export const naira = (n?: number | null) => `₦${(n ?? 0).toLocaleString()}`;
+
 /** debounced copy of a value (for search boxes) */
 export const useDebounced = <T,>(value: T, ms = 400) => {
   const [v, setV] = useState(value);
