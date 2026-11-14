@@ -542,6 +542,41 @@ export const GET_CHALLENGE_STATS = gql`
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ➜ In ./queries.ts: DELETE the old block I gave you before (from `const SUBMISSION_FIELDS` to the end)
 //   and PASTE this whole file instead.  (gql is already imported there.)
 
@@ -909,6 +944,9 @@ export const GET_USER_PROFILE = gql`
       clubName
       clubSlug
       clubRole
+      skillName
+      skillGroup
+      interests
       entriesCount
       totalVotes
     }
@@ -1030,6 +1068,114 @@ export const GET_CLUB_CHALLENGE_LEADERBOARD = gql`
   }
 `;
 
+export const GET_USER_PROFILE_CHALLENGES = gql`
+  query GetUserProfileChallenges($input: GetUserProfileChallengesInput!) {
+    GetUserProfileChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        entryId
+        entryTitle
+        votes
+        createdAt
+        challengeId
+        challengeSlug
+        challengeTitle
+        challengeImage
+        challengeOpen
+      }
+    }
+  }
+`;
+
+/* ───────── admin: the club owner dashboard for ANY club ───────── */
+export const GET_ADMIN_CLUB_STATS = gql`
+  query GetAdminClubStats($input: GetAdminClubStatsInput!) {
+    GetAdminClubStats(input: $input) {
+      totalMembers
+      totalChallenges
+      totalEntries
+      totalEarnings
+      earningPerEntry
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB_CHALLENGES = gql`
+  query GetAdminClubChallenges($input: GetAdminClubChallengesInput!) {
+    GetAdminClubChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        players
+        entries
+        votes
+        earnings
+        challenge { ${CH_LITE} }
+      }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB_CHALLENGE = gql`
+  query GetAdminClubChallenge($input: GetAdminClubChallengeInput!) {
+    GetAdminClubChallenge(input: $input) {
+      players
+      entries
+      votes
+      earnings
+      clubSlug
+      challenge { ${CH_LITE} }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB_CHALLENGE_PLAYERS = gql`
+  query GetAdminClubChallengePlayers($input: GetAdminClubChallengePlayersInput!) {
+    GetAdminClubChallengePlayers(input: $input) {
+      hasMore
+      nextPage
+      data {
+        rank
+        votes
+        entries
+        earnings
+        entryId
+        entryTitle
+        entryUrl
+        user { ${CLUB_USER} }
+      }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB_MEMBER = gql`
+  query GetAdminClubMember($input: GetAdminClubMemberInput!) {
+    GetAdminClubMember(input: $input) {
+      joinedAt
+      entriesCount
+      challengesCount
+      totalEarnings
+      user { ${CLUB_USER} }
+    }
+  }
+`;
+
+export const GET_ADMIN_CLUB_MEMBER_CHALLENGES = gql`
+  query GetAdminClubMemberChallenges($input: GetAdminClubMemberChallengesInput!) {
+    GetAdminClubMemberChallenges(input: $input) {
+      hasMore
+      nextPage
+      data {
+        entries
+        votes
+        earnings
+        entryTitle
+        challenge { ${CH_LITE} }
+      }
+    }
+  }
+`;
 
 
 export const GET_SUBMISSION = gql`

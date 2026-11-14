@@ -1,4 +1,5 @@
-// CLUB OWNER — dashboard of ONE challenge for my club.  Route: /my-club/challenges/:challengeId
+// CLUB — dashboard of ONE challenge for a club.
+// Owner: /my-club/challenges/:challengeId        Admin: /admin/clubs/:clubId/challenges/:challengeId  (same page, admin mode)
 // players who joined, total votes, earnings, share the vote link, share the club leaderboard.
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
@@ -6,6 +7,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ArrowLeft, ExternalLink, Heart, Search, Share2, Trophy, Users, Wallet, FileText, X } from "lucide-react";
 import {
+  useGetAdminClubChallenge,
+  useGetAdminClubChallengePlayers,
   useGetMyClubChallenge,
   useGetMyClubChallengePlayers,
   type ClubChallengeStats,
@@ -31,10 +34,14 @@ const Stat = ({ icon, label, value, accent }: { icon: React.ReactNode; label: st
 );
 
 const ClubChallengeDashboardPage = () => {
-  const { challengeId = "" } = useParams();
+  const { challengeId = "", clubId } = useParams();
+  const admin = !!clubId; // opened from the admin side
+  const backPath = admin ? `/admin/clubs/${clubId}` : "/my-club";
   const navigate = useNavigate();
-  const [getStats] = useGetMyClubChallenge();
-  const [getPlayers] = useGetMyClubChallengePlayers();
+  const [getOwnerStats] = useGetMyClubChallenge();
+  const [getAdminStats] = useGetAdminClubChallenge();
+  const [getOwnerPlayers] = useGetMyClubChallengePlayers();
+  const [getAdminPlayers] = useGetAdminClubChallengePlayers();
 
   const [stats, setStats] = useState<ClubChallengeStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,8 +53,10 @@ const ClubChallengeDashboardPage = () => {
     (async () => {
       setLoading(true);
       try {
-        const r = await getStats({ variables: { input: { challengeId } } });
-        setStats(r.data?.GetMyClubChallenge ?? null);
+        const r: any = admin
+          ? await getAdminStats({ variables: { input: { clubId, challengeId } } })
+          : await getOwnerStats({ variables: { input: { challengeId } } });
+        setStats(r.data?.GetAdminClubChallenge ?? r.data?.GetMyClubChallenge ?? null);
       } catch {
         setStats(null);
       } finally {
@@ -55,14 +64,17 @@ const ClubChallengeDashboardPage = () => {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [challengeId]);
+  }, [challengeId, clubId]);
 
   const players = usePaginated<ClubPlayer>(
     async (page) => {
-      const r = await getPlayers({ variables: { input: { challengeId, page, query: debounced || undefined } } });
-      return r.data?.GetMyClubChallengePlayers;
+      const input = { challengeId, page, query: debounced || undefined };
+      const r: any = admin
+        ? await getAdminPlayers({ variables: { input: { clubId, ...input } } })
+        : await getOwnerPlayers({ variables: { input } });
+      return r.data?.GetAdminClubChallengePlayers ?? r.data?.GetMyClubChallengePlayers;
     },
-    [challengeId, debounced],
+    [challengeId, clubId, debounced],
   );
 
   if (loading) return <Spinner />;
@@ -70,8 +82,8 @@ const ClubChallengeDashboardPage = () => {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <p className="text-gray-500 mb-4">We couldn&apos;t open this challenge.</p>
-        <Button color="primary" radius="full" onPress={() => navigate("/my-club")}>
-          Back to my club
+        <Button color="primary" radius="full" onPress={() => navigate(backPath)}>
+          Back
         </Button>
       </div>
     );
@@ -85,8 +97,8 @@ const ClubChallengeDashboardPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
-      <Link to="/my-club" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary">
-        <ArrowLeft size={16} /> My club
+      <Link to={backPath} className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary">
+        <ArrowLeft size={16} /> {admin ? "Club" : "My club"}
       </Link>
 
       {/* header */}
@@ -135,6 +147,11 @@ const ClubChallengeDashboardPage = () => {
             <Button size="sm" variant="flat" radius="full" onPress={() => navigate(boardPath)}>
               View leaderboard
             </Button>
+            {admin && (
+              <Button size="sm" variant="flat" radius="full" onPress={() => navigate(`/admin/mag-challenges/${c.id}`)}>
+                Open challenge (admin)
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -982,6 +982,9 @@ export interface PublicProfile {
   clubName?: string | null;
   clubSlug?: string | null;
   clubRole?: string | null;
+  skillName?: string | null;
+  skillGroup?: string | null;
+  interests: string[]; // kinds of challenges they entered
   entriesCount: number;
   totalVotes: number;
 }
@@ -1097,4 +1100,49 @@ export interface ClubChallengeLeaderboard extends PageMeta {
 }
 export interface GetClubChallengeLeaderboardResponse {
   GetClubChallengeLeaderboard: ClubChallengeLeaderboard;
+}
+
+/* ---- profile: challenges a user did ---- */
+export interface ProfileChallengeRow {
+  entryId: string;
+  entryTitle?: string | null;
+  votes: number;
+  createdAt: string;
+  challengeId: string;
+  challengeSlug: string;
+  challengeTitle: string;
+  challengeImage?: string | null;
+  challengeOpen: boolean;
+}
+export interface GetUserProfileChallengesInput {
+  userId: string;
+  page?: number;
+}
+export interface GetUserProfileChallengesResponse {
+  GetUserProfileChallenges: PageMeta & { data: ProfileChallengeRow[] };
+}
+
+/* ---- admin: the club owner dashboard for any club ---- */
+export interface GetAdminClubStatsResponse {
+  GetAdminClubStats: ClubStats;
+}
+export interface GetAdminClubChallengesInput {
+  clubId: string;
+  page?: number;
+  query?: string;
+}
+export interface GetAdminClubChallengesResponse {
+  GetAdminClubChallenges: PageMeta & { data: ClubChallengeRow[] };
+}
+export interface GetAdminClubChallengeResponse {
+  GetAdminClubChallenge: ClubChallengeStats;
+}
+export interface GetAdminClubChallengePlayersResponse {
+  GetAdminClubChallengePlayers: PageMeta & { data: ClubPlayer[] };
+}
+export interface GetAdminClubMemberResponse {
+  GetAdminClubMember: ClubMemberDetail;
+}
+export interface GetAdminClubMemberChallengesResponse {
+  GetAdminClubMemberChallenges: PageMeta & { data: MemberChallengeRow[] };
 }

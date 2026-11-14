@@ -1,10 +1,12 @@
-// CLUB OWNER — details of one member: challenges they joined and what each earned the owner.
-// Route: /my-club/members/:userId
+// CLUB — details of one member: challenges they joined and what each earned the owner.
+// Owner: /my-club/members/:userId        Admin: /admin/clubs/:clubId/members/:userId  (same page, admin mode)
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ArrowLeft, FileText, Heart, Trophy, Wallet } from "lucide-react";
 import {
+  useGetAdminClubMember,
+  useGetAdminClubMemberChallenges,
   useGetMyClubMember,
   useGetMyClubMemberChallenges,
   type ClubMemberDetail,
@@ -14,10 +16,14 @@ import { Avatar, ChallengeStateBadge, Spinner, naira, usePaginated } from "@/com
 import { getreadabledate } from "@/utils";
 
 const ClubMemberPage = () => {
-  const { userId = "" } = useParams();
+  const { userId = "", clubId } = useParams();
+  const admin = !!clubId;
+  const backPath = admin ? `/admin/clubs/${clubId}` : "/my-club";
   const navigate = useNavigate();
-  const [getMember] = useGetMyClubMember();
-  const [getChallenges] = useGetMyClubMemberChallenges();
+  const [getOwnerMember] = useGetMyClubMember();
+  const [getAdminMember] = useGetAdminClubMember();
+  const [getOwnerChallenges] = useGetMyClubMemberChallenges();
+  const [getAdminChallenges] = useGetAdminClubMemberChallenges();
 
   const [member, setMember] = useState<ClubMemberDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,8 +32,10 @@ const ClubMemberPage = () => {
     (async () => {
       setLoading(true);
       try {
-        const r = await getMember({ variables: { input: { userId } } });
-        setMember(r.data?.GetMyClubMember ?? null);
+        const r: any = admin
+          ? await getAdminMember({ variables: { input: { clubId, userId } } })
+          : await getOwnerMember({ variables: { input: { userId } } });
+        setMember(r.data?.GetAdminClubMember ?? r.data?.GetMyClubMember ?? null);
       } catch {
         setMember(null);
       } finally {
@@ -35,23 +43,25 @@ const ClubMemberPage = () => {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId, clubId]);
 
   const list = usePaginated<MemberChallengeRow>(
     async (page) => {
-      const r = await getChallenges({ variables: { input: { userId, page } } });
-      return r.data?.GetMyClubMemberChallenges;
+      const r: any = admin
+        ? await getAdminChallenges({ variables: { input: { clubId, userId, page } } })
+        : await getOwnerChallenges({ variables: { input: { userId, page } } });
+      return r.data?.GetAdminClubMemberChallenges ?? r.data?.GetMyClubMemberChallenges;
     },
-    [userId],
+    [userId, clubId],
   );
 
   if (loading) return <Spinner />;
   if (!member) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
-        <p className="text-gray-500 mb-4">That person isn&apos;t in your club.</p>
-        <Link to="/my-club" className="text-primary font-semibold">
-          Back to my club
+        <p className="text-gray-500 mb-4">That person isn&apos;t in {admin ? "this" : "your"} club.</p>
+        <Link to={backPath} className="text-primary font-semibold">
+          Back
         </Link>
       </div>
     );
@@ -62,8 +72,8 @@ const ClubMemberPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl space-y-6">
-      <button className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary" onClick={() => navigate("/my-club")}>
-        <ArrowLeft size={16} /> My club
+      <button className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary" onClick={() => navigate(backPath)}>
+        <ArrowLeft size={16} /> {admin ? "Club" : "My club"}
       </button>
 
       {/* member */}
@@ -91,7 +101,7 @@ const ClubMemberPage = () => {
           <div className="rounded-xl bg-gray-50 dark:bg-gray-800 p-3 text-center">
             <Wallet className="w-4 h-4 text-emerald-500 mx-auto mb-1" />
             <p className="text-xl font-bold text-emerald-600">{naira(member.totalEarnings)}</p>
-            <p className="text-[11px] text-gray-500">Earned for you</p>
+            <p className="text-[11px] text-gray-500">{admin ? "Earned for the owner" : "Earned for you"}</p>
           </div>
         </div>
       </div>
@@ -115,7 +125,9 @@ const ClubMemberPage = () => {
           {list.items.map((r) => (
             <button
               key={r.challenge.id}
-              onClick={() => navigate(`/my-club/challenges/${r.challenge.id}`)}
+              onClick={() =>
+                navigate(admin ? `/admin/clubs/${clubId}/challenges/${r.challenge.id}` : `/my-club/challenges/${r.challenge.id}`)
+              }
               className="w-full text-left flex items-center gap-3 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-primary/5 rounded-lg px-1"
             >
               <div className="flex-1 min-w-0">

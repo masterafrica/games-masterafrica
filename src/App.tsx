@@ -73,6 +73,9 @@ function App() {
         <Route element={<AdminClubFormPage />} path="admin/clubs/new" />
         <Route element={<AdminClubDetailPage />} path="admin/clubs/:id" />
         <Route element={<AdminClubFormPage />} path="admin/clubs/:id/edit" />
+        {/* admin opens the same club-challenge / member pages the owner uses */}
+        <Route element={<ClubChallengeDashboardPage />} path="admin/clubs/:clubId/challenges/:challengeId" />
+        <Route element={<ClubMemberPage />} path="admin/clubs/:clubId/members/:userId" />
 
         {/* ───────── PUBLIC ───────── */}
         <Route element={<DonatePage />} path="donate" />
