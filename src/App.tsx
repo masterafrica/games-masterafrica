@@ -24,6 +24,7 @@ import MagChallengePage from "./pages/mag-challenge";
 import AdminSubmissionsPage from "./pages/AdminSubmissionsPage";
 import FaqPage from "./pages/faq";
 import PhotoChallengePage from "./pages/photo-challenge";
+import DanceChallengePage from "./pages/dance-challenge";
 
 // import AdminLeaderboardPage from "./pages/adminleaderboard";
 import AdminChallengeLeaderboardPage from "./pages/adminleaderboard";
@@ -121,6 +122,8 @@ function App() {
             element={<PhotoChallengePage />}
             path="photo-challenge"
           />
+
+          <Route element={<DanceChallengePage />} path="dance-challenge" />
 
           <Route
             element={<ChallengeHub />}

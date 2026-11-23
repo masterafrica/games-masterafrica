@@ -67,14 +67,14 @@ const ChallengesPage = () => {
             />
 
             <ChallengeCard
-              description="Tell an African story in one photo & win ₦10,000 + a Power Bank"
+              description="Dance your way to the top & win ₦10,000 + a Bluetooth Speaker"
               points="Join now"
               progress={0}
-              theme="#F59E0B"
-              title="African Story Photography"
+              theme="#EC4899"
+              title="MAG Dance Challenge"
               type="challenge"
               badge="New"
-              onClick={() => navigate("/photo-challenge")}
+              onClick={() => navigate("/dance-challenge")}
             />
 
             <ChallengeCard
